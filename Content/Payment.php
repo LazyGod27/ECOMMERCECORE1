@@ -26,6 +26,35 @@ $shipping_fee = 50.00;
 $vat_rate = 0.12;
 $vat_amount = $subtotal * $vat_rate;
 $total_payment = $subtotal + $shipping_fee + $vat_amount;
+
+$user_id = $_SESSION['user_id'];
+$full_addr_details = null;
+
+// Fetch Address logic
+// 1. Try user_addresses table (Default)
+$check_addr = mysqli_query($conn, "SELECT * FROM user_addresses WHERE user_id='$user_id' AND is_default=1 LIMIT 1");
+if (mysqli_num_rows($check_addr) > 0) {
+    $full_addr_details = mysqli_fetch_assoc($check_addr);
+} else {
+    // 2. Try any address
+    $check_addr_any = mysqli_query($conn, "SELECT * FROM user_addresses WHERE user_id='$user_id' LIMIT 1");
+    if (mysqli_num_rows($check_addr_any) > 0) {
+        $full_addr_details = mysqli_fetch_assoc($check_addr_any);
+    } else {
+        // 3. Try users table (Legacy)
+        $user_sql = mysqli_query($conn, "SELECT * FROM users WHERE id='$user_id'");
+        $u_row = mysqli_fetch_assoc($user_sql);
+        if (!empty($u_row['address'])) {
+             $full_addr_details = [
+                'fullname' => $u_row['fullname'],
+                'phone' => $u_row['phone'],
+                'address' => $u_row['address'],
+                'city' => $u_row['city'],
+                'zip' => $u_row['zip']
+             ];
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,6 +123,35 @@ $total_payment = $subtotal + $shipping_fee + $vat_amount;
         <div class="checkout-content">
             <!-- Left Side: Payment Methods -->
             <div class="checkout-details">
+                <!-- Delivery Address Section -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 class="section-title" style="margin:0;"><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #f0ad4e;"></i> Delivery Address</h2>
+                        <a href="user-account.php?view=address" style="color: #2A3B7E; font-size: 0.9rem; font-weight: 500; text-decoration: none;">Change</a>
+                    </div>
+
+                    <?php if ($full_addr_details): ?>
+                        <div style="display: flex; gap: 15px; align-items: flex-start;">
+                            <div style="font-weight: 700; color: #333; min-width: 150px;">
+                                <?php echo htmlspecialchars($full_addr_details['fullname']); ?><br>
+                                <span style="font-weight: 400; color: #777; font-size: 0.9rem;"><?php echo htmlspecialchars($full_addr_details['phone']); ?></span>
+                            </div>
+                            <div style="color: #555; font-size: 0.95rem; flex: 1;">
+                                <?php echo htmlspecialchars($full_addr_details['address']); ?><br>
+                                <?php echo htmlspecialchars($full_addr_details['city']); ?>, <?php echo htmlspecialchars($full_addr_details['zip']); ?>
+                                <div style="margin-top: 5px;">
+                                    <span style="border: 1px solid #2A3B7E; color: #2A3B7E; font-size: 11px; padding: 2px 6px; border-radius: 2px;">Default</span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div style="padding: 20px; border: 1px dashed #ccc; text-align: center; border-radius: 6px; background: #fafafa;">
+                            <p style="color: #888; margin-bottom: 10px;">No delivery address found.</p>
+                            <a href="user-account.php?view=address" class="btn-primary" style="display: inline-block; padding: 8px 15px; font-size: 0.9rem; text-decoration: none; color: white; background-color: #2A3B7E; border-radius: 4px;">+ Add Address</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
                 <div class="card">
                     <h2 class="section-title"><i class="fas fa-wallet" style="margin-right: 10px; color: #2A3B7E;"></i> Select Payment Method</h2>
                     
