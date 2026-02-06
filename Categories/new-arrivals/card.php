@@ -194,7 +194,7 @@ $products = [
                 <?php if (isset($product['discount'])): ?>
                     <span class="discount-badge"><?php echo $product['discount']; ?></span>
                 <?php endif; ?>
-                <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>" class="product-img">
+                <img src="<?php echo str_replace(' ', '%20', $product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-img">
             </div>
             <div class="product-details">
                 <h3 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h3>

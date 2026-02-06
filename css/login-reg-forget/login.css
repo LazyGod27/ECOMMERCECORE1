@@ -252,6 +252,21 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+.btn-social.facebook {
+    background-color: #1877F2;
+    color: #fff;
+    border: 1px solid #1877F2;
+}
+
+.btn-social.facebook:hover {
+    background-color: #166fe5;
+}
+
+.btn-social.facebook .fa-facebook-f {
+    color: #fff;
+}
+
+/* Original rule kept just in case used elsewhere, but overridden by above specificity */
 .fa-facebook-f {
     color: #1877F2;
 }
@@ -288,5 +303,3 @@ body {
         padding: 30px;
     }
 }
-
-

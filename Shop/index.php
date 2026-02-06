@@ -996,7 +996,7 @@
                         <a href="?search=" class="btn-seller-primary" style="padding: 12px 35px; font-size: 1rem; text-decoration: none;">Browse All Products</a>
                     </div>
                     <div style="flex: 1; display: flex; justify-content: flex-end; z-index: 2;">
-                        <img src="../image/Dashboard/brand new bag.jpeg" style="height: 300px; width: 300px; object-fit: cover; border-radius: 20px; box-shadow: 20px 20px 0px rgba(255,255,255,0.1);">
+                        <img src="../image/Dashboard/brand%20new%20bag.jpeg" style="height: 300px; width: 300px; object-fit: cover; border-radius: 20px; box-shadow: 20px 20px 0px rgba(255,255,255,0.1);">
                     </div>
                 </div>
 

@@ -20,12 +20,17 @@
         background: #fff;
         width: 1000px;
         max-width: 95%;
+        max-height: 90vh; /* Prevent growing off-screen */
         display: flex;
         border-radius: 12px;
         position: relative;
-        overflow: hidden;
+        /* overflow: hidden; REMOVED to prevent clipping buttons */
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         animation: slideUp 0.4s ease-out;
+    }
+    
+    .pv-right {
+        overflow-y: auto; /* Allow scrolling for details */
     }
 
     .product-modal-close {
