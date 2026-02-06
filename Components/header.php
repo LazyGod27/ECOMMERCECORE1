@@ -1,15 +1,10 @@
 <?php
-if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-    session_start();
+if (!isset($path_prefix)) {
+    $path_prefix = '../';
 }
 
-// SECURITY: Global Headers (The Invisible Shield)
-// Only send if headers haven't been sent yet
-if (!headers_sent()) {
-    header("X-Frame-Options: DENY");
-    header("X-XSS-Protection: 1; mode=block");
-    header("X-Content-Type-Options: nosniff");
-}
+// 1. INTEGRATE CORE SECURITY (Sessions, Headers, CSRF)
+include_once $path_prefix . 'Components/security.php';
 
 // SECURITY: Session Timeout (The Stopwatch)
 // Only applies if user is logged in
@@ -34,9 +29,7 @@ if (isset($_SESSION['user_id'])) {
     $_SESSION['last_activity'] = time(); // Reset timer
 }
 
-if (!isset($path_prefix)) {
-    $path_prefix = '../';
-}
+
 
 // Fetch notification count for unread support tickets
 $unread_tickets_count = 0;

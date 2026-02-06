@@ -3,7 +3,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-session_start();
+$path_prefix = '../';
+require_once '../Components/security.php';
+// session_start(); // Handled by security.php
 include("../Database/config.php");
 require '../PHPMailer/src/Exception.php';
 require '../PHPMailer/src/PHPMailer.php';
@@ -12,7 +14,13 @@ require '../PHPMailer/src/SMTP.php';
 $msg = "";
 
 if (isset($_POST['resend'])) {
+    verify_csrf_token();
     if (isset($_SESSION['email_to_verify'])) {
+// ...
+// ...
+if (isset($_POST['login'])) {
+    verify_csrf_token();
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
         $email = $_SESSION['email_to_verify'];
         $query = "SELECT * FROM users WHERE email='$email'";
         $result = mysqli_query($conn, $query);
@@ -188,6 +196,7 @@ if (isset($_POST['login'])) {
                 <?php echo $msg; ?>
 
                 <form action="" method="POST">
+                    <?php echo get_csrf_input_field(); ?>
                     <div class="input-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" placeholder="Email" required>

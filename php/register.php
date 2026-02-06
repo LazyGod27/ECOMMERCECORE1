@@ -3,6 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
+require_once '../Components/security.php';
 include("../Database/config.php");
 require '../PHPMailer/src/Exception.php';
 require '../PHPMailer/src/PHPMailer.php';
@@ -11,6 +12,7 @@ require '../PHPMailer/src/SMTP.php';
 $msg = "";
 
 if (isset($_POST['submit'])) {
+    verify_csrf_token();
     $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
@@ -82,7 +84,7 @@ if (isset($_POST['submit'])) {
                     $mail->Body = $mail_content;
 
                     // Redirect to verification page
-                    session_start();
+
                     $_SESSION['email_to_verify'] = $email;
                     header("Location: verification.php");
                     exit();
@@ -153,6 +155,7 @@ if (isset($_POST['submit'])) {
                 <?php echo $msg; ?>
 
                 <form action="" method="post">
+                    <?php echo get_csrf_input_field(); ?>
                     <div class="input-group">
                         <label for="fullname">Full Name</label>
                         <input type="text" id="fullname" name="fullname" placeholder="Your name" required>
