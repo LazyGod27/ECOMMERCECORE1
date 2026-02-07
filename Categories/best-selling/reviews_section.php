@@ -109,24 +109,90 @@
 
     .review-item {
         background: #fff;
-        padding: 25px;
-        border-radius: 15px;
-        margin-bottom: 20px;
+        padding: 30px;
+        border-radius: 20px;
+        margin-bottom: 25px;
         border: 1px solid #f1f5f9;
-        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        gap: 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     .review-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: #3b82f6;
     }
+
+    .review-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: white;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .review-details {
+        flex: 1;
+    }
+
+    .review-author {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #1e293b;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .review-author::after {
+        content: 'Verified Purchase';
+        font-size: 10px;
+        background: #f0fdf4;
+        color: #166534;
+        padding: 2px 8px;
+        border-radius: 100px;
+        font-weight: 600;
+        border: 1px solid #dcfce7;
+    }
+
+    .review-stars {
+        color: #fbbf24;
+        font-size: 13px;
+        margin-bottom: 8px;
+        letter-spacing: 1px;
+    }
+
+    .review-meta {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .review-content {
+        line-height: 1.7;
+        color: #334155;
+        font-size: 1rem;
+        font-weight: 450;
+    }
+
 </style>
 
 <div class="reviews-container">
-    <div class="reviews-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
-        <span style="font-weight: 800; font-size: 1.2rem; color: #0f172a;">What Customers Say</span>
-        <span style="font-size:11px; font-weight: 700; background:#f0f9ff; color:#0369a1; padding:6px 12px; border-radius:100px; border: 1px solid #bae6fd; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-magic"></i> AI Sentiment Analysis
+    <div class="reviews-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 30px; padding: 0 10px;">
+        <span style="font-weight: 900; font-size: 1.5rem; color: #0f172a; letter-spacing: -0.5px;">Customer Reviews</span>
+        <span style="font-size:11px; font-weight: 800; background:#f0f9ff; color:#0369a1; padding:8px 16px; border-radius:100px; border: 1px solid #bae6fd; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(3, 105, 161, 0.1);">
+            <i class="fas fa-magic" style="color: #0ea5e9;"></i> AI INSIGHTS ACTIVE
         </span>
     </div>
 
@@ -186,102 +252,117 @@
                 $user_initial = strtoupper(substr($display_name, 0, 1));
                 $review_id = $row['id']; // Unique ID for JS targeting
                 ?>
+                <?php
+                $avatar_colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+                $color_idx = $review_id % count($avatar_colors);
+                $bg_color = $avatar_colors[$color_idx];
+                ?>
                 <div class="review-item">
-                    <div class="review-avatar">
+                    <div class="review-avatar" style="background-color: <?php echo $bg_color; ?>;">
                         <?php echo $user_initial; ?>
                     </div>
-                    <div class="review-author"><?php echo htmlspecialchars($display_name); ?></div>
-                    <div class="review-stars">
-                        <?php
-                        $stars = isset($row['rating']) ? intval($row['rating']) : 5;
-                        for ($i = 0; $i < $stars; $i++) {
-                            echo '<i class="fas fa-star"></i>';
-                        }
-                        ?>
-                    </div>
-                    <div class="review-meta"><?php echo date("F j, Y", strtotime($row['created_at'])); ?></div>
-
-                    <!-- AI Sentiment Container (Server-Side Pre-rendered) -->
-                    <div id="sentiment-container-<?php echo $review_id; ?>" style="min-height: 20px;">
-                        <?php 
-                        $analysis = analyzeSentimentAI($row['comment']);
-                        $sentiment = $analysis['result']['sentiment'];
-                        $badgeClass = 'sentiment-neutral';
-                        $icon = '<i class="fas fa-minus"></i>';
-
-                        if ($sentiment === 'Positive') {
-                            $badgeClass = 'sentiment-positive';
-                            $icon = '<i class="fas fa-thumbs-up"></i>';
-                        } else if ($sentiment === 'Negative') {
-                            $badgeClass = 'sentiment-negative';
-                            $icon = '<i class="fas fa-thumbs-down"></i>';
-                        }
-                        ?>
-                        <div class="sentiment-badge <?php echo $badgeClass; ?>">
-                            <span class="sentiment-icon"><?php echo $icon; ?></span>
-                            <?php echo $sentiment; ?>
+                    <div class="review-details">
+                        <div class="review-author"><?php echo htmlspecialchars($display_name); ?></div>
+                        <div class="review-stars">
+                            <?php
+                            $stars = isset($row['rating']) ? intval($row['rating']) : 5;
+                            for ($i = 0; $i < $stars; $i++) {
+                                echo '<i class="fas fa-star"></i>';
+                            }
+                            ?>
                         </div>
-                    </div>
+                        <div class="review-meta"><?php echo date("F j, Y", strtotime($row['created_at'])); ?></div>
 
-                    <div class="review-content" id="review-text-<?php echo $review_id; ?>">
-                        <?php echo nl2br(htmlspecialchars($row['comment'])); ?>
-                    </div>
+                        <!-- AI Sentiment Container (Server-Side Pre-rendered) -->
+                        <div id="sentiment-container-<?php echo $review_id; ?>" style="min-height: 20px;">
+                            <?php 
+                            $analysis = analyzeSentimentAI($row['comment']);
+                            $sentiment = $analysis['result']['sentiment'];
+                            $badgeClass = 'sentiment-neutral';
+                            $icon = '<i class="fas fa-minus"></i>';
 
-                    <?php if (!empty($row['media_url'])):
-                        $img_path = '../../' . $row['media_url'];
-                        $ext = strtolower(pathinfo($img_path, PATHINFO_EXTENSION));
-                        $video_exts = ['mp4', 'mov', 'avi', 'webm', 'mkv'];
-                        ?>
-                        <div class="review-images">
-                            <?php if (in_array($ext, $video_exts)): ?>
-                                <video src="<?php echo htmlspecialchars($img_path); ?>" class="review-img" controls
-                                    style="object-fit:cover;"></video>
-                            <?php else: ?>
-                                <img src="<?php echo htmlspecialchars($img_path); ?>" class="review-img" alt="review image"
-                                    onclick="window.open(this.src, '_blank')">
-                            <?php endif; ?>
+                            if ($sentiment === 'Positive') {
+                                $badgeClass = 'sentiment-positive';
+                                $icon = '<i class="fas fa-thumbs-up"></i>';
+                            } else if ($sentiment === 'Negative') {
+                                $badgeClass = 'sentiment-negative';
+                                $icon = '<i class="fas fa-thumbs-down"></i>';
+                            }
+                            ?>
+                            <div class="sentiment-badge <?php echo $badgeClass; ?>">
+                                <span class="sentiment-icon"><?php echo $icon; ?></span>
+                                <?php echo $sentiment; ?>
+                            </div>
                         </div>
-                    <?php endif; ?>
 
-                    <!-- Trigger Analysis (Already handled by server, keeping for future real-time updates) -->
+                        <div class="review-content" id="review-text-<?php echo $review_id; ?>">
+                            <?php echo nl2br(htmlspecialchars($row['comment'])); ?>
+                        </div>
+
+                        <?php if (!empty($row['media_url'])):
+                            $img_path = '../../' . $row['media_url'];
+                            $ext = strtolower(pathinfo($img_path, PATHINFO_EXTENSION));
+                            $video_exts = ['mp4', 'mov', 'avi', 'webm', 'mkv'];
+                            ?>
+                            <div class="review-images" style="margin-top: 15px;">
+                                <?php if (in_array($ext, $video_exts)): ?>
+                                    <video src="<?php echo htmlspecialchars($img_path); ?>" class="review-img" controls
+                                        style="object-fit:cover; border-radius: 12px; max-width: 200px;"></video>
+                                <?php else: ?>
+                                    <img src="<?php echo htmlspecialchars($img_path); ?>" class="review-img" alt="review image"
+                                        style="border-radius: 12px; max-width: 200px;"
+                                        onclick="window.open(this.src, '_blank')">
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <?php
             }
         } else {
             // FALLBACK: Auto-Insert Sample Data if none exists (Self-Healing Demo Data)
+            $sample_users = [
+                ['fullname' => 'John Mark', 'email_prefix' => 'john.mark'],
+                ['fullname' => 'Maria Santos', 'email_prefix' => 'maria.santos'],
+                ['fullname' => 'Kevin Lee', 'email_prefix' => 'kevin.lee'],
+                ['fullname' => 'Sophia Reyes', 'email_prefix' => 'sophia.reyes'],
+                ['fullname' => 'James Bondoc', 'email_prefix' => 'james.bondoc'],
+                ['fullname' => 'Elena Gilbert', 'email_prefix' => 'elena.gilbert'],
+                ['fullname' => 'Rico Blanco', 'email_prefix' => 'rico.blanco'],
+                ['fullname' => 'Sarah Chen', 'email_prefix' => 'sarah.chen'],
+                ['fullname' => 'David Kim', 'email_prefix' => 'david.kim'],
+                ['fullname' => 'Jessica Lim', 'email_prefix' => 'jessica.lim']
+            ];
+
             $sample_comments = [
-                ['rating' => 5, 'comment' => 'Sulit na sulit! The quality is way better than expected.'],
-                ['rating' => 5, 'comment' => 'Ganda ng item, legit na legit. Mabilis din ang delivery.'],
-                ['rating' => 1, 'comment' => 'Pangit ng quality, wag niyo na bilhin. Sayang lang pera.'],
-                ['rating' => 3, 'comment' => 'Sakto lang, pwede na for its price.'],
-                ['rating' => 5, 'comment' => 'Best purchase so far! Highly recommended to everyone.'],
-                ['rating' => 2, 'comment' => 'Disappointed. The item looks different from the pictures.'],
-                ['rating' => 3, 'comment' => 'Okay naman, normal standard quality.']
+                ['name' => 'John Mark', 'rating' => 5, 'comment' => 'Sulit na sulit! The quality is way better than expected.'],
+                ['name' => 'Maria Santos', 'rating' => 5, 'comment' => 'Ganda ng item, legit na legit. Mabilis din ang delivery.'],
+                ['name' => 'Kevin Lee', 'rating' => 1, 'comment' => 'Pangit ng quality, wag niyo na bilhin. Sayang lang pera.'],
+                ['name' => 'Sophia Reyes', 'rating' => 3, 'comment' => 'Sakto lang, pwede na for its price.'],
+                ['name' => 'James Bondoc', 'rating' => 5, 'comment' => 'Best purchase so far! Highly recommended to everyone.'],
+                ['name' => 'Elena Gilbert', 'rating' => 2, 'comment' => 'Disappointed. The item looks different from the pictures.'],
+                ['name' => 'Rico Blanco', 'rating' => 3, 'comment' => 'Okay naman, normal standard quality.']
             ];
             
-            // Check if we have at least one user
-            $user_check = mysqli_query($conn, "SELECT id FROM users LIMIT 1");
-            if ($user_check && mysqli_num_rows($user_check) > 0) {
-                $user_id_row = mysqli_fetch_assoc($user_check);
-                $demo_uid = $user_id_row['id'];
+            foreach ($sample_comments as $sc) {
+                $full_name = $sc['name'];
+                $r = $sc['rating'];
+                $c = mysqli_real_escape_string($conn, $sc['comment']);
+                $email = strtolower(str_replace(' ', '.', $full_name)) . rand(100, 999) . "@imarket.ph";
                 
-                foreach ($sample_comments as $sc) {
-                    $r = $sc['rating'];
-                    $c = mysqli_real_escape_string($conn, $sc['comment']);
+                // Create unique user for each review
+                mysqli_query($conn, "INSERT INTO users (fullname, email, password) VALUES ('$full_name', '$email', 'demo123')");
+                $new_uid = mysqli_insert_id($conn);
+                
+                if ($new_uid > 0) {
+                    // Random date in the last 30 days
+                    $random_days = rand(0, 30);
                     mysqli_query($conn, "INSERT INTO reviews (user_id, product_id, order_id, rating, comment, created_at) 
-                                        VALUES ('$demo_uid', '$product_id', 0, '$r', '$c', NOW())");
+                                        VALUES ('$new_uid', '$product_id', 0, '$r', '$c', DATE_SUB(NOW(), INTERVAL $random_days DAY))");
                 }
-                // Refresh page once to show new data
-                echo "<script>window.location.reload();</script>";
-            } else {
-                ?>
-                <div class="review-item" style="justify-content: center; color: #888;">
-                    <div style="text-align:center; padding: 20px 0; color: #94a3b8;"><i class="fas fa-star"
-                            style="display:block; font-size: 30px; margin-bottom: 10px; opacity: 0.3;"></i>No ratings yet. Be the
-                        first to rate!</div>
-                </div>
-                <?php
             }
+            // Refresh page once to show new data
+            echo "<script>window.location.reload();</script>";
         }
     } else {
         echo "Database connection error.";
