@@ -72,5 +72,5 @@ foreach ($product_ids as $pid) {
     }
 }
 
-echo "Sample users and reviews added successfully for all Best-Selling products (101-115)!";
+echo "SUCCESS_REVIEWS_ALL_101_TO_115_UPLOADED_V2";
 ?>
