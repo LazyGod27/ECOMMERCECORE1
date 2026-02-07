@@ -1669,6 +1669,13 @@ function renderAlertsModule() {
         });
 }
 
+// 7b. Customer Support Redirect Stub
+function renderSupportModule() {
+    showCustomActionModal('Support Portal', 'You are being redirected to the integrated Customer Support Portal system.', 'Proceed', () => {
+        window.location.href = '../CustomerSupport/dashboard.php';
+    });
+}
+
 function sendBroadcast() {
     const msg = document.getElementById('broadcast-message').value;
     if (!msg.trim()) {
@@ -1761,6 +1768,7 @@ function showModule(moduleName, element = null) {
         case 'support':
             renderSupportModule();
             break;
+        case 'notifications':
         case 'alerts':
             renderAlertsModule();
             break;
@@ -1776,7 +1784,7 @@ function showModule(moduleName, element = null) {
     if (moduleName !== 'dashboard') { // Avoid redundant default state push if feasible, but consistent is better
         // If module routes to a submodule by default, let the submodule function handle the state push to avoid double push
         // checking if it's a direct render module
-        if (['support', 'alerts', 'settings', 'dashboard'].includes(moduleName)) {
+        if (['support', 'alerts', 'notifications', 'settings', 'dashboard'].includes(moduleName)) {
             const newUrl = new URL(window.location);
             newUrl.searchParams.set('module', moduleName);
             newUrl.searchParams.delete('submodule'); // Clear submodule if switching to a main module
@@ -1802,6 +1810,10 @@ function showSubModule(modulePrefix, submodule, filterValue = null) {
     };
 
     if (moduleMap[modulePrefix]) {
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('module', modulePrefix);
+        newUrl.searchParams.set('submodule', submodule);
+
         moduleMap[modulePrefix](submodule, filterValue);
 
         // --- Navigation Fix for Submodules ---
