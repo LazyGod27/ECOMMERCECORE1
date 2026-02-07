@@ -199,10 +199,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
             <form method="POST" action="login.php">
                 <input type="hidden" name="action" value="login">
                 <div class="form-group">
-                    <label>Username</label>
+                    <label>Email or Username</label>
                     <div class="input-group">
                         <i data-lucide="user" class="input-icon"></i>
-                        <input type="text" placeholder="Admin username" name="username" required>
+                        <input type="text" placeholder="admin@gmail.com or admin" name="username" required>
                     </div>
                 </div>
 
