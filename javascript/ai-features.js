@@ -93,10 +93,8 @@ let aiModel = null;
 
 // Pre-load the model when script runs
 async function loadAiModel() {
-    console.log("Loading AI Model...");
     try {
         aiModel = await mobilenet.load();
-        console.log("AI Model Loaded Successfully!");
     } catch (error) {
         console.error("Failed to load AI model:", error);
     }

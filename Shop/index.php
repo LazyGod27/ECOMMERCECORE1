@@ -1547,6 +1547,8 @@
             const icon = document.getElementById('followIcon');
             const text = document.getElementById('followText');
 
+            if (!btn || !icon || !text) return;
+
             if (following) {
                 btn.classList.remove('btn-seller-primary');
                 btn.style.background = 'rgba(255,255,255,0.2)';
@@ -1691,8 +1693,8 @@
         }
 
         // Check follow status on page load
-        <?php if (isset($selectedStore)): ?>
-            checkFollowStatus('<?php echo htmlspecialchars($selectedStore); ?>');
+        <?php if (!empty($_GET['store'])): ?>
+            checkFollowStatus('<?php echo htmlspecialchars(urldecode($_GET['store'])); ?>');
         <?php endif; ?>
     </script>
 
