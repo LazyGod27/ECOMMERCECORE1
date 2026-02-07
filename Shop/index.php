@@ -1131,16 +1131,16 @@
                         </div>
                     </div>
 
-                    <div class="floating-img-wrapper" style="display: flex; align-items: center;">
-                        <div style="position: relative; margin-bottom: 20px;">
+                    <div class="floating-img-wrapper" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                        <div style="position: relative;">
                             <img src="../image/Dashboard/brand%20new%20bag.jpeg" alt="Premium Bag" 
-                                 style="height: 380px; width: 330px; object-fit: cover; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 8px solid rgba(255,255,255,0.1);">
+                                 style="height: 350px; width: 320px; object-fit: cover; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 8px solid rgba(255,255,255,0.1);">
                             <!-- Floating decorative tags -->
-                            <div style="position: absolute; top: 10%; left: -20px; background: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; transform: rotate(-5deg);">
+                            <div style="position: absolute; top: 15%; left: -25px; background: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; transform: rotate(-8deg); z-index: 3;">
                                 <i class="fas fa-tag" style="color: #3b82f6;"></i>
                                 <span style="font-size: 0.8rem; font-weight: 700; color: #1e293b;">SALE -40%</span>
                             </div>
-                            <div style="position: absolute; bottom: 15%; right: -10px; background: #1e293b; color: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; transform: rotate(5deg);">
+                            <div style="position: absolute; bottom: 20%; right: -20px; background: #1e293b; color: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; transform: rotate(8deg); z-index: 3;">
                                 <i class="fas fa-crown" style="color: #f59e0b;"></i>
                                 <span style="font-size: 0.8rem; font-weight: 600;">LUXURY</span>
                             </div>
@@ -1182,7 +1182,7 @@
                         <!-- Item 2: TechZone -->
                         <div class="premium-card" onclick="window.location.href='?store=TechZone+PH'">
                             <div class="premium-shop-badge">Tech Partner</div>
-                            <img src="../image/electronics/Smart Watch (Fitness Tracker).jpeg" alt="TechZone">
+                            <img src="../image/electronics/Noise Cancelling Headphones.jpeg" alt="TechZone">
                             <div class="premium-overlay" style="background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 40%, transparent 100%);">
                                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
                                     <i class="fas fa-bolt" style="color: #a855f7;"></i>
