@@ -2,8 +2,8 @@
 // CustomerSupport/login.php
 
 // 1. DATABASE CONNECTION & FUNCTIONS
-require_once 'connection.php';
-require_once 'functions.php';
+require_once __DIR__ . '/connection.php';
+require_once __DIR__ . '/functions.php';
 
 // Initialize Database Connection
 try {

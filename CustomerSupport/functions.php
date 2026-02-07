@@ -4,7 +4,7 @@
 // =========================================================================
 
 if (!function_exists('get_db_connection')) {
-    require_once 'connection.php';
+    require_once __DIR__ . '/connection.php';
 }
 
 // Include PHPMailer classes

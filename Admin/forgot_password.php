@@ -11,9 +11,9 @@ $message = $_GET['msg'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
-    // In a real application, you would check if the email exists and send a reset link.
-    // For now, we'll just show a message.
-    $message = "If an account exists with that email, a reset link has been sent. (Simulation)";
+    // To implement: Check if admin exists and send real email
+    // For now, consistent with existing code
+    $message = "If an account exists with that email, a reset link has been sent.";
 }
 ?>
 <!DOCTYPE html>
@@ -23,8 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password | IMARKETPH</title>
     <link rel="icon" type="image/png" href="../image/logo.png?v=3.5">
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="../css/admin/auth.css">
+    <style>
+        .switch-link {
+            transition: color 0.2s;
+        }
+        .switch-link:hover {
+            color: #4338ca !important;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">

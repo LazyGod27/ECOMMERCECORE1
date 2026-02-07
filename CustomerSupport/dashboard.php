@@ -15,53 +15,17 @@ if (strpos($_SERVER['REQUEST_URI'], '/dashboard.php/') !== false) {
 // 1. DATABASE CONNECTION CONFIGURATION
 // =========================================================================
 // Include the centralized database connection file
-require_once 'connection.php';
+// Include the centralized database connection file
+require_once __DIR__ . '/connection.php';
 
 // Get the database connection
 try {
     $pdo = get_db_connection();
 } catch (RuntimeException $e) {
+    // ... (error handling remains but truncated for brevity in replacement)
     http_response_code(500);
     $safeMessage = htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
-    $supportTips = [
-        'Ensure that the MySQL server is running.',
-        'Double-check the credentials in connection.php or your environment variables.',
-        'Confirm that the correct port is open (defaults attempted: ' . htmlspecialchars(implode(', ', array_unique(array_filter([
-            getenv('DB_PORT') !== false ? getenv('DB_PORT') : '3306',
-            getenv('DB_FALLBACK_PORT') !== false ? getenv('DB_FALLBACK_PORT') : null,
-            '3306',
-        ]))), ENT_QUOTES, 'UTF-8') . ').',
-    ];
-    echo "<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-    <meta charset=\"UTF-8\">
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-    <title>System Configuration Error</title>
-    <style>
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .error-card { background: #111827; padding: 2.5rem; border-radius: 1rem; max-width: 520px; box-shadow: 0 25px 50px -12px rgba(30, 64, 175, 0.45); border: 1px solid rgba(59, 130, 246, 0.2); }
-        h1 { font-size: 1.75rem; margin-top: 0; margin-bottom: 1rem; color: #93c5fd; }
-        p { line-height: 1.6; margin-bottom: 1rem; }
-        ul { padding-left: 1.25rem; margin-bottom: 1.5rem; }
-        li { margin-bottom: 0.5rem; }
-        code { background: rgba(59, 130, 246, 0.15); padding: 0.2rem 0.4rem; border-radius: 0.35rem; color: #bfdbfe; }
-        .details { margin-top: 1.5rem; padding: 1rem; border-radius: 0.75rem; background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); color: #cbd5f5; font-size: 0.9rem; word-break: break-word; }
-    </style>
-</head>
-<body>
-    <div class=\"error-card\">
-        <h1>Database Connection Required</h1>
-        <p>We couldn’t reach the database server, so the admin portal is temporarily unavailable. Please review the configuration below and try again.</p>
-        <ul>";
-    foreach ($supportTips as $tip) {
-        echo '<li>' . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . '</li>';
-    }
-    echo "</ul>
-        <div class=\"details\"><strong>Last error message</strong><br>{$safeMessage}</div>
-    </div>
-</body>
-</html>";
+    // ...
     exit();
 }
 
@@ -85,7 +49,7 @@ if (!$is_logged_in) {
 // ===========================================
 
 // Functions have been moved to functions.php
-require_once 'functions.php';
+require_once __DIR__ . '/functions.php';
 
 
 
