@@ -988,86 +988,250 @@
                 $currentShop = $shops[0];
                 $selectedStore = $shops[0]['name'];
                 ?>
-                <!-- LANDING VIEW (Refined Hero) -->
-                <div class="shop-hero" style="height: 350px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); border-radius: 12px; position: relative; overflow: hidden; margin-top: 10px; display: flex; align-items: center; padding: 0 50px;">
-                    <div style="flex: 1; color: white; z-index: 2;">
-                        <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 15px; line-height: 1.1;">Welcome to <br>IMarket Mall</h1>
-                        <p style="font-size: 1.1rem; opacity: 0.9; max-width: 450px; margin-bottom: 25px;">Discover the best deals from verified official stores across the Philippines.</p>
-                        <a href="?search=" class="btn-seller-primary" style="padding: 12px 35px; font-size: 1rem; text-decoration: none;">Browse All Products</a>
+                <!-- LANDING VIEW (Premium Enhanced Hero) -->
+                <style>
+                    .shop-hero {
+                        height: 450px;
+                        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #172554 100%);
+                        border-radius: 24px;
+                        position: relative;
+                        overflow: hidden;
+                        margin-top: 20px;
+                        display: flex;
+                        align-items: center;
+                        padding: 0 60px;
+                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                    }
+
+                    .hero-glass-card {
+                        background: rgba(255, 255, 255, 0.05);
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        padding: 40px;
+                        border-radius: 30px;
+                        z-index: 2;
+                        max-width: 550px;
+                        animation: fadeInUp 0.8s ease-out;
+                    }
+
+                    @keyframes fadeInUp {
+                        from { opacity: 0; transform: translateY(30px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+
+                    .hero-badge {
+                        display: inline-block;
+                        padding: 6px 16px;
+                        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+                        color: white;
+                        border-radius: 50px;
+                        font-size: 0.85rem;
+                        font-weight: 700;
+                        margin-bottom: 20px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+                    }
+
+                    .floating-img-wrapper {
+                        flex: 1;
+                        display: flex;
+                        justify-content: flex-end;
+                        z-index: 2;
+                        animation: float 6s ease-in-out infinite;
+                    }
+
+                    @keyframes float {
+                        0%, 100% { transform: translateY(0) rotate(0deg); }
+                        50% { transform: translateY(-20px) rotate(2deg); }
+                    }
+
+                    .hero-glow {
+                        position: absolute;
+                        width: 400px;
+                        height: 400px;
+                        background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+                        border-radius: 50%;
+                        filter: blur(40px);
+                        pointer-events: none;
+                    }
+
+                    .premium-card {
+                        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                        cursor: pointer;
+                        overflow: hidden;
+                        position: relative;
+                        height: 400px;
+                        border-radius: 20px;
+                        border: 1px solid rgba(0,0,0,0.05);
+                    }
+
+                    .premium-card:hover {
+                        transform: translateY(-10px) scale(1.02);
+                        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25);
+                    }
+
+                    .premium-card img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        transition: transform 0.6s ease;
+                    }
+
+                    .premium-card:hover img {
+                        transform: scale(1.1);
+                    }
+
+                    .premium-overlay {
+                        position: absolute;
+                        inset: 0;
+                        background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 40%, transparent 100%);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                        padding: 30px;
+                        color: white;
+                        opacity: 1;
+                        transition: all 0.3s;
+                    }
+
+                    .premium-shop-badge {
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        background: rgba(255, 255, 255, 0.2);
+                        backdrop-filter: blur(5px);
+                        padding: 5px 12px;
+                        border-radius: 8px;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                    }
+                </style>
+
+                <div class="shop-hero">
+                    <div class="hero-glow" style="top: -100px; left: -100px;"></div>
+                    <div class="hero-glow" style="bottom: -100px; right: 20%;"></div>
+                    
+                    <div class="hero-glass-card">
+                        <span class="hero-badge">Verified Official Mall</span>
+                        <h1 style="font-size: 3.5rem; font-weight: 800; color: white; margin: 0 0 15px; line-height: 1.1; letter-spacing: -1px;">
+                            Elevate Your <span style="background: linear-gradient(90deg, #60a5fa, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Shopping</span>
+                        </h1>
+                        <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8); line-height: 1.6; margin-bottom: 30px;">
+                            Discover a curated world of premium brands and exclusive collections. Experience the future of e-commerce today.
+                        </p>
+                        <div style="display: flex; gap: 15px;">
+                            <a href="?search=" class="btn-seller-primary" style="padding: 14px 40px; border-radius: 12px; font-size: 1rem; text-decoration: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                                Explore All Stores
+                            </a>
+                            <a href="#premium-collections" style="padding: 14px 25px; color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; text-decoration: none; font-weight: 600; backdrop-filter: blur(5px);">
+                                <i class="fas fa-play" style="margin-right: 8px; font-size: 0.8em;"></i> Highlights
+                            </a>
+                        </div>
                     </div>
-                    <div style="flex: 1; display: flex; justify-content: flex-end; z-index: 2;">
-                        <img src="../image/Dashboard/brand%20new%20bag.jpeg" style="height: 300px; width: 300px; object-fit: cover; border-radius: 20px; box-shadow: 20px 20px 0px rgba(255,255,255,0.1);">
+
+                    <div class="floating-img-wrapper">
+                        <div style="position: relative;">
+                            <img src="../image/Dashboard/brand%20new%20bag.jpeg" alt="Premium Bag" 
+                                 style="height: 380px; width: 330px; object-fit: cover; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 8px solid rgba(255,255,255,0.1);">
+                            <!-- Floating decorative tags -->
+                            <div style="position: absolute; top: 10%; -left: 20px; background: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; transform: rotate(-5deg);">
+                                <i class="fas fa-tag" style="color: #3b82f6;"></i>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #1e293b;">SALE -40%</span>
+                            </div>
+                            <div style="position: absolute; bottom: 15%; -right: 10px; background: #1e293b; color: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; transform: rotate(5deg);">
+                                <i class="fas fa-crown" style="color: #f59e0b;"></i>
+                                <span style="font-size: 0.8rem; font-weight: 600;">LUXURY</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="featured-section" style="margin-top: 40px; margin-bottom: 50px;">
-                    <div class="section-header" style="margin-bottom: 25px;">
-                        <h2 style="font-size: 1.5rem; color: #1e293b;"><i class="fas fa-gem" style="color: #f59e0b;"></i> Premium Store Collections</h2>
+                <!-- Premium Store Collections Section -->
+                <div id="premium-collections" class="featured-section" style="margin-top: 60px; margin-bottom: 70px;">
+                    <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 35px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <div style="width: 25px; height: 3px; background: #3b82f6; border-radius: 10px;"></div>
+                                <span style="font-weight: 800; color: #3b82f6; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">Curated For You</span>
+                            </div>
+                            <h2 style="font-size: 2.2rem; color: #0f172a; margin: 0; font-weight: 800;">Premium Store <span style="color: #3b82f6;">Collections</span></h2>
+                        </div>
+                        <a href="?search=" style="color: #64748b; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; transition: all 0.3s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#64748b'">
+                            Explore All Mall Brands <i class="fas fa-arrow-right" style="margin-left: 8px; font-size: 0.8em;"></i>
+                        </a>
                     </div>
-                    <div class="featured-row" style="margin-top: 0; border-radius: 12px; overflow: hidden; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                        <!-- Item 1 -->
-                        <div class="featured-card" style="height: 350px; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-                            <a href="?store=UrbanWear+PH" style="display:block; width:100%; height: 100%;">
-                                <img src="../image/Shop/UrbanWear PH/H&M Loose Fit Hoodie.jpeg" alt="UrbanWear"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
-                                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: white;">
-                                    <h3 style="margin: 0;">UrbanWear PH</h3>
-                                    <p style="margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8;">Streetwear & Lifestyle</p>
+
+                    <div class="featured-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                        <!-- Item 1: UrbanWear -->
+                        <div class="premium-card" onclick="window.location.href='?store=UrbanWear+PH'">
+                            <div class="premium-shop-badge">Official Store</div>
+                            <img src="../image/Shop/UrbanWear PH/H&M Loose Fit Hoodie.jpeg" alt="UrbanWear">
+                            <div class="premium-overlay">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                    <i class="fas fa-tshirt" style="color: #60a5fa;"></i>
+                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #60a5fa;">Lifestyle</span>
                                 </div>
-                            </a>
+                                <h3 style="margin: 0; font-size: 1.6rem; font-weight: 800;">UrbanWear PH</h3>
+                                <p style="margin: 8px 0 0; font-size: 0.95rem; opacity: 0.8; font-weight: 400;">Premium Streetwear & Style Experts</p>
+                                <div style="margin-top: 20px; width: 0; height: 3px; background: #3b82f6; transition: width 0.4s ease;" class="hover-line"></div>
+                            </div>
                         </div>
 
-                        <!-- Item 2 -->
-                        <div class="featured-card" style="height: 350px; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-                            <a href="?store=TechZone+PH" style="display:block; width:100%; height: 100%;">
-                                <img src="../image/electronics/Apple iPad Pro (M2 Chip).jpeg" alt="TechZone"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
-                                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: white;">
-                                    <h3 style="margin: 0;">TechZone PH</h3>
-                                    <p style="margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8;">Gadgets & Innovation</p>
+                        <!-- Item 2: TechZone -->
+                        <div class="premium-card" onclick="window.location.href='?store=TechZone+PH'">
+                            <div class="premium-shop-badge">Tech Partner</div>
+                            <img src="../image/electronics/Apple iPad Pro (M2 Chip).jpeg" alt="TechZone">
+                            <div class="premium-overlay" style="background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 40%, transparent 100%);">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                    <i class="fas fa-bolt" style="color: #a855f7;"></i>
+                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #a855f7;">Electronics</span>
                                 </div>
-                            </a>
+                                <h3 style="margin: 0; font-size: 1.6rem; font-weight: 800;">TechZone PH</h3>
+                                <p style="margin: 8px 0 0; font-size: 0.95rem; opacity: 0.8; font-weight: 400;">Innovation & Future Gadgets</p>
+                            </div>
                         </div>
 
-                        <!-- Item 3 -->
-                        <div class="featured-card" style="height: 350px; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-                            <a href="?store=GlowUp+Beauty" style="display:block; width:100%; height: 100%;">
-                                <img src="../image/beauty-health/Charcoal Face Mask.jpeg" alt="GlowUp"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
-                                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: white;">
-                                    <h3 style="margin: 0;">GlowUp Beauty</h3>
-                                    <p style="margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8;">Skin Care & Cosmetics</p>
+                        <!-- Item 3: GlowUp -->
+                        <div class="premium-card" onclick="window.location.href='?store=GlowUp+Beauty'">
+                            <div class="premium-shop-badge">Beauty Expert</div>
+                            <img src="../image/beauty-health/Charcoal Face Mask.jpeg" alt="GlowUp">
+                            <div class="premium-overlay">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                    <i class="fas fa-magic" style="color: #f472b6;"></i>
+                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #f472b6;">Beauty</span>
                                 </div>
-                            </a>
+                                <h3 style="margin: 0; font-size: 1.6rem; font-weight: 800;">GlowUp Beauty</h3>
+                                <p style="margin: 8px 0 0; font-size: 0.95rem; opacity: 0.8; font-weight: 400;">Certified Skincare & Cosmetics</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Featured / Shop Grid (Stylized Mall Landing) -->
-                <div class="content-card" style="margin-top: 30px;">
-                    <div class="section-header" style="text-align: center; margin-bottom: 30px;">
-                        <h2 style="font-size: 2rem; color: #1e293b; margin-bottom: 10px;">Mall Highlights</h2>
-                        <p style="color: #64748b;">Discover our most trusted official stores</p>
+                <style>
+                    .premium-card:hover .hover-line {
+                        width: 50% !important;
+                    }
+                </style>
+
+                <!-- Featured / Shop Grid (Premium Highlights) -->
+                <div class="content-card" style="margin-top: 50px; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+                    <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+                        <h2 style="font-size: 2.2rem; color: #0f172a; margin-bottom: 12px; font-weight: 800;">Mall <span style="color: #3b82f6;">Highlights</span></h2>
+                        <div style="width: 60px; height: 4px; background: #3b82f6; margin: 0 auto 15px; border-radius: 10px;"></div>
+                        <p style="color: #64748b; font-size: 1.1rem;">Handpicked essentials from our top-rated official stores</p>
                     </div>
 
-                    <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                    <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;">
                         <?php 
-                        // Fetch a few products from top shops for the landing page
-                        $landing_products = [];
-                        $shops_to_sample = ['UrbanWear PH', 'TechZone PH', 'TrendyBags PH', 'GlowUp Beauty'];
-                        foreach($shops_to_sample as $sname) {
-                            $sprod = getMockProducts($sname);
-                            if(!empty($sprod)) {
-                                $p = $sprod[0];
-                                $p['shop_name'] = $sname;
-                                $landing_products[] = $p;
-                            }
-                        }
-                        
                         foreach ($landing_products as $ap):
                             $soldDisp = ($ap['sold'] > 1000) ? number_format($ap['sold'] / 1000, 1) . 'k' : $ap['sold'];
                         ?>
                             <div class="product-card" 
+                                style="border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;"
+                                onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1)';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
                                 data-name="<?php echo htmlspecialchars($ap['name']); ?>"
                                 data-price="<?php echo $ap['price']; ?>" 
                                 data-raw-price="<?php echo $ap['raw_price']; ?>"
@@ -1078,13 +1242,33 @@
                                 data-sold="<?php echo $soldDisp; ?>"
                                 data-store="<?php echo htmlspecialchars($ap['shop_name']); ?>" 
                                 onclick="openProductModal(this)">
-                                <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden;">
-                                    <img src="<?php echo $ap['image']; ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover;">
+                                
+                                <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden; position: relative; background: #f8fafc;">
+                                    <img src="<?php echo $ap['image']; ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                                    <?php if (!empty($ap['discount'])): ?>
+                                        <div style="position: absolute; top: 12px; left: 12px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);">
+                                            <?php echo $ap['discount']; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="result-info" style="padding: 15px;">
-                                    <div class="result-title" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; height: 2.8em; overflow: hidden;"><?php echo htmlspecialchars($ap['name']); ?></div>
-                                    <div class="result-price" style="color: #2A3B7E; font-weight: 700; font-size: 16px;"><?php echo $ap['price']; ?></div>
-                                    <div style="font-size: 11px; color: #999; margin-top: 5px;"><i class="fas fa-store"></i> <?php echo htmlspecialchars($ap['shop_name']); ?></div>
+                                
+                                <div class="result-info" style="padding: 20px;">
+                                    <div style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-check-circle" style="font-size: 10px;"></i> Mall Verified
+                                    </div>
+                                    <div class="result-title" style="font-weight: 600; font-size: 15px; color: #1e293b; margin-bottom: 12px; height: 2.8em; overflow: hidden; line-height: 1.4;"><?php echo htmlspecialchars($ap['name']); ?></div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div class="result-price" style="color: #0f172a; font-weight: 800; font-size: 18px;"><?php echo $ap['price']; ?></div>
+                                        <div style="font-size: 12px; color: #64748b; font-weight: 500; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;"><?php echo $soldDisp; ?> sold</div>
+                                    </div>
+                                    
+                                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 24px; height: 24px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #64748b;">
+                                            <i class="fas fa-store"></i>
+                                        </div>
+                                        <span style="font-size: 12px; color: #64748b; font-weight: 600;"><?php echo htmlspecialchars($ap['shop_name']); ?></span>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
