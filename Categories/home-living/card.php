@@ -4,7 +4,7 @@ $products = [
     [
         'name' => 'Decorative Throw Pillow Set',
         'price' => '₱100.00',
-        'image' => '../../image/Home & living/Decorative Throw Pillow Set.jpeg',
+        'image' => '../../image/home-living/Decorative Throw Pillow Set.jpeg',
         'link' => 'view-product.php?id=501',
         'discount' => '-20%'
     ],
@@ -13,7 +13,7 @@ $products = [
     [
         'name' => 'Aromatherapy Scented Candles',
         'price' => '₱340.00',
-        'image' => '../../image/Home & living/Aromatherapy Scented Candles.jpeg',
+        'image' => '../../image/home-living/Aromatherapy Scented Candles.jpeg',
         'link' => 'view-product.php?id=502',
         'discount' => '-20%',
     ],
@@ -22,7 +22,7 @@ $products = [
     [
         'name' => 'Non-Slip Floor Mat - Rug',
         'price' => '₱50.00',
-        'image' => '../../image/Home & living/Non-Slip Floor Mat - Rug.jpeg',
+        'image' => '../../image/home-living/Non-Slip Floor Mat - Rug.jpeg',
         'link' => 'view-product.php?id=503',
         'discount' => '-20%',
     ],
@@ -31,7 +31,7 @@ $products = [
     [
         'name' => 'Wall Art Canvas Frame',
         'price' => '₱1,500.00',
-        'image' => '../../image/Home & living/Wall Art Canvas Frame.jpeg',
+        'image' => '../../image/home-living/Wall Art Canvas Frame.jpeg',
         'link' => 'view-product.php?id=504',
         'discount' => '-20%',
     ],
@@ -40,7 +40,7 @@ $products = [
     [
         'name' => 'LED Table Lamp (Touch Control)',
         'price' => '₱2,500.00',
-        'image' => '../../image/Home & living/LED Table Lamp (Touch Control).jpeg',
+        'image' => '../../image/home-living/LED Table Lamp (Touch Control).jpeg',
         'link' => 'view-product.php?id=505',
         'discount' => '-20%',
     ],
@@ -49,7 +49,7 @@ $products = [
     [
         'name' => 'Storage Basket Organizer',
         'price' => '₱10,200.00',
-        'image' => '../../image/Home & living/Storage Basket Organizer.jpeg',
+        'image' => '../../image/home-living/Storage Basket Organizer.jpeg',
         'link' => 'view-product.php?id=506',
         'discount' => '-20%',
     ],
@@ -58,7 +58,7 @@ $products = [
     [
         'name' => 'Ceramic Vase (Modern Design)',
         'price' => '₱15,000.00',
-        'image' => '../../image/Home & living/Ceramic Vase (Modern Design).jpeg',
+        'image' => '../../image/home-living/Ceramic Vase (Modern Design).jpeg',
         'link' => 'view-product.php?id=507',
         'discount' => '-20%',
     ],
@@ -67,7 +67,7 @@ $products = [
     [
         'name' => 'Kitchen Spice Rack Organizer',
         'price' => '₱20,000.00',
-        'image' => '../../image/Home & living/Kitchen Spice Rack Organizer.jpeg',
+        'image' => '../../image/home-living/Kitchen Spice Rack Organizer.jpeg',
         'link' => 'view-product.php?id=508',
         'discount' => '-20%',
     ],
@@ -76,7 +76,7 @@ $products = [
     [
         'name' => 'Foldable Laundry Basket',
         'price' => '₱59,000.00',
-        'image' => '../../image/Home & living/Foldable Laundry Basket.jpeg',
+        'image' => '../../image/home-living/Foldable Laundry Basket.jpeg',
         'link' => 'view-product.php?id=509',
         'discount' => '-20%',
     ],
@@ -85,7 +85,7 @@ $products = [
     [
         'name' => 'Electric Kettle (1.7L)',
         'price' => '₱100.00',
-        'image' => '../../image/Home & living/Electric Kettle (1.7L).jpeg',
+        'image' => '../../image/home-living/Electric Kettle (1.7L).jpeg',
         'link' => 'view-product.php?id=510',
         'discount' => '-20%',
     ],
@@ -94,7 +94,7 @@ $products = [
     [
         'name' => 'Bedside Alarm Clock (Digital)',
         'price' => '₱1,000.00',
-        'image' => '../../image/Home & living/Bedside Alarm Clock (Digital).jpeg',
+        'image' => '../../image/home-living/Bedside Alarm Clock (Digital).jpeg',
         'link' => 'view-product.php?id=511',
         'discount' => '-20%',
     ],
@@ -103,7 +103,7 @@ $products = [
     [
         'name' => 'Multi-Purpose Storage Box',
         'price' => '₱100.00',
-        'image' => '../../image/Home & living/Multi-Purpose Storage Box.jpeg',
+        'image' => '../../image/home-living/Multi-Purpose Storage Box.jpeg',
         'link' => 'view-product.php?id=512',
         'discount' => '-20%',
     ],
@@ -112,7 +112,7 @@ $products = [
     [
         'name' => 'Wall Mounted Floating Shelf',
         'price' => '₱299.00',
-        'image' => '../../image/Home & living/Wall Mounted Floating Shelf.jpeg',
+        'image' => '../../image/home-living/Wall Mounted Floating Shelf.jpeg',
         'link' => 'view-product.php?id=513',
         'discount' => '-20%',
     ],
@@ -121,7 +121,7 @@ $products = [
     [
         'name' => 'Bathroom Shower Caddy Organizer',
         'price' => '₱299',
-        'image' => '../../image/Home & living/Bathroom Shower Caddy Organizer.jpeg',
+        'image' => '../../image/home-living/Bathroom Shower Caddy Organizer.jpeg',
         'link' => 'view-product.php?id=514',
         'discount' => '-20%',
     ],
@@ -130,7 +130,7 @@ $products = [
     [
         'name' => 'Tabletop Indoor Plant (Artificial)',
         'price' => '₱299',
-        'image' => '../../image/Home & living/Tabletop Indoor Plant (Artificial).jpeg',
+        'image' => '../../image/home-living/Tabletop Indoor Plant (Artificial).jpeg',
         'link' => 'view-product.php?id=515',
         'discount' => '-20%',
     ]
