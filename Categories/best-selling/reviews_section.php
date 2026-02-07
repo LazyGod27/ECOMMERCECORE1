@@ -218,10 +218,11 @@
     // Fallback: if $name is not set, we assume FALSE to be safe (show modal)
     $product_name_check = isset($name) ? $name : "";
 
-    if ($user_id > 0 && !empty($product_name_check)) {
+    if ($user_id > 0) {
         $product_name_esc = mysqli_real_escape_string($conn, $product_name_check);
-        // Check orders table
-        $order_query = "SELECT id FROM orders WHERE user_id = '$user_id' AND product_name = '$product_name_esc' LIMIT 1";
+        $p_id_check = intval($product_id);
+        // Check orders table - either by name or by specific product_id
+        $order_query = "SELECT id FROM orders WHERE user_id = '$user_id' AND (product_id = '$p_id_check' OR product_name = '$product_name_esc') LIMIT 1";
         $order_result = mysqli_query($conn, $order_query);
         if ($order_result && mysqli_num_rows($order_result) > 0) {
             $can_rate = true;

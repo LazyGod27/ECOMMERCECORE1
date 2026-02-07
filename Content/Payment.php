@@ -14,6 +14,7 @@ $product_name = isset($_GET['product_name']) ? $_GET['product_name'] : 'Multiple
 $item_price = isset($_GET['price']) ? floatval($_GET['price']) : 0;
 $quantity = isset($_GET['quantity']) ? intval($_GET['quantity']) : 1;
 $image = isset($_GET['image']) ? $_GET['image'] : '../image/logo.png';
+$product_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : 0;
 
 $subtotal = $item_price * $quantity;
 
@@ -330,8 +331,6 @@ if (mysqli_num_rows($check_addr) > 0) {
                 </div>
             </div>
 
-            <!-- Right Side: Order Summary -->
-            <div class="checkout-sidebar">
                 <div class="summary-card">
                     <h3>Order Summary</h3>
                     
@@ -354,6 +353,22 @@ if (mysqli_num_rows($check_addr) > 0) {
                         <span>Total Payment</span>
                         <span style="color: #2A3B7E; font-size: 1.4rem;">₱<?php echo number_format($total_payment, 2); ?></span>
                     </div>
+
+                    <form id="paymentForm" action="Confirmation.php" method="POST" style="display:none;">
+                        <input type="hidden" name="action" value="complete_purchase">
+                        <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product_name); ?>">
+                        <input type="hidden" name="price" value="<?php echo $item_price; ?>">
+                        <input type="hidden" name="quantity" value="<?php echo $quantity; ?>">
+                        <input type="hidden" name="total_amount" value="<?php echo $total_payment; ?>">
+                        <input type="hidden" name="payment_method" id="form-payment-method" value="">
+                        <input type="hidden" name="image_url" value="<?php echo htmlspecialchars($image); ?>">
+                        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                        <input type="hidden" name="full_name" value="<?php echo isset($full_addr_details['fullname']) ? htmlspecialchars($full_addr_details['fullname']) : ''; ?>">
+                        <input type="hidden" name="phone_number" value="<?php echo isset($full_addr_details['phone']) ? htmlspecialchars($full_addr_details['phone']) : ''; ?>">
+                        <input type="hidden" name="address" value="<?php echo isset($full_addr_details['address']) ? htmlspecialchars($full_addr_details['address']) : ''; ?>">
+                        <input type="hidden" name="city" value="<?php echo isset($full_addr_details['city']) ? htmlspecialchars($full_addr_details['city']) : ''; ?>">
+                        <input type="hidden" name="postal_code" value="<?php echo isset($full_addr_details['zip']) ? htmlspecialchars($full_addr_details['zip']) : ''; ?>">
+                    </form>
 
                     <button class="btn-place-order" onclick="processPayment()">Place Order Now</button>
                     
@@ -404,6 +419,9 @@ if (mysqli_num_rows($check_addr) > 0) {
                 alert('Please select a payment method before placing order.');
                 return;
             }
+            
+            // Set payment method in hidden form
+            document.getElementById('form-payment-method').value = selectedMethod;
 
             // Show loading state
             const btn = document.querySelector('.btn-place-order');
@@ -411,7 +429,7 @@ if (mysqli_num_rows($check_addr) > 0) {
             btn.disabled = true;
 
             setTimeout(() => {
-                window.location.href = 'Confirmation.php?status=success&method=' + selectedMethod + '&amount=<?php echo $total_payment; ?>';
+                document.getElementById('paymentForm').submit();
             }, 1500);
         }
     </script>

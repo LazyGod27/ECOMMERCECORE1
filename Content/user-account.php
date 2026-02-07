@@ -513,9 +513,18 @@ if ($view == 'orders' || $view == 'tracking') {
                                         <button class="btn-outline" style="padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px; color: #ef4444; border-color: #fca5a5;" onclick="cancelOrder(<?php echo $order['id']; ?>)">Cancel Order</button>
                                     <?php endif; ?>
 
-                                    <?php if (in_array($order['status'], ['Delivered', 'Completed'])): ?>
-                                        <a href="Rate.php?product_id=<?php echo urlencode($order['product_id']); ?>&order_id=<?php echo $order['id']; ?>" class="btn-primary" style="background: #10b981; border-color: #10b981; padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px;">Rate / Review</a>
-                                    <?php endif; ?>
+                                    <?php if (in_array($order['status'], ['Delivered', 'Completed'])): 
+                                        // Check if already reviewed
+                                        $oid = $order['id'];
+                                        $rev_check = mysqli_query($conn, "SELECT id FROM reviews WHERE order_id='$oid' LIMIT 1");
+                                        $is_reviewed = (mysqli_num_rows($rev_check) > 0);
+                                        
+                                        if (!$is_reviewed):
+                                    ?>
+                                        <a href="Rate.php?product_id=<?php echo urlencode($order['product_id'] ?? 0); ?>&order_id=<?php echo $order['id']; ?>" class="btn-primary" style="background: #10b981; border-color: #10b981; padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px;">Rate / Review</a>
+                                    <?php else: ?>
+                                        <span style="color: #10b981; font-size: 13px; font-weight: 600; padding: 8px 0;"><i class="fas fa-check-circle"></i> Reviewed</span>
+                                    <?php endif; endif; ?>
 
                                     <button class="btn-outline" style="padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px;">Buy Again</button>
                                 </div>
