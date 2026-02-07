@@ -27,10 +27,12 @@ function toggleSubMenu(element, submenuId) {
     const submenu = document.getElementById(submenuId);
     const icon = element.querySelector('.chevron-icon');
 
-    submenu.classList.toggle('hidden');
-    icon.classList.toggle('rotate-90');
+    if (submenu) submenu.classList.toggle('hidden');
+    if (icon) icon.classList.toggle('rotate-90');
 
-    event.preventDefault();
+    if (typeof event !== 'undefined') {
+        event.preventDefault();
+    }
 }
 
 // Custom Modal Implementation (Replaces alert/confirm)
@@ -1534,7 +1536,7 @@ function renderSettingsModule() {
     setPageTitle('System Settings & Security');
     const content = document.getElementById('content-container');
     content.innerHTML = `
-    < h2 class="page-header" > System Settings & Security</h2 >
+    <h2 class="page-header">System Settings & Security</h2>
         <p class="mb-6 text-gray-500">Protect system integrity and ensure compliance.</p>
 
                             <div class="module-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
@@ -1581,7 +1583,7 @@ function showModule(moduleName, element = null) {
 
     let navElement = element;
     if (!navElement) {
-        navElement = document.querySelector(`.nav - menu a[onclick *= "'${moduleName}'"]`);
+        navElement = document.querySelector(`.nav-menu a[onclick *= "'${moduleName}'"]`);
     }
     if (navElement) {
         setActiveNav(navElement);
