@@ -132,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
             <a href="../Shop/index.php" class="btn-continue" style="margin-top: 0;">Continue Shopping</a>
             <a href="user-account.php?view=orders" class="btn-continue" style="margin-top: 0; background-color: #2A3B7E;">My Purchase</a>
+            <a href="../Categories/best-selling/Tracking.php?order_id=<?php echo $order_id; ?>" class="btn-continue" style="margin-top: 0; background-color: #26aa99;">Track Order</a>
         </div>
     </main>
 

@@ -142,7 +142,9 @@ if (isset($_SESSION['user_id'])) {
                     <div class="user-dropdown-toggle">
                         <i class="fas fa-chevron-down"></i>
                         <ul class="user-dropdown-menu">
-                            <li><a href="<?php echo $path_prefix; ?>Content/user-account.php"><i class="fas fa-user"></i>
+                            <li><a href="<?php echo $path_prefix; ?>Content/user-account.php?view=orders"><i class="fas fa-shopping-bag"></i>
+                                    My Purchase</a></li>
+                            <li><a href="<?php echo $path_prefix; ?>Content/user-account.php"><i class="fas fa-user-circle"></i>
                                     My Profile</a></li>
                             <li><a href="<?php echo $path_prefix; ?>Services/Customer_Service.php?tab=history"><i
                                         class="fas fa-ticket-alt"></i>

@@ -506,27 +506,47 @@ if ($view == 'orders' || $view == 'tracking') {
                                     <span style="font-size: 1.4rem; font-weight: 700; color: #2A3B7E;">₱<?php echo number_format($order['total_amount'], 2); ?></span>
                                 </div>
 
-                                <div class="order-actions" style="display:flex; gap:10px; justify-content: flex-end; width: 100%;">
-                                    <a href="?view=tracking&order_id=<?php echo $order['id']; ?>" class="btn-primary" style="padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px;">Track Order</a>
+                                <div class="order-actions" style="display:flex; gap:12px; justify-content: flex-end; width: 100%; margin-top: 5px;">
+                                    <!-- TRACK ORDER -->
+                                    <a href="../Categories/best-selling/Tracking.php?order_id=<?php echo $order['id']; ?>" 
+                                       style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #fff; border: 1px solid #e0e0e0; color: #333; text-decoration: none; transition: all 0.2s;">
+                                        <i class="fas fa-truck-fast"></i> Track Order
+                                    </a>
                                     
-                                    <?php if ($order['status'] == 'Pending'): ?>
-                                        <button class="btn-outline" style="padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px; color: #ef4444; border-color: #fca5a5;" onclick="cancelOrder(<?php echo $order['id']; ?>)">Cancel Order</button>
-                                    <?php endif; ?>
-
                                     <?php if (in_array($order['status'], ['Delivered', 'Completed'])): 
-                                        // Check if already reviewed
                                         $oid = $order['id'];
                                         $rev_check = mysqli_query($conn, "SELECT id FROM reviews WHERE order_id='$oid' LIMIT 1");
                                         $is_reviewed = (mysqli_num_rows($rev_check) > 0);
-                                        
-                                        if (!$is_reviewed):
                                     ?>
-                                        <a href="Rate.php?product_id=<?php echo urlencode($order['product_id'] ?? 0); ?>&order_id=<?php echo $order['id']; ?>" class="btn-primary" style="background: #10b981; border-color: #10b981; padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px;">Rate / Review</a>
-                                    <?php else: ?>
-                                        <span style="color: #10b981; font-size: 13px; font-weight: 600; padding: 8px 0;"><i class="fas fa-check-circle"></i> Reviewed</span>
-                                    <?php endif; endif; ?>
+                                        <!-- RATE BUTTON -->
+                                        <?php if (!$is_reviewed): ?>
+                                            <a href="Rate.php?product_id=<?php echo urlencode($order['product_id'] ?? 0); ?>&order_id=<?php echo $order['id']; ?>" 
+                                               style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #2A3B7E; color: #fff; border: none; text-decoration: none;">
+                                                <i class="fas fa-star"></i> Rate
+                                            </a>
+                                        <?php else: ?>
+                                            <span style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; color: #10b981; font-weight: 600;">
+                                                <i class="fas fa-check-circle"></i> Reviewed
+                                            </span>
+                                        <?php endif; ?>
 
-                                    <button class="btn-outline" style="padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px;">Buy Again</button>
+                                        <!-- DELETE BUTTON (MOCK) -->
+                                        <button style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #ef4444; color: #fff; border: none; cursor: pointer;">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+
+                                    <?php endif; ?>
+
+                                    <?php if ($order['status'] == 'Pending'): ?>
+                                        <button onclick="cancelOrder(<?php echo $order['id']; ?>)" 
+                                                style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #fff; border: 1px solid #fca5a5; color: #ef4444; cursor: pointer;">
+                                            <i class="fas fa-times"></i> Cancel Order
+                                        </button>
+                                    <?php endif; ?>
+
+                                    <button style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #fff; border: 1px solid #ddd; color: #555; cursor: pointer;">
+                                        Buy Again
+                                    </button>
                                 </div>
                             </div>
                         </div>
