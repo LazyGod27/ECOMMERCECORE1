@@ -315,7 +315,7 @@ $products_data = [
             const price = <?php echo floatval(preg_replace('/[^0-9.]/', '', $price)); ?>;
             const img = '<?php echo $img; ?>';
 
-            window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Best%20Selling`;
+            window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Sports%20%26%20Outdoor`;
         }
 
         document.querySelectorAll('.pv-options').forEach(container => {

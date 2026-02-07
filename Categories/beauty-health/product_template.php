@@ -186,6 +186,26 @@ $products_data = [
     ],
 ];
 
+    // Fix pricing data for consistency
+    foreach ($products_data as $id => &$p) {
+        if ($id == 601) continue; // Skip already correct one
+        // Default logic: original price should be higher than current price
+        if (isset($p['price_range']) && strpos($p['price_range'], '10,200') !== false) {
+            $p['original_price'] = '₱15,000';
+            $p['price_range'] = '₱10,200';
+        } elseif ($id == 610) {
+            $p['original_price'] = '₱75,000';
+            $p['price_range'] = '₱59,000';
+        } else {
+            // Standard beauty product logic
+            $raw_price = floatval(preg_replace('/[^0-9.]/', '', $p['price_range'] ?? '340'));
+            if ($raw_price > 0 && !isset($p['original_price'])) {
+                $p['original_price'] = '₱' . number_format($raw_price * 1.4);
+            }
+        }
+    }
+    unset($p);
+
 // Get ID correctly
 $p_id = isset($product_id) ? $product_id : 601;
 
@@ -293,7 +313,7 @@ $img = isset($product['image']) ? str_replace(' ', '%20', $product['image']) : '
             const price = <?php echo floatval(preg_replace('/[^0-9.]/', '', $price)); ?>;
             const img = '<?php echo $img; ?>';
 
-            window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Best%20Selling`;
+            window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Beauty%20%26%20Health`;
         }
 
         document.querySelectorAll('.pv-options').forEach(container => {

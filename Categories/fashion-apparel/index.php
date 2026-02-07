@@ -35,10 +35,10 @@
                         style="background-image: url('../../image/Fashion%20%26%20Apparel/Slim%20Fit%20Denim%20Jeans%20(Men).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Slim%20Fit%20Denim%20Jeans%20(Men).jpeg');">
+                        style="background-image: url('../../image/Fashion%20%26%20Apparel/High-Waist%20Skinny%20Jeans%20(Women).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Slim%20Fit%20Denim%20Jeans%20(Men).jpeg');">
+                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Unisex%20Hoodie%20(Pullover%20Style).jpeg');">
                     </div>
 
                     <!-- Indicators (White Lines) -->
