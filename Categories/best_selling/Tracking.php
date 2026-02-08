@@ -410,10 +410,22 @@ if ($st == 'Completed') $active_step = 5;
 
         <!-- Info/Actions -->
         <div class="info-section">
-            <div style="font-size: 14px; color: #555;">Thank you for shopping with iMarket Best Selling!</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <?php if (!empty($order_data['image_url'])): ?>
+                    <img src="../../<?php echo htmlspecialchars($order_data['image_url']); ?>" alt="Product" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+                <?php else: ?>
+                    <div style="width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ccc;">
+                        <i class="fas fa-image" style="font-size: 2rem;"></i>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <div style="font-weight: 600; font-size: 16px; color: #333; margin-bottom: 5px;"><?php echo htmlspecialchars($order_data['product_name'] ?? 'Product'); ?></div>
+                    <div style="font-size: 14px; color: #555;">Thank you for shopping with iMarket Best Selling!</div>
+                </div>
+            </div>
             <div class="action-buttons">
                 <a href="index.php" class="buy-again-btn">Buy Again</a>
-                <a href="#" class="contact-btn">Contact Seller</a>
+                <a href="../../Services/Customer_Service.php?tab=chat" class="contact-btn">Contact Seller</a>
             </div>
         </div>
 

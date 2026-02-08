@@ -312,7 +312,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="cart-header-content">
             <div class="cart-branding">
                 <a href="../Categories/best_selling/index.php" class="cart-logo-link">
-                    <img src="../image/Logo/logo.png" alt="Imarket Logo">
+                    <img src="../image/logo.png" alt="Imarket Logo">
                     <span class="cart-logo-text">IMARKET</span>
                 </a>
                 <div class="cart-divider"></div>

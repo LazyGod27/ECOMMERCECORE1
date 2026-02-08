@@ -26,9 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ($user_id, '$full_name', '$email', '$subject', '$message')";
 
     // Creates a support ticket for Admin Dashboard notification
-    $ticket_num = mt_rand(100000, 999999);
-    $ticket_sql = "INSERT INTO support_tickets (ticket_number, user_id, subject, status, priority, created_at, is_read) 
-                   VALUES ('$ticket_num', $user_id, '$subject', 'Open', 'Medium', NOW(), 0)";
+    $ticket_num = 'TKT-' . date('Y') . '-' . mt_rand(1000, 9999);
+    $ticket_sql = "INSERT INTO support_tickets (ticket_number, customer_id, category, subject, message, status, priority, created_at, is_read) 
+                   VALUES ('$ticket_num', $user_id, 'Contact Form', '$subject', '$message', 'Open', 'Medium', NOW(), 0)";
     mysqli_query($conn, $ticket_sql);
 
     if (mysqli_query($conn, $sql)) {

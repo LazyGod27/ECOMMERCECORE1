@@ -139,54 +139,91 @@ function renderSupportModule(submodule = 'tickets') {
     lucide.createIcons();
 }
 
-function showTicketDetails(ticketId) {
-    const ticket = supportTicketsData.find(t => t.id == ticketId);
+async function showTicketDetails(ticketId) {
+    const ticket = ticketsData.find(t => t.id == ticketId);
     if (!ticket) return;
 
-    const formHTML = `
-        <form id="ticket-form" method="POST" action="dashboard.php">
-            <input type="hidden" name="action" value="update_ticket">
-            <input type="hidden" name="id" value="${ticket.id}">
-            <input type="hidden" name="module" value="support">
-            <div style="margin-bottom: 1.5rem;">
-                <p><strong>Ticket:</strong> ${ticket.ticket_number}</p>
-                <p><strong>Customer:</strong> ${ticket.customer_name}</p>
-                <p><strong>Message:</strong></p>
-                <div style="padding: 1rem; background: #f3f4f6; border-radius: 0.5rem; margin-top: 0.5rem;">${ticket.message}</div>
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label>Reply to Customer</label>
-                    <textarea name="reply_message" rows="4" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 0.5rem;"></textarea>
+    // Fetch replies before showing modal
+    let repliesHtml = '';
+    try {
+        const res = await fetch(`get_ticket_replies.php?ticket_id=${ticket.id}`);
+        const data = await res.json();
+        if (data.success && data.replies.length > 0) {
+            repliesHtml = `
+                <div style="margin-top: 1rem;">
+                    <p><strong>Conversation History:</strong></p>
+                    <div style="max-height: 200px; overflow-y: auto; background: #f8fafc; border: 1px solid #eef2f6; border-radius: 0.5rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem;">
+                        ${data.replies.map(r => `
+                            <div style="align-self: ${r.sender_type === 'admin' ? 'flex-end' : 'flex-start'}; background: ${r.sender_type === 'admin' ? '#3b82f6' : '#fff'}; color: ${r.sender_type === 'admin' ? '#fff' : '#333'}; padding: 0.75rem; border-radius: 0.75rem; border: ${r.sender_type === 'admin' ? 'none' : '1px solid #eef2f6'}; max-width: 85%; font-size: 0.9rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                <strong>${r.sender_type === 'admin' ? 'Support' : 'Customer'}:</strong> ${r.message}
+                                <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 0.25rem; text-align: right;">${new Date(r.created_at).toLocaleString()}</div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div class="form-group">
-                    <label>Status</label>
-                    <select name="status" style="width: 100%; border-radius: 0.5rem; padding: 0.5rem;">
-                        <option value="Open" ${ticket.status === 'Open' ? 'selected' : ''}>Open</option>
-                        <option value="In Progress" ${ticket.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                        <option value="Resolved" ${ticket.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Update Priority</label>
-                    <select name="priority" style="width: 100%; border-radius: 0.5rem; padding: 0.5rem;">
-                        <option value="Low" ${ticket.priority === 'Low' ? 'selected' : ''}>Low</option>
-                        <option value="Medium" ${ticket.priority === 'Medium' ? 'selected' : ''}>Medium</option>
-                        <option value="High" ${ticket.priority === 'High' ? 'selected' : ''}>High</option>
-                        <option value="Urgent" ${ticket.priority === 'Urgent' ? 'selected' : ''}>Urgent</option>
-                    </select>
-                </div>
-            </div>
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit" class="btn-base btn-primary" style="flex: 1;">Send Reply</button>
-                <button type="button" class="btn-base btn-secondary" onclick="closeCustomModal()" style="flex: 1;">Close</button>
-            </div>
-        </form>
-    `;
+            `;
+        }
+    } catch (e) { console.error(e); }
 
-    const container = document.getElementById('modal-container');
-    container.innerHTML = `<h3 style="margin-bottom: 1rem;">Ticket Detail View</h3>${formHTML}`;
-    document.getElementById('custom-modal-backdrop').classList.remove('hidden');
+    const modalOverlay = document.getElementById('ai-modal-overlay'); // Using the site-wide AI modal overlay if suitable
+    const modalContent = document.getElementById('ai-modal-content-inject');
+
+    if (modalContent) {
+        modalContent.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">Ticket Details</h2>
+                <button onclick="closeSupportModal()" style="background: none; border: none; cursor: pointer; color: #64748b;"><i data-lucide="x"></i></button>
+            </div>
+            <form action="dashboard.php" method="POST">
+                <input type="hidden" name="action" value="update_ticket">
+                <input type="hidden" name="id" value="${ticket.id}">
+                <input type="hidden" name="module" value="support">
+                <div style="margin-bottom: 1.5rem;">
+                    <p><strong>Ticket:</strong> ${ticket.ticket_number}</p>
+                    <p><strong>Customer:</strong> ${ticket.customer_name}</p>
+                    <p><strong>Original Message:</strong></p>
+                    <div style="padding: 1rem; background: #fffcf0; border: 1px solid #fef3c7; border-radius: 0.5rem; margin-top: 0.5rem; font-size: 0.95rem;">${ticket.message}</div>
+                    
+                    ${repliesHtml}
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Send a new reply</label>
+                        <textarea name="reply_message" rows="3" placeholder="Type your response here..." style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 0.5rem; outline: none;" onfocus="this.style.borderColor='#3b82f6'"></textarea>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 0.3rem;">Status</label>
+                        <select name="status" style="width: 100%; border-radius: 0.5rem; padding: 0.5rem; border: 1px solid #ddd;">
+                            <option value="Open" ${ticket.status === 'Open' ? 'selected' : ''}>Open</option>
+                            <option value="In Progress" ${ticket.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="Resolved" ${ticket.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                            <option value="Closed" ${ticket.status === 'Closed' ? 'selected' : ''}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 0.3rem;">Update Priority</label>
+                        <select name="priority" style="width: 100%; border-radius: 0.5rem; padding: 0.5rem; border: 1px solid #ddd;">
+                            <option value="Low" ${ticket.priority === 'Low' ? 'selected' : ''}>Low</option>
+                            <option value="Medium" ${ticket.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                            <option value="High" ${ticket.priority === 'High' ? 'selected' : ''}>High</option>
+                            <option value="Urgent" ${ticket.priority === 'Urgent' ? 'selected' : ''}>Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn-base btn-primary" style="flex: 1; padding: 0.75rem; border-radius: 0.5rem; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: 600;">Update & Send Reply</button>
+                    <button type="button" class="btn-base btn-secondary" onclick="closeSupportModal()" style="flex: 1; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #ddd; background: white; cursor: pointer;">Close</button>
+                </div>
+            </form>
+        `;
+        modalOverlay.style.display = 'flex';
+        lucide.createIcons();
+    }
+}
+
+function closeSupportModal() {
+    document.getElementById('ai-modal-overlay').style.display = 'none';
 }
 
 // Chat Module
@@ -392,6 +429,18 @@ function showModule(module, element) {
 function showSubModule(module, submodule) {
     if (module === 'support') renderSupportModule(submodule);
 }
+
+// Polling for updates
+setInterval(() => {
+    if (activeSubmodule === 'tickets') fetchSupportTickets();
+    if (activeModule === 'chat') {
+        loadAdminChatList(); // Renamed from fetchChatList to match existing function
+        if (activeChatUser) loadAdminMessages();
+    }
+}, 5000);
+
+let activeModule = 'dashboard';
+let activeSubmodule = '';
 
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {

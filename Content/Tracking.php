@@ -92,7 +92,7 @@ if (!isset($timeline_events)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracking Order - <?php echo $order_id; ?></title>
-    <link rel="icon" type="image/x-icon" href="../image/Logo/logo.png">
+    <link rel="icon" type="image/x-icon" href="../image/logo.png">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Fonts -->
@@ -292,7 +292,7 @@ if (!isset($timeline_events)) {
 
         <!-- DYNAMIC SHOP BRANDING Header -->
         <div class="shop-header-branding">
-            <img src="../image/Logo/logo.png" alt="Logo">
+            <img src="../image/logo.png" alt="Logo">
             <div>
                 <?php if ($is_best_selling): ?>
                     <h2>| iMarket Best Selling</h2>
@@ -334,15 +334,27 @@ if (!isset($timeline_events)) {
         </div>
 
         <!-- Action Buttons -->
-        <div class="actions-card">
-            <div class="thank-you-msg">Thank you for Shopping with <?php echo htmlspecialchars($shop_name); ?>!</div>
-            <!-- Assuming generic text or changing to site name -->
-            <?php
-            $buy_again_pid = isset($order_data['product_id']) ? $order_data['product_id'] : 1;
-            ?>
-            <a href="../Categories/best_selling/index.php?id=<?php echo $buy_again_pid; ?>" class="btn btn-primary">Buy
-                Again</a>
-            <a href="#" class="btn btn-secondary">Contact Seller</a>
+        <div class="actions-card" style="display: flex; align-items: center; gap: 20px; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <?php if (!empty($order_data['image_url'])): ?>
+                    <img src="../<?php echo htmlspecialchars($order_data['image_url']); ?>" alt="Product" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+                <?php else: ?>
+                    <div style="width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ccc;">
+                        <i class="fas fa-image" style="font-size: 2rem;"></i>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <div style="font-weight: 700; font-size: 1.1rem; color: #333; margin-bottom: 5px;"><?php echo htmlspecialchars($order_data['product_name'] ?? 'Product'); ?></div>
+                    <div class="thank-you-msg" style="margin-bottom: 0;">Thank you for Shopping with <?php echo htmlspecialchars($shop_name); ?>!</div>
+                </div>
+            </div>
+            <div class="action-buttons-group">
+                <?php
+                $buy_again_pid = isset($order_data['product_id']) ? $order_data['product_id'] : 1;
+                ?>
+                <a href="../Categories/best_selling/index.php?id=<?php echo $buy_again_pid; ?>" class="btn btn-primary" style="margin-bottom: 5px;">Buy Again</a>
+                <a href="../Services/Customer_Service.php?tab=chat" class="btn btn-secondary">Contact Seller</a>
+            </div>
         </div>
     </div>
 

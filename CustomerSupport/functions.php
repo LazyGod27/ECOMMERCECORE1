@@ -214,7 +214,18 @@ if (!function_exists('update_support_ticket')) {
             $params = [$status];
             if ($priority !== null) { $fields[] = "priority = ?"; $params[] = $priority; }
             if ($assigned_to !== null) { $fields[] = "assigned_to = ?"; $params[] = $assigned_to; }
-            if (!empty($admin_reply)) { $fields[] = "admin_reply = ?"; $params[] = $admin_reply; }
+            if (!empty($admin_reply)) { 
+                $fields[] = "admin_reply = ?"; 
+                $params[] = $admin_reply; 
+                $fields[] = "user_read = 0"; // Notify User
+                $fields[] = "is_read = 1";    // Mark as read by admin
+                
+                // ALSO INSERT INTO threaded replies
+                $reply_sql = "INSERT INTO ticket_replies (ticket_id, sender_id, sender_type, message) VALUES (?, ?, 'admin', ?)";
+                $admin_id = $_SESSION['support_id'] ?? 0;
+                $reply_stmt = $pdo->prepare($reply_sql);
+                $reply_stmt->execute([$id, $admin_id, $admin_reply]);
+            }
             $params[] = $id;
             $stmt = $pdo->prepare("UPDATE support_tickets SET " . implode(", ", $fields) . " WHERE id = ?");
             $stmt->execute($params);

@@ -38,9 +38,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_ticket'])) {
     }
 }
 
+// Handle Reply Submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_reply'])) {
+    $t_id = intval($_POST['ticket_id']);
+    $reply_msg = clean_input($_POST['reply_message']);
+    
+    if (!empty($reply_msg) && $user_id) {
+        $sql_reply = "INSERT INTO ticket_replies (ticket_id, sender_id, sender_type, message) VALUES ('$t_id', '$user_id', 'customer', '$reply_msg')";
+        if (mysqli_query($conn, $sql_reply)) {
+            // Reset is_read for admin to see new activity
+            mysqli_query($conn, "UPDATE support_tickets SET status='Open', is_read=0 WHERE id='$t_id'");
+            $msg = "<div class='alert alert-success'>Reply sent successfully!</div>";
+        }
+    }
+}
+
 // Fetch User Tickets
 $my_tickets = [];
 $selected_ticket = null;
+$ticket_replies = [];
 
 if ($user_id) {
     if ($view_ticket_id) {
@@ -48,9 +64,18 @@ if ($user_id) {
         $res_select = mysqli_query($conn, $sql_select);
         if ($res_select && mysqli_num_rows($res_select) > 0) {
             $selected_ticket = mysqli_fetch_assoc($res_select);
-            if (isset($selected_ticket['is_read']) && $selected_ticket['is_read'] == 0) {
-                mysqli_query($conn, "UPDATE support_tickets SET is_read = 1 WHERE ticket_number = '$view_ticket_id'");
-                $selected_ticket['is_read'] = 1;
+            $st_id = $selected_ticket['id'];
+            
+            // Fetch replies
+            $res_replies = mysqli_query($conn, "SELECT * FROM ticket_replies WHERE ticket_id = '$st_id' ORDER BY created_at ASC");
+            if ($res_replies) {
+                $ticket_replies = mysqli_fetch_all($res_replies, MYSQLI_ASSOC);
+            }
+
+            // Mark as read by user
+            if (isset($selected_ticket['user_read']) && $selected_ticket['user_read'] == 0) {
+                mysqli_query($conn, "UPDATE support_tickets SET user_read = 1 WHERE id = '$st_id'");
+                $selected_ticket['user_read'] = 1;
             }
         }
     }
@@ -259,10 +284,97 @@ if ($user_id) {
             <?php elseif ($tab == 'history'): ?>
                 <?php if ($selected_ticket): ?>
                     <div style="margin-bottom: 2rem;">
-                        <a href="?tab=history" style="color: #4f46e5; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-                            <i class="fas fa-arrow-left"></i> Back to Tickets
+                        <a href="?tab=history" style="color: #2A3B7E; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                            <i class="fas fa-arrow-left"></i> Back to My Tickets
                         </a>
-                        <!-- ... (same detailed view logic as before) ... -->
+                        
+                        <div style="background: white; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden;">
+                            <div style="padding: 20px; background: #fafafa; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="margin: 0; color: #1e293b;">Ticket #<?php echo $selected_ticket['ticket_number']; ?></h3>
+                                    <span style="font-size: 13px; color: #64748b;"><?php echo date('F d, Y h:i A', strtotime($selected_ticket['created_at'])); ?></span>
+                                </div>
+                                <span class="badge status-<?php echo strtolower(str_replace(' ', '', $selected_ticket['status'])); ?>" style="padding: 6px 12px; font-size: 13px;">
+                                    <?php echo $selected_ticket['status']; ?>
+                                </span>
+                            </div>
+                            
+                            <div style="padding: 25px;">
+                                <div style="margin-bottom: 25px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Subject</label>
+                                    <div style="font-size: 16px; font-weight: 600; color: #1e293b;"><?php echo htmlspecialchars($selected_ticket['subject']); ?></div>
+                                </div>
+
+                                <div style="margin-bottom: 25px;">
+                                    <label style="display: block; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Initial Message</label>
+                                    <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #f1f5f9; color: #334155; line-height: 1.6;">
+                                        <?php echo nl2br(htmlspecialchars($selected_ticket['message'])); ?>
+                                    </div>
+                                </div>
+
+                                <!-- THREADED REPLIES -->
+                                <?php if (!empty($selected_ticket['admin_reply'])): ?>
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="display: flex; gap: 12px; margin-bottom: 15px;">
+                                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fas fa-headset"></i></div>
+                                            <div style="background: #eff6ff; padding: 15px; border-radius: 0 12px 12px 12px; border: 1px solid #dbeafe; color: #1e40af; line-height: 1.6; position: relative; flex: 1;">
+                                                <strong>Support Team:</strong><br>
+                                                <?php echo nl2br(htmlspecialchars($selected_ticket['admin_reply'])); ?>
+                                                <div style="margin-top: 5px; font-size: 11px; color: #60a5fa; text-align: right;">
+                                                    <?php echo date('M d, h:i A', strtotime($selected_ticket['updated_at'])); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php foreach ($ticket_replies as $reply): ?>
+                                    <?php 
+                                        $is_support = ($reply['sender_type'] == 'admin');
+                                        $bg = $is_support ? '#eff6ff' : '#f8fafc';
+                                        $border = $is_support ? '#dbeafe' : '#f1f5f9';
+                                        $color = $is_support ? '#1e40af' : '#334155';
+                                        $radius = $is_support ? '0 12px 12px 12px' : '12px 0 12px 12px';
+                                        $icon = $is_support ? 'fa-headset' : 'fa-user';
+                                        $align = $is_support ? 'flex-start' : 'flex-end';
+                                    ?>
+                                    <div style="display: flex; gap: 12px; margin-bottom: 15px; flex-direction: <?php echo $is_support ? 'row' : 'row-reverse'; ?>;">
+                                        <div style="width: 35px; height: 35px; border-radius: 50%; background: <?php echo $bg; ?>; color: <?php echo $is_support ? '#3b82f6' : '#94a3b8'; ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fas <?php echo $icon; ?>"></i></div>
+                                        <div style="background: <?php echo $bg; ?>; padding: 15px; border-radius: <?php echo $radius; ?>; border: 1px solid <?php echo $border; ?>; color: <?php echo $color; ?>; line-height: 1.6; position: relative; max-width: 80%;">
+                                            <strong><?php echo $is_support ? 'Support Team' : 'You'; ?>:</strong><br>
+                                            <?php echo nl2br(htmlspecialchars($reply['message'])); ?>
+                                            <div style="margin-top: 5px; font-size: 11px; color: #94a3b8; text-align: right;">
+                                                <?php echo date('M d, h:i A', strtotime($reply['created_at'])); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+
+                                <!-- REPLY FORM -->
+                                <?php if ($selected_ticket['status'] != 'Closed'): ?>
+                                    <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid #f1f5f9;">
+                                        <h4 style="margin: 0 0 15px 0; font-size: 15px; color: #1e293b;"><i class="fas fa-reply"></i> Send a Reply</h4>
+                                        <form action="?tab=history&view=<?php echo $selected_ticket['ticket_number']; ?>" method="POST">
+                                            <input type="hidden" name="ticket_id" value="<?php echo $selected_ticket['id']; ?>">
+                                            <textarea name="reply_message" rows="4" placeholder="Type your reply here..." style="width: 100%; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; font-family: inherit; resize: vertical;" required></textarea>
+                                            <button type="submit" name="submit_reply" class="btn-submit" style="width: auto; padding: 10px 25px;">Send Reply</button>
+                                        </form>
+                                    </div>
+                                <?php else: ?>
+                                    <div style="margin-top: 30px; text-align: center; padding: 20px; background: #f8fafc; border-radius: 8px; color: #64748b; font-size: 14px;">
+                                        This ticket is closed and cannot be replied to.
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($selected_ticket['status'] != 'Resolved' && $selected_ticket['status'] != 'Closed'): ?>
+                                    <div style="margin-top: 30px; display: flex; gap: 12px; justify-content: center;">
+                                        <a href="?tab=chat" style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: transparent; border: 1px solid #2A3B7E; color: #2A3B7E; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 13px;">
+                                            <i class="fas fa-comments"></i> Switch to Live Chat
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 <?php else: ?>
                     <div class="section-header"><h2>My Support Tickets</h2></div>

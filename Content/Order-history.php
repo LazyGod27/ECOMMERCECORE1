@@ -33,7 +33,7 @@ $result = mysqli_query($conn, $sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order History</title>
-    <link rel="icon" type="image/x-icon" href="../image/Logo/logo.png">
+    <link rel="icon" type="image/x-icon" href="../image/logo.png">
 
     <!-- Use CSS from shop/css but corrected path -->
     <!-- Assuming Content is sibling to Shop, so ../Sh../css/order-history.css -->
@@ -105,7 +105,7 @@ $result = mysqli_query($conn, $sql);
                         <!-- Dynamic Header -->
                         <div
                             style="display: flex; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; margin-bottom: 10px;">
-                            <img src="../image/logo.png" alt="Shop Logo"
+                            <img src="../image/logo.png" alt="Logo"
                                 style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">
                             <div>
                                 <?php if ($is_best_selling): ?>

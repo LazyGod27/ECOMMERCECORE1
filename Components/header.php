@@ -41,7 +41,8 @@ if (isset($_SESSION['user_id'])) {
 
     if (isset($conn)) {
         $u_id = $_SESSION['user_id'];
-        $n_sql = "SELECT COUNT(*) as unread FROM support_tickets WHERE customer_id = '$u_id' AND is_read = 0";
+        // Check for tickets where user hasn't read the latest update (admin reply or status change)
+        $n_sql = "SELECT COUNT(*) as unread FROM support_tickets WHERE customer_id = '$u_id' AND user_read = 0";
         $n_result = mysqli_query($conn, $n_sql);
         if ($n_result) {
             $n_row = mysqli_fetch_assoc($n_result);

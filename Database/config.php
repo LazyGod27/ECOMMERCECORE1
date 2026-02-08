@@ -47,7 +47,8 @@ $ticket_cols = [
   'priority' => "ENUM('Low','Medium','High','Urgent') DEFAULT 'Medium'",
   'assigned_to' => "INT(11) DEFAULT NULL",
   'admin_reply' => "TEXT DEFAULT NULL",
-  'is_read' => "TINYINT(1) DEFAULT 0"
+  'is_read' => "TINYINT(1) DEFAULT 0",
+  'user_read' => "TINYINT(1) DEFAULT 0"
 ];
 
 foreach ($ticket_cols as $col => $def) {
@@ -162,6 +163,19 @@ if ($check_orders->num_rows > 0) {
     $conn->query("ALTER TABLE orders MODIFY COLUMN address_id INT NULL");
   }
 }
+
+// Auto-create ticket_replies table for threaded conversations
+$sql_create_replies = "CREATE TABLE IF NOT EXISTS `ticket_replies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ticket_id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `sender_type` enum('customer','admin') NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `ticket_id` (`ticket_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+$conn->query($sql_create_replies);
 
 // Auto-update cart table structure
 $check_cart = $conn->query("SHOW TABLES LIKE 'cart'");

@@ -312,7 +312,7 @@ if ($view == 'orders' || $view == 'tracking') {
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="#" class="sidebar-menu-title">
+                    <a href="?view=notifications" class="sidebar-menu-title <?php echo $view == 'notifications' ? 'active-nav' : ''; ?>">
                         <i class="fas fa-bell"></i> Notifications
                     </a>
                 </li>
@@ -873,6 +873,55 @@ if ($view == 'orders' || $view == 'tracking') {
                         <button type="submit" class="btn-primary">Confirm</button>
                     </div>
                 </form>
+
+            <!-- VIEW: NOTIFICATIONS -->
+            <?php elseif ($view == 'notifications'): ?>
+                <div class="content-header">
+                    <div class="content-title">Notifications</div>
+                    <div class="content-subtitle">Stay updated with your activities and support responses</div>
+                </div>
+
+                <div class="notification-list">
+                    <?php
+                    // Fetch recent activities (Support Replies)
+                    $notif_sql = "SELECT * FROM support_tickets WHERE customer_id = '$user_id' AND (admin_reply IS NOT NULL OR status != 'Open') ORDER BY updated_at DESC LIMIT 10";
+                    $notif_res = mysqli_query($conn, $notif_sql);
+                    
+                    if ($notif_res && mysqli_num_rows($notif_res) > 0):
+                        while ($notif = mysqli_fetch_assoc($notif_res)):
+                            $is_unread = isset($notif['user_read']) && $notif['user_read'] == 0;
+                    ?>
+                        <div class="notification-item" style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; gap: 15px; <?php echo $is_unread ? 'background-color: #f0f7ff;' : ''; ?>">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #2A3B7E; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span style="font-weight: 600; color: #333;">Support Ticket Update</span>
+                                    <span style="font-size: 12px; color: #999;"><?php echo date('M d, H:i', strtotime($notif['updated_at'])); ?></span>
+                                </div>
+                                <div style="font-size: 14px; color: #555; margin-bottom: 8px;">
+                                    Ticket <strong>#<?php echo $notif['ticket_number']; ?></strong> has been updated to <strong><?php echo $notif['status']; ?></strong>.
+                                    <?php if (!empty($notif['admin_reply'])): ?>
+                                        <br><span style="color: #666; font-style: italic;">"<?php echo substr(htmlspecialchars($notif['admin_reply']), 0, 100); ?>..."</span>
+                                    <?php endif; ?>
+                                </div>
+                                <a href="../Services/Customer_Service.php?tab=history&view=<?php echo $notif['ticket_number']; ?>" style="font-size: 13px; color: #2A3B7E; font-weight: 600; text-decoration: none;">View Detail & Reply</a>
+                            </div>
+                            <?php if ($is_unread): ?>
+                                <div style="width: 8px; height: 8px; background: #2A3B7E; border-radius: 50%; margin-top: 5px;"></div>
+                            <?php endif; ?>
+                        </div>
+                    <?php 
+                        endwhile;
+                    else:
+                    ?>
+                        <div style="text-align: center; padding: 50px 0; color: #999;">
+                            <i class="fas fa-bell-slash" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                            <p>No new notifications yet.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
             <?php endif; ?>
 
