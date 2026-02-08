@@ -4,7 +4,7 @@ $products = [
     [
         'name' => 'Board Game (Strategy)',
         'price' => '₱100.00',
-        'image' => '../../image/Toys & Games/Board Game (Strategy).jpeg',
+        'image' => '../../image/toys-games/Board Game (Strategy).jpeg',
         'link' => 'view-product.php?id=801',
         'discount' => '-20%'
     ],
@@ -13,7 +13,7 @@ $products = [
     [
         'name' => 'Action Figure (Superhero)',
         'price' => '₱340.00',
-        'image' => '../../image/Toys & Games/Action Figure (Superhero).jpeg',
+        'image' => '../../image/toys-games/Action Figure (Superhero).jpeg',
         'link' => 'view-product.php?id=802',
         'discount' => '-20%',
     ],
@@ -22,7 +22,7 @@ $products = [
     [
         'name' => 'Puzzle Set (1000 Pieces)',
         'price' => '₱50.00',
-        'image' => '../../image/Toys & Games/Puzzle Set (1000 Pieces).jpeg',
+        'image' => '../../image/toys-games/Puzzle Set (1000 Pieces).jpeg',
         'link' => 'view-product.php?id=803',
         'discount' => '-20%',
     ],
@@ -31,7 +31,7 @@ $products = [
     [
         'name' => 'Remote Control Car',
         'price' => '₱1,500.00',
-        'image' => '../../image/Toys & Games/Remote Control Car.jpeg',
+        'image' => '../../image/toys-games/Remote Control Car.jpeg',
         'link' => 'view-product.php?id=804',
         'discount' => '-20%',
     ],
@@ -40,7 +40,7 @@ $products = [
     [
         'name' => 'Doll House (Wooden)',
         'price' => '₱2,500.00',
-        'image' => '../../image/Toys & Games/Doll House (Wooden).jpeg',
+        'image' => '../../image/toys-games/Doll House (Wooden).jpeg',
         'link' => 'view-product.php?id=805',
         'discount' => '-20%',
     ],
@@ -49,7 +49,7 @@ $products = [
     [
         'name' => 'Building Blocks Set',
         'price' => '₱10,200.00',
-        'image' => '../../image/Toys & Games/Building Blocks Set.jpeg',
+        'image' => '../../image/toys-games/Building Blocks Set.jpeg',
         'link' => 'view-product.php?id=806',
         'discount' => '-20%',
     ],
@@ -58,7 +58,7 @@ $products = [
     [
         'name' => 'Plush Teddy Bear',
         'price' => '₱15,000.00',
-        'image' => '../../image/Toys & Games/Plush Teddy Bear.jpeg',
+        'image' => '../../image/toys-games/Plush Teddy Bear.jpeg',
         'link' => 'view-product.php?id=807',
         'discount' => '-20%',
     ],
@@ -67,7 +67,7 @@ $products = [
     [
         'name' => 'Educational Toy Tablet',
         'price' => '₱20,000.00',
-        'image' => '../../image/Toys & Games/Educational Toy Tablet.jpeg',
+        'image' => '../../image/toys-games/Educational Toy Tablet.jpeg',
         'link' => 'view-product.php?id=808',
         'discount' => '-20%',
     ],
@@ -76,7 +76,7 @@ $products = [
     [
         'name' => 'Drone with Camera',
         'price' => '₱59,000.00',
-        'image' => '../../image/Toys & Games/Drone with Camera.jpeg',
+        'image' => '../../image/toys-games/Drone with Camera.jpeg',
         'link' => 'view-product.php?id=809',
         'discount' => '-20%',
     ],
@@ -85,7 +85,7 @@ $products = [
     [
         'name' => 'Chess Set (Magnetic)',
         'price' => '₱100.00',
-        'image' => '../../image/Toys & Games/Chess Set (Magnetic).jpeg',
+        'image' => '../../image/toys-games/Chess Set (Magnetic).jpeg',
         'link' => 'view-product.php?id=810',
         'discount' => '-20%',
     ],
@@ -94,7 +94,7 @@ $products = [
     [
         'name' => 'Card Game (Family Fun)',
         'price' => '₱1,000.00',
-        'image' => '../../image/Toys & Games/Card Game (Family Fun).jpeg',
+        'image' => '../../image/toys-games/Card Game (Family Fun).jpeg',
         'link' => 'view-product.php?id=811',
         'discount' => '-20%',
     ],
@@ -103,7 +103,7 @@ $products = [
     [
         'name' => 'Toy Kitchen Set',
         'price' => '₱100.00',
-        'image' => '../../image/Toys & Games/Toy Kitchen Set.jpeg',
+        'image' => '../../image/toys-games/Toy Kitchen Set.jpeg',
         'link' => 'view-product.php?id=812',
         'discount' => '-20%',
     ],
@@ -112,7 +112,7 @@ $products = [
     [
         'name' => 'Inflatable Pool for Kids',
         'price' => '₱299.00',
-        'image' => '../../image/Toys & Games/Inflatable Pool for Kids.jpeg',
+        'image' => '../../image/toys-games/Inflatable Pool for Kids.jpeg',
         'link' => 'view-product.php?id=813',
         'discount' => '-20%',
     ],
@@ -121,7 +121,7 @@ $products = [
     [
         'name' => 'Musical Keyboard Toy',
         'price' => '₱299',
-        'image' => '../../image/Toys & Games/Musical Keyboard Toy.jpeg',
+        'image' => '../../image/toys-games/Musical Keyboard Toy.jpeg',
         'link' => 'view-product.php?id=814',
         'discount' => '-20%',
     ],
@@ -130,7 +130,7 @@ $products = [
     [
         'name' => 'Yo-Yo (Pro Level)',
         'price' => '₱299',
-        'image' => '../../image/Toys & Games/Yo-Yo (Pro Level).jpeg',
+        'image' => '../../image/toys-games/Yo-Yo (Pro Level).jpeg',
         'link' => 'view-product.php?id=815',
         'discount' => '-20%',
     ]

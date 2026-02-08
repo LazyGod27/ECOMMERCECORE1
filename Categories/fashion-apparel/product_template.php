@@ -171,8 +171,7 @@ $products_data = [
         'colors' => ['Black', 'Pink', 'White'],
         'sizes' => ['Standard']
     ],
-
-
+];
 
     // Fix pricing data for consistency
     foreach ($products_data as $id => &$p) {

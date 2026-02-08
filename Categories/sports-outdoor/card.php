@@ -4,7 +4,7 @@ $products = [
     [
         'name' => 'Yoga Mat (Non-Slip)',
         'price' => '₱100.00',
-        'image' => '../../image/Sports & outdoor/Yoga Mat (Non-Slip).jpeg',
+        'image' => '../../image/sports-outdoor/Yoga Mat (Non-Slip).jpeg',
         'link' => 'view-product.php?id=701',
         'discount' => '-20%'
     ],
@@ -13,7 +13,7 @@ $products = [
     [
         'name' => 'Dumbbell Set (Adjustable)',
         'price' => '₱340.00',
-        'image' => '../../image/Sports & outdoor/Dumbbell Set (Adjustable).jpeg',
+        'image' => '../../image/sports-outdoor/Dumbbell Set (Adjustable).jpeg',
         'link' => 'view-product.php?id=702',
         'discount' => '-20%',
     ],
@@ -22,7 +22,7 @@ $products = [
     [
         'name' => 'Resistance Bands Set',
         'price' => '₱50.00',
-        'image' => '../../image/Sports & outdoor/Resistance Bands Set.jpeg',
+        'image' => '../../image/sports-outdoor/Resistance Bands Set.jpeg',
         'link' => 'view-product.php?id=703',
         'discount' => '-20%',
     ],
@@ -31,7 +31,7 @@ $products = [
     [
         'name' => 'Jump Rope (Speed Type)',
         'price' => '₱1,500.00',
-        'image' => '../../image/Sports & outdoor/Jump Rope (Speed Type).jpeg',
+        'image' => '../../image/sports-outdoor/Jump Rope (Speed Type).jpeg',
         'link' => 'view-product.php?id=704',
         'discount' => '-20%',
     ],
@@ -40,7 +40,7 @@ $products = [
     [
         'name' => 'Sports Water Bottle (1L)',
         'price' => '₱2,500.00',
-        'image' => '../../image/Sports & outdoor/Sports Water Bottle (1L).jpeg',
+        'image' => '../../image/sports-outdoor/Sports Water Bottle (1L).jpeg',
         'link' => 'view-product.php?id=705',
         'discount' => '-20%',
     ],
@@ -49,7 +49,7 @@ $products = [
     [
         'name' => 'Running Shoes (Men-Women)',
         'price' => '₱10,200.00',
-        'image' => '../../image/Sports & outdoor/Running Shoes (Men-Women).jpeg',
+        'image' => '../../image/sports-outdoor/Running Shoes (Men-Women).jpeg',
         'link' => 'view-product.php?id=706',
         'discount' => '-20%',
     ],
@@ -58,7 +58,7 @@ $products = [
     [
         'name' => 'Fitness Tracker Watch',
         'price' => '₱15,000.00',
-        'image' => '../../image/Sports & outdoor/Fitness Tracker Watch.jpeg',
+        'image' => '../../image/sports-outdoor/Fitness Tracker Watch.jpeg',
         'link' => 'view-product.php?id=707',
         'discount' => '-20%',
     ],
@@ -67,7 +67,7 @@ $products = [
     [
         'name' => 'Camping Tent (2–3 Person)',
         'price' => '₱20,000.00',
-        'image' => '../../image/Sports & outdoor/Camping Tent (2–3 Person).jpeg',
+        'image' => '../../image/sports-outdoor/Camping Tent (2–3 Person).jpeg',
         'link' => 'view-product.php?id=708',
         'discount' => '-20%',
     ],
@@ -76,7 +76,7 @@ $products = [
     [
         'name' => 'Portable Folding Chair',
         'price' => '₱59,000.00',
-        'image' => '../../image/Sports & outdoor/Portable Folding Chair.jpeg',
+        'image' => '../../image/sports-outdoor/Portable Folding Chair.jpeg',
         'link' => 'view-product.php?id=709',
         'discount' => '-20%',
     ],
@@ -85,7 +85,7 @@ $products = [
     [
         'name' => 'Outdoor Backpack (Waterproof)',
         'price' => '₱100.00',
-        'image' => '../../image/Sports & outdoor/Outdoor Backpack (Waterproof).jpeg',
+        'image' => '../../image/sports-outdoor/Outdoor Backpack (Waterproof).jpeg',
         'link' => 'view-product.php?id=710',
         'discount' => '-20%',
     ],
@@ -94,7 +94,7 @@ $products = [
     [
         'name' => 'Yoga Ball (Anti-Burst)',
         'price' => '₱1,000.00',
-        'image' => '../../image/Sports & outdoor/Yoga Ball (Anti-Burst).jpeg',
+        'image' => '../../image/sports-outdoor/Yoga Ball (Anti-Burst).jpeg',
         'link' => 'view-product.php?id=711',
         'discount' => '-20%',
     ],
@@ -103,7 +103,7 @@ $products = [
     [
         'name' => 'Cycling Helmet',
         'price' => '₱100.00',
-        'image' => '../../image/Sports & outdoor/Cycling Helmet.jpeg',
+        'image' => '../../image/sports-outdoor/Cycling Helmet.jpeg',
         'link' => 'view-product.php?id=712',
         'discount' => '-20%',
     ],
@@ -112,7 +112,7 @@ $products = [
     [
         'name' => 'Trekking Poles (Pair)',
         'price' => '₱299.00',
-        'image' => '../../image/Sports & outdoor/Trekking Poles (Pair).jpeg',
+        'image' => '../../image/sports-outdoor/Trekking Poles (Pair).jpeg',
         'link' => 'view-product.php?id=713',
         'discount' => '-20%',
     ],
@@ -121,7 +121,7 @@ $products = [
     [
         'name' => 'Boxing Gloves (Training Type)',
         'price' => '₱299',
-        'image' => '../../image/Sports & outdoor/Boxing Gloves (Training Type).jpeg',
+        'image' => '../../image/sports-outdoor/Boxing Gloves (Training Type).jpeg',
         'link' => 'view-product.php?id=714',
         'discount' => '-20%',
     ],
@@ -130,7 +130,7 @@ $products = [
     [
         'name' => 'Portable BBQ Grill',
         'price' => '₱299',
-        'image' => '../../image/Sports & outdoor/Portable BBQ Grill.jpeg',
+        'image' => '../../image/sports-outdoor/Portable BBQ Grill.jpeg',
         'link' => 'view-product.php?id=715',
         'discount' => '-20%',
     ]

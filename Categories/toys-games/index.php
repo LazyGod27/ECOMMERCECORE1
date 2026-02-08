@@ -26,19 +26,19 @@
                 <div class="fade-slider">
                     <!-- Slides -->
                     <div class="fade-slide active"
-                        style="background-image: url('../../image/Toys%20%26%20Games/Action%20Figure%20(Superhero).jpeg');">
+                        style="background-image: url('../../image/toys-games/Action%20Figure%20(Superhero).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Toys%20%26%20Games/Board%20Game%20(Strategy).jpeg');">
+                        style="background-image: url('../../image/toys-games/Board%20Game%20(Strategy).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Toys%20%26%20Games/Building%20Blocks%20Set.jpeg');">
+                        style="background-image: url('../../image/toys-games/Building%20Blocks%20Set.jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Toys%20%26%20Games/Card%20Game%20(Family%20Fun).jpeg');">
+                        style="background-image: url('../../image/toys-games/Card%20Game%20(Family%20Fun).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Toys%20%26%20Games/Doll%20House%20(Wooden).jpeg');">
+                        style="background-image: url('../../image/toys-games/Doll%20House%20(Wooden).jpeg');">
                     </div>
 
                     <!-- Indicators (White Lines) -->

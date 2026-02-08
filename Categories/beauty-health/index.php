@@ -24,19 +24,19 @@
                 <div class="fade-slider">
                     <!-- Slides -->
                     <div class="fade-slide active"
-                        style="background-image: url('../../image/Beauty%20%26%20Health/Aloe%20Vera%20Soothing%20Gel.jpeg');">
+                        style="background-image: url('../../image/beauty-health/Aloe%20Vera%20Soothing%20Gel.jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Beauty%20%26%20Health/Charcoal%20Face%20Mask.jpeg');">
+                        style="background-image: url('../../image/beauty-health/Charcoal%20Face%20Mask.jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Beauty%20%26%20Health/Essential%20Oil%20Set%20(Relaxing%20Blend).jpeg');">
+                        style="background-image: url('../../image/beauty-health/Essential%20Oil%20Set%20(Relaxing%20Blend).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Beauty%20%26%20Health/Hair%20Growth%20Shampoo.jpeg');">
+                        style="background-image: url('../../image/beauty-health/Hair%20Growth%20Shampoo.jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Beauty%20%26%20Health/Foot%20Spa%20Massager%20Roller.jpeg');">
+                        style="background-image: url('../../image/beauty-health/Foot%20Spa%20Massager%20Roller.jpeg');">
                     </div>
 
                     <!-- Indicators (White Lines) -->

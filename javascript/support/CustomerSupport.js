@@ -85,6 +85,9 @@ function renderDashboard() {
 
 // Support Tickets Module
 function renderSupportModule(submodule = 'tickets') {
+    activeSubmodule = submodule;
+    activeModule = 'support';
+
     if (submodule === 'chat') {
         renderChatModule();
         return;
@@ -139,8 +142,21 @@ function renderSupportModule(submodule = 'tickets') {
     lucide.createIcons();
 }
 
+async function fetchSupportTickets() {
+    try {
+        const res = await fetch('get_support_tickets.php');
+        const data = await res.json();
+        if (data.success) {
+            window.supportTicketsData = data.tickets;
+            if (activeSubmodule === 'tickets') {
+                renderSupportModule('tickets');
+            }
+        }
+    } catch (e) { console.error('Error fetching tickets:', e); }
+}
+
 async function showTicketDetails(ticketId) {
-    const ticket = ticketsData.find(t => t.id == ticketId);
+    const ticket = supportTicketsData.find(t => t.id == ticketId);
     if (!ticket) return;
 
     // Fetch replies before showing modal
@@ -231,6 +247,8 @@ let activeChatUser = null;
 let activeChatStore = null;
 
 function renderChatModule() {
+    activeModule = 'chat';
+    activeSubmodule = '';
     setPageTitle('Store Chat Hub');
     const content = document.getElementById('content-container');
 
@@ -282,16 +300,21 @@ async function loadAdminChatList() {
         const listContainer = document.getElementById('admin-chat-list');
 
         if (data.success && data.chats.length > 0) {
-            listContainer.innerHTML = data.chats.map(chat => `
-                <div onclick="selectChat(${chat.user_id}, '${chat.store_name}', '${chat.customer_name}')" style="padding: 1rem 1.25rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.2s; ${chat.unread_count > 0 ? 'background: #eff6ff;' : ''}" onmouseover="this.style.background='#f8fafc'">
+            listContainer.innerHTML = data.chats.map(chat => {
+                const safeCustomerName = chat.customer_name || 'Anonymous User';
+                const safeStoreName = (chat.store_name || 'General Support').replace(/'/g, "\\'");
+                const displayName = safeCustomerName.replace(/'/g, "\\'");
+
+                return `
+                <div onclick="selectChat(${chat.user_id}, '${safeStoreName}', '${displayName}')" style="padding: 1rem 1.25rem; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: background 0.2s; ${chat.unread_count > 0 ? 'background: #eff6ff;' : ''}" onmouseover="this.style.background='#f8fafc'">
                     <div style="display: flex; gap: 0.75rem; align-items: center;">
                         <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: ${chat.unread_count > 0 ? '#3b82f6' : '#94a3b8'}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
-                            ${chat.customer_name ? chat.customer_name.charAt(0).toUpperCase() : '?'}
+                            ${safeCustomerName.charAt(0).toUpperCase()}
                         </div>
                         <div style="flex: 1; min-width: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                                <div style="font-weight: 600; font-size: 0.875rem; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chat.customer_name || 'Anonymous User'}</div>
-                                <span style="font-size: 0.7rem; color: #94a3b8;">${chat.time_ago}</span>
+                                <div style="font-weight: 600; font-size: 0.875rem; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${safeCustomerName}</div>
+                                <span style="font-size: 0.7rem; color: #94a3b8;">${chat.time_ago || (chat.last_time ? new Date(chat.last_time).toLocaleTimeString() : '')}</span>
                             </div>
                             <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 2px;">Store: ${chat.store_name}</div>
                             <div style="font-size: 0.75rem; color: ${chat.unread_count > 0 ? '#1e293b' : '#94a3b8'}; font-weight: ${chat.unread_count > 0 ? '600' : '400'}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chat.last_message}</div>
@@ -299,7 +322,8 @@ async function loadAdminChatList() {
                         ${chat.unread_count > 0 ? `<div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%;"></div>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         } else {
             listContainer.innerHTML = '<div style="padding: 2rem; text-align: center; color: #94a3b8;">No active chats found.</div>';
         }
@@ -309,12 +333,13 @@ async function loadAdminChatList() {
 function selectChat(userId, storeName, customerName) {
     activeChatUser = userId;
     activeChatStore = storeName;
+    const displayName = customerName || 'Anonymous User';
 
     document.getElementById('admin-chat-header').style.display = 'block';
     document.getElementById('admin-chat-input-container').style.display = 'block';
-    document.getElementById('chat-user-name').textContent = customerName;
+    document.getElementById('chat-user-name').textContent = displayName;
     document.getElementById('chat-store-name').textContent = "Inquiry regarding " + storeName;
-    document.getElementById('chat-user-avatar').textContent = customerName.charAt(0).toUpperCase();
+    document.getElementById('chat-user-avatar').textContent = displayName.charAt(0).toUpperCase();
 
     loadAdminMessages();
 }
@@ -322,7 +347,7 @@ function selectChat(userId, storeName, customerName) {
 async function loadAdminMessages() {
     if (!activeChatUser || !activeChatStore) return;
     try {
-        const res = await fetch(`get_admin_chat_messages.php?user_id=${activeChatUser}&store_name=${activeChatStore}`);
+        const res = await fetch(`get_admin_chat_messages.php?user_id=${activeChatUser}&store_name=${encodeURIComponent(activeChatStore)}`);
         const data = await res.json();
         const msgContainer = document.getElementById('admin-chat-messages');
 
@@ -332,7 +357,7 @@ async function loadAdminMessages() {
                     <div style="max-width: 75%; padding: 0.75rem 1rem; border-radius: 1rem; font-size: 0.9375rem; ${m.sender_type === 'admin' ? 'background: #3b82f6; color: white; border-bottom-right-radius: 0.25rem;' : 'background: white; color: #1e293b; border-bottom-left-radius: 0.25rem; border: 1px solid #e2e8f0;'}">
                         ${m.message}
                     </div>
-                    <span style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">${m.timestamp}</span>
+                    <span style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem;">${m.timestamp || (m.created_at ? new Date(m.created_at).toLocaleString() : '')}</span>
                 </div>
             `).join('');
             msgContainer.scrollTop = msgContainer.scrollHeight;
@@ -420,6 +445,8 @@ function startChatWithCustomer(userId, customerName) {
 
 // Navigation Router
 function showModule(module, element) {
+    activeModule = module;
+    activeSubmodule = '';
     if (element) setActiveNav(element);
     if (module === 'dashboard') renderDashboard();
     else if (module === 'customers') renderCustomersModule();
@@ -427,6 +454,8 @@ function showModule(module, element) {
 }
 
 function showSubModule(module, submodule) {
+    activeModule = module;
+    activeSubmodule = submodule;
     if (module === 'support') renderSupportModule(submodule);
 }
 

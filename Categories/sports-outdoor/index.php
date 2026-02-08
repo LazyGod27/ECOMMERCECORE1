@@ -26,19 +26,19 @@
                 <div class="fade-slider">
                     <!-- Slides -->
                     <div class="fade-slide active"
-                        style="background-image: url('../../image/Sports%20%26%20outdoor/Yoga%20Mat%20(Non-Slip).jpeg');">
+                        style="background-image: url('../../image/sports-outdoor/Yoga%20Mat%20(Non-Slip).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Sports%20%26%20outdoor/Dumbbell%20Set%20(Adjustable).jpeg');">
+                        style="background-image: url('../../image/sports-outdoor/Dumbbell%20Set%20(Adjustable).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Sports%20%26%20outdoor/Resistance%20Bands%20Set.jpeg');">
+                        style="background-image: url('../../image/sports-outdoor/Resistance%20Bands%20Set.jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Sports%20%26%20outdoor/Jump%20Rope%20(Speed%20Type).jpeg');">
+                        style="background-image: url('../../image/sports-outdoor/Jump%20Rope%20(Speed%20Type).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Sports%20%26%20outdoor/Sports%20Water%20Bottle%20(1L).jpeg');">
+                        style="background-image: url('../../image/sports-outdoor/Sports%20Water%20Bottle%20(1L).jpeg');">
                     </div>
 
                     <!-- Indicators (White Lines) -->

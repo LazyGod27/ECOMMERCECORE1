@@ -4,7 +4,7 @@ $products = [
     [
         'name' => 'Men’s Plain T-Shirt (Cotton)',
         'price' => '₱100.00',
-        'image' => '../../image/Fashion & Apparel/Men’s Plain T-Shirt (Cotton).jpeg',
+        'image' => '../../image/fashion-apparel/Men’s Plain T-Shirt (Cotton).jpeg',
         'link' => 'view-product.php?id=401',
         'discount' => '-20%'
     ],
@@ -13,7 +13,7 @@ $products = [
     [
         'name' => 'Women’s Oversized Blouse',
         'price' => '₱340.00',
-        'image' => '../../image/Fashion & Apparel/Women’s Oversized Blouse.jpeg',
+        'image' => '../../image/fashion-apparel/Women’s Oversized Blouse.jpeg',
         'link' => 'view-product.php?id=402',
         'discount' => '-20%',
     ],
@@ -22,7 +22,7 @@ $products = [
     [
         'name' => 'Slim Fit Denim Jeans (Men)',
         'price' => '₱50.00',
-        'image' => '../../image/Fashion & Apparel/Slim Fit Denim Jeans (Men).jpeg',
+        'image' => '../../image/fashion-apparel/Slim Fit Denim Jeans (Men).jpeg',
         'link' => 'view-product.php?id=403',
         'discount' => '-20%',
     ],
@@ -31,7 +31,7 @@ $products = [
     [
         'name' => 'High-Waist Skinny Jeans (Women)',
         'price' => '₱1,500.00',
-        'image' => '../../image/Fashion & Apparel/High-Waist Skinny Jeans (Women).jpeg',
+        'image' => '../../image/fashion-apparel/High-Waist Skinny Jeans (Women).jpeg',
         'link' => 'view-product.php?id=404',
         'discount' => '-20%',
     ],
@@ -40,7 +40,7 @@ $products = [
     [
         'name' => 'Unisex Hoodie (Pullover Style)',
         'price' => '₱2,500.00',
-        'image' => '../../image/Fashion & Apparel/Unisex Hoodie (Pullover Style).jpeg',
+        'image' => '../../image/fashion-apparel/Unisex Hoodie (Pullover Style).jpeg',
         'link' => 'view-product.php?id=405',
         'discount' => '-20%',
     ],
@@ -49,7 +49,7 @@ $products = [
     [
         'name' => 'Casual Polo Shirt',
         'price' => '₱10,200.00',
-        'image' => '../../image/Fashion & Apparel/Casual Polo Shirt.jpeg',
+        'image' => '../../image/fashion-apparel/Casual Polo Shirt.jpeg',
         'link' => 'view-product.php?id=406',
         'discount' => '-20%',
     ],
@@ -58,7 +58,7 @@ $products = [
     [
         'name' => 'Summer Floral Dress',
         'price' => '₱15,000.00',
-        'image' => '../../image/Fashion & Apparel/Summer Floral Dress.jpeg',
+        'image' => '../../image/fashion-apparel/Summer Floral Dress.jpeg',
         'link' => 'view-product.php?id=407',
         'discount' => '-20%',
     ],
@@ -67,7 +67,7 @@ $products = [
     [
         'name' => 'Jogger Pants (Unisex)',
         'price' => '₱20,000.00',
-        'image' => '../../image/Fashion & Apparel/Jogger Pants (Unisex).jpeg',
+        'image' => '../../image/fashion-apparel/Jogger Pants (Unisex).jpeg',
         'link' => 'view-product.php?id=408',
         'discount' => '-20%',
     ],
@@ -76,7 +76,7 @@ $products = [
     [
         'name' => 'Bomber Jacket (Lightweight)',
         'price' => '₱59,000.00',
-        'image' => '../../image/Fashion & Apparel/Bomber Jacket (Lightweight).jpeg',
+        'image' => '../../image/fashion-apparel/Bomber Jacket (Lightweight).jpeg',
         'link' => 'view-product.php?id=409',
         'discount' => '-20%',
     ],
@@ -85,7 +85,7 @@ $products = [
     [
         'name' => 'Crop Top (Trendy Style)',
         'price' => '₱100.00',
-        'image' => '../../image/Fashion & Apparel/Crop Top (Trendy Style).jpeg',
+        'image' => '../../image/fashion-apparel/Crop Top (Trendy Style).jpeg',
         'link' => 'view-product.php?id=410',
         'discount' => '-20%',
     ],
@@ -94,7 +94,7 @@ $products = [
     [
         'name' => 'Long Sleeve Polo Shirt',
         'price' => '₱1,000.00',
-        'image' => '../../image/Fashion & Apparel/Long Sleeve Polo Shirt.jpeg',
+        'image' => '../../image/fashion-apparel/Long Sleeve Polo Shirt.jpeg',
         'link' => 'view-product.php?id=411',
         'discount' => '-20%',
     ],
@@ -103,7 +103,7 @@ $products = [
     [
         'name' => 'Denim Jacket (Classic Fit)',
         'price' => '₱100.00',
-        'image' => '../../image/Fashion & Apparel/Denim Jacket (Classic Fit).jpeg',
+        'image' => '../../image/fashion-apparel/Denim Jacket (Classic Fit).jpeg',
         'link' => 'view-product.php?id=412',
         'discount' => '-20%',
     ],
@@ -112,7 +112,7 @@ $products = [
     [
         'name' => 'Cotton Shorts (Men Women)',
         'price' => '₱299.00',
-        'image' => '../../image/Fashion & Apparel/Cotton Shorts (Men Women).jpeg',
+        'image' => '../../image/fashion-apparel/Cotton Shorts (Men Women).jpeg',
         'link' => 'view-product.php?id=413',
         'discount' => '-20%',
     ],
@@ -121,7 +121,7 @@ $products = [
     [
         'name' => 'Cardigan Sweater (Women)',
         'price' => '₱299',
-        'image' => '../../image/Fashion & Apparel/Cardigan Sweater (Women).jpeg',
+        'image' => '../../image/fashion-apparel/Cardigan Sweater (Women).jpeg',
         'link' => 'view-product.php?id=414',
         'discount' => '-20%',
     ],
@@ -130,7 +130,7 @@ $products = [
     [
         'name' => 'Athletic Leggings (High Waist)',
         'price' => '₱299',
-        'image' => '../../image/Fashion & Apparel/Athletic Leggings (High Waist).jpeg',
+        'image' => '../../image/fashion-apparel/Athletic Leggings (High Waist).jpeg',
         'link' => 'view-product.php?id=415',
         'discount' => '-20%',
     ]

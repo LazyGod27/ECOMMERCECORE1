@@ -26,19 +26,19 @@
                 <div class="fade-slider">
                     <!-- Slides -->
                     <div class="fade-slide active"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Men’s%20Plain%20T-Shirt%20(Cotton).jpeg');">
+                        style="background-image: url('../../image/fashion-apparel/Men’s Plain T-Shirt (Cotton).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Women’s%20Oversized%20Blouse.jpeg');">
+                        style="background-image: url('../../image/fashion-apparel/Women’s Oversized Blouse.jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Slim%20Fit%20Denim%20Jeans%20(Men).jpeg');">
+                        style="background-image: url('../../image/fashion-apparel/Slim Fit Denim Jeans (Men).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/High-Waist%20Skinny%20Jeans%20(Women).jpeg');">
+                        style="background-image: url('../../image/fashion-apparel/High-Waist Skinny Jeans (Women).jpeg');">
                     </div>
                     <div class="fade-slide"
-                        style="background-image: url('../../image/Fashion%20%26%20Apparel/Unisex%20Hoodie%20(Pullover%20Style).jpeg');">
+                        style="background-image: url('../../image/fashion-apparel/Unisex Hoodie (Pullover Style).jpeg');">
                     </div>
 
                     <!-- Indicators (White Lines) -->
