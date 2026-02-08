@@ -1,7 +1,12 @@
 <?php
 // CustomerSupport/login.php
 
-// 1. DATABASE CONNECTION & FUNCTIONS
+// 1. START SESSION (MUST BE FIRST)
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// 2. DATABASE CONNECTION & FUNCTIONS
 require_once __DIR__ . '/connection.php';
 require_once __DIR__ . '/functions.php';
 
@@ -12,12 +17,7 @@ try {
     die("Database connection failed: " . htmlspecialchars($e->getMessage()));
 }
 
-// 2. START SESSION
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-// 3. CHECK IF ALREADY LOGGED IN (Support Session)
+// 3. CHECK IF ALREADY LOGGED IN
 if (isset($_SESSION['support_logged_in']) && $_SESSION['support_logged_in'] === true) {
     header('Location: dashboard.php');
     exit();
@@ -26,11 +26,11 @@ if (isset($_SESSION['support_logged_in']) && $_SESSION['support_logged_in'] === 
 $message = $_GET['msg'] ?? '';
 $is_otp_page = isset($_SESSION['support_awaiting_otp']) && $_SESSION['support_awaiting_otp'] === true;
 
-// 4. HANDLE POST REQUESTS (Login & OTP)
+// 4. HANDLE POST REQUESTS
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // --- RETURN TO LOGIN (Clear OTP state) ---
+    // RETURN TO LOGIN (Clear session)
     if ($action === 'return_to_login') {
         unset($_SESSION['support_awaiting_otp']);
         unset($_SESSION['temp_support_id']);
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // --- LOGIN ACTION ---
+    // LOGIN ACTION
     if ($action === 'login') {
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $auth_result = authenticate_support($pdo, $username, $password);
 
         if ($auth_result['success'] && $auth_result['redirect_view'] === 'otp') {
+            session_write_close(); // Ensure session is saved before redirect
             header("Location: login.php?msg=" . urlencode($auth_result['message']));
             exit();
         } else {
@@ -55,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // --- OTP VERIFY ACTION ---
+    // OTP VERIFY ACTION
     if ($action === 'otp_verify') {
         $otp_input = isset($_POST['otp_code']) ? trim(strval($_POST['otp_code'])) : '';
         $user_id = isset($_SESSION['temp_support_id']) ? intval($_SESSION['temp_support_id']) : null;
@@ -80,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $verification_result = verify_otp_and_login_support($pdo, $user_id, $otp_input);
 
         if (stripos($verification_result, 'successful') !== false || stripos($verification_result, 'welcome') !== false) {
+            session_write_close();
             header("Location: dashboard.php?msg=" . urlencode($verification_result));
         } else {
             header("Location: login.php?msg=" . urlencode($verification_result));
@@ -92,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
     handle_support_login_redirect();
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -146,12 +147,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
             from { transform: translateY(-20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-
-        .otp-inputs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
         
         .otp-icon-wrapper {
             width: 60px;
@@ -164,6 +159,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
             margin: 0 auto 1.5rem auto;
             color: #3b82f6;
         }
+        
+        .alert-success { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.875rem; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.875rem; }
     </style>
 </head>
 <body>
@@ -184,7 +182,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
         </div>
 
         <?php if ($message && !$is_otp_page): ?>
-            <div class="alert-message <?php echo strpos($message, 'successful') !== false ? 'alert-success' : 'alert-error'; ?>">
+            <div class="<?php echo (strpos($message, 'successful') !== false || strpos($message, 'sent') !== false) ? 'alert-success' : 'alert-error'; ?>">
                 <?php echo htmlspecialchars($message); ?>
             </div>
         <?php endif; ?>
@@ -228,7 +226,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
             </p>
 
             <?php if ($message && $is_otp_page): ?>
-                <div style="background-color: #fee2e2; color: #dc2626; padding: 0.75rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 1.5rem;">
+                <div class="<?php echo (strpos($message, 'successful') !== false || strpos($message, 'sent') !== false) ? 'alert-success' : 'alert-error'; ?>" style="padding: 0.75rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 1.5rem;">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
             <?php endif; ?>
