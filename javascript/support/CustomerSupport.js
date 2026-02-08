@@ -381,6 +381,15 @@ async function loadAdminChatList() {
                     selectChat(uid, store, name);
                 });
             });
+
+            // Auto-select first chat if none active
+            if (!activeChatUser && data.chats.length > 0) {
+                const first = data.chats[0];
+                const sName = first.store_name || 'General Support';
+                const cName = first.customer_name || 'Anonymous User';
+                selectChat(first.user_id, sName, cName);
+            }
+
             lucide.createIcons();
 
         } else {
@@ -530,7 +539,7 @@ function renderCustomersModule() {
                 <td>${new Date(c.created_at).toLocaleDateString()}</td>
                 <td>
                     <button class="btn-base" style="padding: 0.25rem 0.5rem; background-color: var(--color-light-grey);" onclick="startChatWithCustomer(${c.id}, '${c.full_name}')">
-                        <i data-lucide="message-square" style="width: 1rem; height: 1rem;"></i>
+                        <i data-lucide="message-circle" style="width: 1rem; height: 1rem;"></i>
                     </button>
                 </td>
             </tr>
