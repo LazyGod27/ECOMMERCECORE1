@@ -14,6 +14,10 @@ $product_name = isset($_GET['product_name']) ? $_GET['product_name'] : 'Multiple
 $item_price = isset($_GET['price']) ? floatval($_GET['price']) : 0;
 $quantity = isset($_GET['quantity']) ? intval($_GET['quantity']) : 1;
 $image = isset($_GET['image']) ? $_GET['image'] : '../image/logo.png';
+// Normalize path for Content/ folder if coming from Categories/ or similar depth-2 folder
+if (strpos($image, '../../') === 0) {
+    $image = str_replace('../../', '../', $image);
+}
 $product_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : 0;
 
 $subtotal = $item_price * $quantity;
@@ -332,7 +336,16 @@ if (mysqli_num_rows($check_addr) > 0) {
             </div>
 
                 <div class="summary-card">
-                    <h3>Order Summary</h3>
+                    <h3 style="margin-bottom: 20px;">Order Summary</h3>
+                    
+                    <!-- Product Preview -->
+                    <div style="display: flex; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9;">
+                        <img src="<?php echo htmlspecialchars($image); ?>" alt="Product" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 0.95rem; font-weight: 600; color: #1e293b; margin: 0 0 5px 0;"><?php echo htmlspecialchars($product_name); ?></h4>
+                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Quantity: <?php echo $quantity; ?></p>
+                        </div>
+                    </div>
                     
                     <div class="summary-row">
                         <span>Subtotal</span>

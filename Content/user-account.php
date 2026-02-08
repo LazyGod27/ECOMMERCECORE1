@@ -489,7 +489,37 @@ if ($view == 'orders' || $view == 'tracking') {
                             <a href="?view=tracking&order_id=<?php echo $order['id']; ?>" style="text-decoration:none;">
                                 <div class="order-items">
                                     <div class="order-item-row">
-                                        <img src="<?php echo htmlspecialchars(!empty($order['image_url']) ? $order['image_url'] : '../image/imarket.png'); ?>"
+                                        <?php
+                                        // Resolve Image Path
+                                        $img_file = isset($order['image_url']) ? $order['image_url'] : '';
+                                        $final_img_src = '../image/imarket.png'; // Default fallback
+
+                                        if (!empty($img_file)) {
+                                            $clean_path = str_replace('../../', '../', $img_file);
+                                            $basename = basename($clean_path);
+                                            $basename_dashed = str_replace(' ', '-', $basename);
+
+                                            $candidates = [
+                                                $clean_path,
+                                                '../image/Best-seller/' . $basename,
+                                                '../image/Best-seller/' . $basename_dashed,
+                                                '../image/best_selling/' . $basename,
+                                                '../image/' . $basename,
+                                                '../image/Shop/' . $basename,
+                                                '../image/Shop/UrbanWear PH/' . $basename,
+                                                $img_file,
+                                                $basename
+                                            ];
+
+                                            foreach ($candidates as $candidate) {
+                                                if (!empty($candidate) && file_exists($candidate) && !is_dir($candidate)) {
+                                                    $final_img_src = $candidate;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                        <img src="<?php echo htmlspecialchars($final_img_src); ?>"
                                             class="item-img" alt="Product">
                                         <div class="item-info">
                                             <div class="item-name"><?php echo htmlspecialchars($order['product_name']); ?></div>
@@ -671,8 +701,38 @@ if ($view == 'orders' || $view == 'tracking') {
                         <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
                             <div style="font-weight:500; margin-bottom:10px;">Product Info</div>
                             <div style="display:flex; gap:15px;">
-                                <img src="<?php echo htmlspecialchars(!empty($curr_order['image_url']) ? $curr_order['image_url'] : '../image/imarket.png'); ?>"
-                                    style="width:60px; height:60px; border:1px solid #eee;">
+                                <?php
+                                // Resolve Image Path for Tracking
+                                $track_img = isset($curr_order['image_url']) ? $curr_order['image_url'] : '';
+                                $final_track_img = '../image/imarket.png';
+
+                                if (!empty($track_img)) {
+                                    $clean_t = str_replace('../../', '../', $track_img);
+                                    $t_base = basename($clean_t);
+                                    $t_base_d = str_replace(' ', '-', $t_base);
+
+                                    $t_candidates = [
+                                        $clean_t,
+                                        '../image/Best-seller/' . $t_base,
+                                        '../image/Best-seller/' . $t_base_d,
+                                        '../image/best_selling/' . $t_base,
+                                        '../image/' . $t_base,
+                                        '../image/Shop/' . $t_base,
+                                        '../image/Shop/UrbanWear PH/' . $t_base,
+                                        $track_img,
+                                        $t_base
+                                    ];
+
+                                    foreach ($t_candidates as $c) {
+                                        if (!empty($c) && file_exists($c) && !is_dir($c)) {
+                                            $final_track_img = $c;
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                                <img src="<?php echo htmlspecialchars($final_track_img); ?>"
+                                    style="width:60px; height:60px; border:1px solid #eee; object-fit: contain;">
                                 <div>
                                     <div style="font-size:14px; font-weight:600;">
                                         <?php echo htmlspecialchars($curr_order['product_name']); ?>

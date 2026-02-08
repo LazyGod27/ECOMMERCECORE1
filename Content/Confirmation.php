@@ -127,6 +127,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <h1>Order Placed Successfully!</h1>
         <p>Thank you for your purchase. Your order is now being processed.</p>
         <p>Reference ID: #<?php echo $ref_id; ?></p>
+
+        <!-- Product Summary -->
+        <div style="margin: 20px auto; max-width: 400px; padding: 20px; border: 1px solid #eee; border-radius: 8px; display: flex; align-items: center; gap: 20px; text-align: left;">
+            <img src="<?php echo htmlspecialchars($img); ?>" alt="Product" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
+            <div>
+                <h4 style="margin: 0 0 5px 0; font-size: 1rem; color: #333;"><?php echo htmlspecialchars($pname); ?></h4>
+                <p style="margin: 0; font-size: 0.9rem; color: #666;">Quantity: <?php echo $qty; ?></p>
+                <p style="margin: 0; font-size: 0.9rem; color: #2ecc71; font-weight: bold;">Total: ₱<?php echo number_format($total, 2); ?></p>
+            </div>
+        </div>
         
         <!-- FIXED: Link back to the main Shop page and Track Orders -->
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">

@@ -396,6 +396,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                         if (!file_exists($display_img) && strpos($display_img, 'http') === false) {
                                             $possible_paths = [
                                                 '../image/Shop/' . basename($display_img),
+                                                '../image/Best-seller/' . basename($display_img),
                                                 '../image/Best/' . basename($display_img),
                                                 '../image/' . basename($display_img),
                                                 '../Categories/best_selling/image/' . basename($display_img)
