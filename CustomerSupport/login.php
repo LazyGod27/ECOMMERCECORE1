@@ -162,6 +162,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'return_to_login') {
                     </div>
                 </div>
                 <button type="submit" class="btn-base btn-primary w-full">Sign In to Support</button>
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <p style="color: #64748b; font-size: 0.875rem;">
+                        Don't have an account? 
+                        <a href="signup.php" style="color: #3b82f6; text-decoration: none; font-weight: 500;">Create one</a>
+                    </p>
+                </div>
             </form>
         <?php endif; ?>
     </div>

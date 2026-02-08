@@ -258,4 +258,36 @@ if (!function_exists('update_admin_profile')) { function update_admin_profile($p
 if (!function_exists('get_admin_profile_image_url')) { function get_admin_profile_image_url($id) { return null; } }
 if (!function_exists('update_order_status')) { function update_order_status($id, $st, $pdo) { return true; } }
 
+if (!function_exists('register_support_user')) {
+    function register_support_user($pdo, $username, $password, $email, $fullname) {
+        try {
+            // Check if username already exists
+            $stmt = $pdo->prepare("SELECT id FROM admin_users WHERE username = ?");
+            $stmt->execute([$username]);
+            if ($stmt->fetch()) {
+                return ['success' => false, 'message' => 'Username already taken.'];
+            }
+
+            // Check if email already exists
+            $stmt = $pdo->prepare("SELECT id FROM admin_users WHERE email = ?");
+            $stmt->execute([$email]);
+            if ($stmt->fetch()) {
+                return ['success' => false, 'message' => 'Email already registered.'];
+            }
+
+            // Hash password
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+            // Insert user
+            $stmt = $pdo->prepare("INSERT INTO admin_users (username, password_hash, email, full_name, role, created_at) VALUES (?, ?, ?, ?, 'Support', NOW())");
+            $stmt->execute([$username, $password_hash, $email, $fullname]);
+
+            return ['success' => true, 'message' => 'Registration successful! You can now login.'];
+        } catch (PDOException $e) {
+            error_log("Registration Error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Registration failed. Please try again.'];
+        }
+    }
+}
+
 ?>
