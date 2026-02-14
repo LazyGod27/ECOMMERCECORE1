@@ -496,7 +496,6 @@ if ($is_logged_in) {
                         </div>
 
                         <div id="notificationList" style="max-height: 400px; overflow-y: auto;">
-                            <!-- Notifications will be loaded here -->
                             <div style="padding: 40px 20px; text-align: center; color: #94a3b8;">
                                 <i data-lucide="inbox"
                                     style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.5;"></i>
