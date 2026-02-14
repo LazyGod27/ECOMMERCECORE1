@@ -7,12 +7,12 @@
 
 // Database Connection Configuration
 // *** UPDATE THESE WITH YOUR SERVER DETAILS ***
-// *** DATABASE NAME: core1 ***
-$host = getenv('DB_HOST') !== false ? getenv('DB_HOST') : '127.0.0.1';
-$port = getenv('DB_PORT') !== false ? getenv('DB_PORT') : '3306';
+// *** DATABASE NAME: core1_marketph ***
+$host = getenv('DB_HOST') !== false ? getenv('DB_HOST') : 'localhost';
+$port = getenv('DB_PORT') !== false ? getenv('DB_PORT') : '3307';
 $db_name = getenv('DB_NAME') !== false ? getenv('DB_NAME') : 'core1_marketph';
-$username = getenv('DB_USERNAME') !== false ? getenv('DB_USERNAME') : 'core1_marketph';
-$password = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '123';          // REPLACE THIS if needed
+$username = getenv('DB_USERNAME') !== false ? getenv('DB_USERNAME') : 'root';
+$password = getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : '';          // XAMPP default: no password
 
 // Global PDO connection variable
 $pdo = null;

@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Olive Utility Messenger.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Durable messenger bag with multiple compartments and an adjustable strap for daily carry.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Suede Shoulder Bag (Dark Moss).jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'Soft suede shoulder bag with elegant silhouette, perfect for everyday or dressy occasions.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Half Moon Leather Purse.jpeg',
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Premium half-moon leather purse with secure closure and compact organization for essentials.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Canvas Tote with Scarf.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'Sturdy canvas tote paired with a decorative scarf — roomy and stylish for errands or beach days.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Mother of Pearl Clutch.jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Elegant mother-of-pearl clutch ideal for evening events, with a secure snap closure.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Nylon Dumpling Bag.jpeg',
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => 'Lightweight nylon dumpling bag with a modern, curved shape and water-resistant finish.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Anderson Top Handle Bag.jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Structured top-handle bag with clean lines and internal pockets for organized carrying.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Crocodile Vanity Bag.jpeg', // Using stylized image
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Small vanity bag with crocodile-texture finish — compact, stylish and great for cosmetics.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Pop Toft Tote Bag.jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'Durable tote with a playful printed pattern and spacious interior for daily essentials.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Woven Suede Crossbody.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'Woven suede crossbody with artisanal texture and adjustable strap for hands-free convenience.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Buntal Shoulder Bag.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Handwoven buntal shoulder bag offering natural texture and breathable build for summer looks.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Metallic Ruched Hobo Bag.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'Metallic ruched hobo bag with a soft interior and stylish sheen for day-to-night use.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Snoopy Peanuts Shopper.jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Playful printed shopper bag featuring character artwork and lightweight canvas construction.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Landscape Satchel.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Textured satchel with landscape print, roomy compartments and secure zip closure.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/TrendyBags PH/Faux Shearling Shoulder Bag.jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Cozy faux-shearling shoulder bag ideal for cold-weather styling and soft comfort.'
         ]
     ];
     return; // Stop processing

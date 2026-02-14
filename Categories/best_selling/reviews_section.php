@@ -379,11 +379,6 @@
     }
     ?>
 
-    <!-- Rate Button -->
-    <div class="rate-btn-container">
-        <a href="#" class="btn-rate-now" onclick="handleRateClick(event)">Rate Product <i
-                class="fas fa-chevron-right"></i></a>
-    </div>
 </div>
 
 <!-- Buy First Modal -->
@@ -443,21 +438,6 @@
             analyzeReviewBase(id, text);
         } else {
             document.addEventListener("DOMContentLoaded", () => analyzeReviewBase(id, text));
-        }
-    }
-
-    function handleRateClick(e) {
-        e.preventDefault();
-        // PHP sets this variable based on check
-        const canRate = <?php echo $can_rate ? 'true' : 'false'; ?>;
-        const productId = <?php echo $product_id; ?>;
-        // Ideally pass order_id if available, though Rate.php might need it logic refinement fallback
-        const orderId = <?php echo isset($existing_order_id) ? $existing_order_id : 0; ?>;
-
-        if (canRate) {
-            window.location.href = `../../Content/Rate.php?product_id=${productId}&order_id=${orderId}`;
-        } else {
-            showModal();
         }
     }
 

@@ -4,17 +4,7 @@ if (strpos($_SERVER['REQUEST_URI'], '/dashboard.php/') !== false) {
     header("Location: " . str_replace('/dashboard.php/', '/dashboard.php', $_SERVER['REQUEST_URI']));
     exit();
 }
-// =========================================================================
-// iMARKET ADMIN PORTAL - Main Application File
-//
-// NOTE: This file is a monolithic structure combining connection, functions,
-// and presentation for simplicity in a single-file environment.
-// =========================================================================
 
-// =========================================================================
-// 1. DATABASE CONNECTION CONFIGURATION
-// =========================================================================
-// Include the centralized database connection file
 require_once 'connection.php';
 
 // Get the database connection

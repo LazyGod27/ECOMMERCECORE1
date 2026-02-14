@@ -1,0 +1,297 @@
+/* Product Details Modal Enhancements */
+
+.product-details-section {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid #f1f5f9;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.detail-item {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #3b82f6;
+}
+
+.detail-item.material {
+    border-left-color: #8b5cf6;
+}
+
+.detail-item.origin {
+    border-left-color: #ec4899;
+}
+
+.detail-item.warranty {
+    border-left-color: #10b981;
+}
+
+.detail-item.weight {
+    border-left-color: #f59e0b;
+}
+
+.detail-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.detail-label i {
+    font-size: 14px;
+}
+
+.detail-value {
+    font-size: 15px;
+    color: #1e293b;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* Size Chart */
+.size-chart-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f0e9ff 100%);
+    border-radius: 12px;
+    border: 1px solid #ddd6fe;
+}
+
+.size-chart-section h4 {
+    margin-top: 0;
+    color: #4f46e5;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.size-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.size-table thead th {
+    background: #4f46e5;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.size-table tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+    color: #475569;
+}
+
+.size-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.size-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Specifications Section */
+.specifications-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: 12px;
+    border: 1px solid #bbf7d0;
+}
+
+.specifications-section h4 {
+    margin-top: 0;
+    color: #16a34a;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.specs-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .specs-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.specs-list li {
+    display: flex;
+    gap: 12px;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #475569;
+}
+
+.specs-list li:before {
+    content: "✓";
+    color: #16a34a;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.specs-list strong {
+    color: #1e293b;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+
+/* Care Instructions */
+.care-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
+    border-radius: 12px;
+    border: 1px solid #fecaca;
+}
+
+.care-section h4 {
+    margin-top: 0;
+    color: #d97706;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.care-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+}
+
+.care-list li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #d97706;
+    font-size: 14px;
+    color: #475569;
+    display: flex;
+    gap: 12px;
+}
+
+.care-list li:before {
+    content: "→";
+    color: #d97706;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Dimensions & Weight */
+.physical-specs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.spec-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.spec-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.spec-card-icon {
+    font-size: 24px;
+    color: #3b82f6;
+    margin-bottom: 8px;
+}
+
+.spec-card-label {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.spec-card-value {
+    font-size: 18px;
+    color: #1e293b;
+    font-weight: 800;
+}
+
+/* Trust badges */
+.trust-badges {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f0f9ff;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #0369a1;
+    font-weight: 600;
+}
+
+.trust-badge i {
+    font-size: 14px;
+}
+
+.trust-badge.verified {
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.trust-badge.warranty {
+    background: #fefce8;
+    color: #a16207;
+}

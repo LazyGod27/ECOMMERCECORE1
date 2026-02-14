@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Black Everyday Joggers.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Classic black joggers with a comfortable stretch waistband and tapered ankle for daily wear.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Studio Mist Loose Fit Joggers.jpeg',
             'rating' => 4.5,
             'sold' => 3400
+                ,'description' => 'Loose-fit studio joggers made from soft fabric for relaxed comfort and easy movement.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Midnight Miles Loose Fit Joggers.jpeg',
             'rating' => 4.7,
             'sold' => 850
+                ,'description' => 'Midnight-toned loose-fit joggers with durable stitching and breathable material for everyday use.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Pencil Skirt with Slit.jpeg',
             'rating' => 4.9,
             'sold' => 540
+                ,'description' => 'Elegant pencil skirt featuring a slit for mobility and a flattering, office-ready silhouette.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Heavyweight American Print Tee.jpeg',
             'rating' => 4.3,
             'sold' => 2100
+                ,'description' => 'Heavyweight printed tee with a vintage-inspired American graphic and comfortable cotton feel.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Skinny Jeans.jpeg',
             'rating' => 4.6,
             'sold' => 3000
+                ,'description' => 'Stretchy skinny jeans with a modern fit and durable wash for everyday styling.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Hylie Jane Lettuce Blouse.jpeg',
             'rating' => 4.8,
             'sold' => 1500
+                ,'description' => 'Delicate lettuce-edge blouse with a feminine fit that pairs well with skirts and jeans.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Candy Plus-Size Thick Pants.jpeg',
             'rating' => 4.2,
             'sold' => 1100
+                ,'description' => 'Plus-size thick pants with supportive fabric and comfortable fit designed for extended wear.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Square Neck Classy Top.jpeg',
             'rating' => 4.5,
             'sold' => 980
+                ,'description' => 'Square-neck top crafted for a classy finish and flattering neckline suitable for many occasions.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Vintage Embroidery Racing Polo.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+                ,'description' => 'Vintage embroidered polo with racing-inspired details and premium stitching.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Hip-Hop Sweatpants (Straight Leg).jpeg',
             'rating' => 4.7,
             'sold' => 670
+                ,'description' => 'Straight-leg hip-hop sweatpants with comfy fabric and street-style detailing.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Stripe American Style Polo.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+                ,'description' => 'Striped American-style polo with a classic fit and soft cotton blend.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Corset Puff Sleeve Crop Top.jpeg',
             'rating' => 4.1,
             'sold' => 4200
+                ,'description' => 'Corset-inspired crop top with puff sleeves and structured fit for fashion-forward outfits.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Scoop Back Plain Blouse.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+                ,'description' => 'Scoop-back blouse with lightweight fabric and clean silhouette for comfortable wear.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/DailyFits Co/Hylie Yassi Combi Dress.jpeg',
             'rating' => 4.0,
             'sold' => 1800
+                ,'description' => 'Versatile combi dress combining comfort and style, suitable for casual and semi-formal events.'
         ]
     ];
     return; // Stop processing

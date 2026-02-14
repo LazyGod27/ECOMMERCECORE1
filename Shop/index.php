@@ -19,6 +19,16 @@
     <!-- Link Shop CSS after header to ensure it takes precedence or cascades correctly -->
     <link rel="stylesheet" href="../css/shop/shop.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../css/shop/shop_landing.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/components/product-details.css?v=<?php echo time(); ?>">
+
+    <style>
+        .variant-swatches{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+        .variant-swatch{width:40px;height:40px;border-radius:6px;border:2px solid transparent;padding:0;cursor:pointer;background:#f0f0f0;overflow:hidden;background-size:cover;background-position:center;position:relative;transition:all 0.2s}
+        .variant-swatch:hover{transform:scale(1.08);border-color:#999}
+        .variant-swatch.selected{border-color:#3b82f6;box-shadow:0 0 0 2px #3b82f6;transform:scale(1.15)}
+        .variant-swatch img{width:100%;height:100%;object-fit:cover;display:block}
+        .pv-option-btn.selected{box-shadow:inset 0 -3px 0 rgba(0,0,0,0.06)}
+    </style>
 
     <div class="content">
         <div class="shop-container">
@@ -134,6 +144,35 @@
                 $products = [];
                 $productNames = ['T-Shirt', 'Jeans', 'Sneakers', 'Watch', 'Headphones', 'Bag', 'Lamp', 'Phone Case', 'Lipstick', 'Coffee Maker', 'Hoodie', 'Socks', 'Cap', 'Shorts'];
                 $adjectives = ['Classic', 'Premium', 'Basic', 'Stylish', 'Modern', 'Urban', 'Cozy'];
+                
+                // Product descriptions (base) and adjective modifiers
+                $descriptions = [
+                    'T-Shirt' => 'Comfortable and breathable cotton t-shirt perfect for everyday wear. Features a classic fit and durable stitching.',
+                    'Jeans' => 'Premium denim jeans with a reliable fit. Made from high-quality cotton blend for comfort and durability.',
+                    'Sneakers' => 'Comfortable sneakers engineered for daily wear with cushioned soles and breathable materials.',
+                    'Watch' => 'Reliable wristwatch with accurate timekeeping, water resistance and a sleek design.',
+                    'Headphones' => 'High-fidelity headphones with noise isolation and comfortable ear cups for long listening sessions.',
+                    'Bag' => 'Durable bag with smart compartments and reinforced straps for everyday carry.',
+                    'Lamp' => 'Energy-efficient LED lamp with adjustable brightness and a modern design.',
+                    'Phone Case' => 'Protective slim phone case with shock absorption and scratch resistance.',
+                    'Lipstick' => 'Long-lasting lipstick with rich pigmentation and moisturizing formula.',
+                    'Coffee Maker' => 'Automatic coffee maker that brews fresh coffee quickly and is easy to clean.',
+                    'Hoodie' => 'Cozy hoodie made from soft fabric with a roomy pocket and adjustable hood.',
+                    'Socks' => 'Breathable socks designed for comfort and durability during daily use or sports.',
+                    'Cap' => 'Adjustable cap offering sun protection and effortless style.',
+                    'Shorts' => 'Lightweight shorts made for comfort in warm weather, with practical pockets.'
+                ];
+
+                // Adjective-based modifiers to make descriptions vary by product variant
+                $adj_modifiers = [
+                    'Classic' => 'A timeless design that emphasizes comfort and reliability.',
+                    'Premium' => 'Crafted with higher-grade materials for superior comfort and longevity.',
+                    'Basic' => 'An affordable, no-frills option that covers essential needs.',
+                    'Stylish' => 'Designed with current trends in mind to give a fashionable edge.',
+                    'Modern' => 'Contemporary styling with functional improvements and sleek finishes.',
+                    'Urban' => 'Street-ready design built for everyday city life and commuter comfort.',
+                    'Cozy' => 'Extra soft and warm, perfect for relaxed, comfortable wear.'
+                ];
 
                 // 1. Determine Correct Content File (Once)
                 $safeStoreName = rtrim($storeName, '.');
@@ -163,8 +202,21 @@
                         $price = rand(150, 2500);
                         $origPrice = floor($price * 1.35);
                         $discount = "35% OFF";
-                        $name = $adjectives[array_rand($adjectives)] . ' ' . $productNames[array_rand($productNames)];
+                        $productName = $productNames[array_rand($productNames)];
+                        $adjective = $adjectives[array_rand($adjectives)];
+                        $name = $adjective . ' ' . $productName;
                         $image = 'https://via.placeholder.com/300x400/f5f5f5/999999?text=' . urlencode($name);
+                        
+                        // Get base description based on product type
+                        $baseDesc = $descriptions[$productName] ?? 'High-quality product designed for everyday use. Features superior craftsmanship and durability.';
+                        // Pick adjective modifier when available
+                        $modifier = $adj_modifiers[$adjective] ?? '';
+                        // Compose final description (ensure readability)
+                        if (!empty($modifier)) {
+                            $description = $baseDesc . ' ' . $modifier;
+                        } else {
+                            $description = $baseDesc;
+                        }
 
                         $sourceProducts[] = [
                             'name' => $name,
@@ -174,7 +226,34 @@
                             'discount' => $discount,
                             'image' => $image,
                             'rating' => 4.0 + (rand(0, 9) / 10),
-                            'sold' => rand(100, 5000)
+                            'sold' => rand(100, 5000),
+                            'description' => $description,
+                            'variants' => [
+                                'Black' => ['image' => 'https://via.placeholder.com/600x800/111111/ffffff?text=' . urlencode($name . ' Black'), 'color' => '#111111'],
+                                'White' => ['image' => 'https://via.placeholder.com/600x800/ffffff/111111?text=' . urlencode($name . ' White'), 'color' => '#ffffff'],
+                                'Blue' => ['image' => 'https://via.placeholder.com/600x800/3b82f6/ffffff?text=' . urlencode($name . ' Blue'), 'color' => '#3b82f6']
+                            ]
+                        ];
+                    }
+                }
+
+                // Ensure every product has a `variants` map so front-end swatches work
+                foreach ($sourceProducts as $idx => $sp) {
+                    if (!isset($sp['variants']) || empty($sp['variants'])) {
+                        $prodName = $sp['name'] ?? ('Product' . ($idx + 1));
+                        $sourceProducts[$idx]['variants'] = [
+                            'Black' => [
+                                'image' => 'H&M ' . urlencode($prodName . ' Black'),
+                                'color' => '#111111'
+                            ],
+                            'White' => [
+                                'image' => 'https://via.placeholder.com/600x800/ffffff/111111?text=' . urlencode($prodName . ' White'),
+                                'color' => '#ffffff'
+                            ],
+                            'Blue' => [
+                                'image' => 'https://via.placeholder.com/600x800/3b82f6/ffffff?text=' . urlencode($prodName . ' Blue'),
+                                'color' => '#3b82f6'
+                            ]
                         ];
                     }
                 }
@@ -474,14 +553,18 @@
                                         data-price="<?php echo $product['price']; ?>"
                                         data-raw-price="<?php echo $product['raw_price']; ?>"
                                         data-image="<?php echo $product['image']; ?>"
+                                        data-variants='<?php echo htmlspecialchars(json_encode($product['variants'] ?? [])); ?>'
                                         data-rating="<?php echo $product['rating']; ?>" data-sold="<?php echo $soldDisp; ?>"
                                         data-store="<?php echo htmlspecialchars($selectedStore); ?>"
                                         data-category="<?php echo htmlspecialchars($currentShop['category'] ?? 'General'); ?>"
+                                        data-description="<?php echo htmlspecialchars($product['description'] ?? ''); ?>"
                                         onclick="openProductModal(this)">
 
                                         <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>"
                                             class="product-img">
+                                        <div class="variant-swatches" aria-hidden="true"></div>
                                         <h3 class="product-title"><?php echo htmlspecialchars($product['name']); ?></h3>
+                                        <p class="product-description"><?php echo htmlspecialchars(substr($product['description'] ?? '', 0, 60)) . '...'; ?></p>
                                         <div class="product-price"><?php echo $product['price']; ?></div>
                                         <div class="product-meta-row">
                                             <div class="product-rating">
@@ -896,6 +979,7 @@
                                                 data-image="<?php echo $tp['image']; ?>" data-rating="<?php echo $tp['rating']; ?>"
                                                 data-sold="<?php echo $tp['sold']; ?>"
                                                 data-store="<?php echo htmlspecialchars($rShop['name']); ?>"
+                                                data-variants='<?php echo htmlspecialchars(json_encode($tp['variants'] ?? [])); ?>'
                                                 onclick="openProductModal(this)">
                                                 <?php 
                                                     $tp_img = $tp['image'];
@@ -903,6 +987,7 @@
                                                     $tp_img = str_replace(' ', '%20', $tp_img);
                                                 ?>
                                                 <img src="<?php echo $tp_img; ?>" class="mini-product-img">
+                                                <div class="variant-swatches" aria-hidden="true" style="position: absolute; bottom:6px; right:6px;"></div>
                                                 <div class="mini-product-price"><?php echo $tp['price']; ?></div>
                                             </div>
                                         <?php endforeach; ?>
@@ -949,7 +1034,9 @@
                                         data-original-price="<?php echo $ap['original_price'] ?? ''; ?>"
                                         data-discount="<?php echo $ap['discount'] ?? ''; ?>"
                                         data-image="<?php echo $ap['image']; ?>" data-rating="<?php echo $ap['rating']; ?>"
+                                        data-variants='<?php echo htmlspecialchars(json_encode($ap['variants'] ?? [])); ?>'
                                         data-sold="<?php echo $soldDisp; ?>"
+                                        data-description="<?php echo htmlspecialchars($ap['description'] ?? ''); ?>"
                                         data-store="<?php echo htmlspecialchars($ap['shop_name']); ?>" data-category="<?php
                                            $prodCat = 'General';
                                            foreach ($shops as $sh)
@@ -966,6 +1053,7 @@
                                                 $img_path = str_replace(' ', '%20', $img_path);
                                             ?>
                                             <img src="<?php echo $img_path; ?>" class="result-img">
+                                            <div class="variant-swatches" aria-hidden="true" style="position: absolute; bottom:8px; left:8px;"></div>
                                             <?php if (!empty($ap['discount'])): ?>
                                                 <div style="position: absolute; top: 0; right: 0; background: #ffe910; color: #ee4d2d; padding: 2px 5px; font-size: 10px; font-weight: 700;">
                                                     <?php echo $ap['discount']; ?>
@@ -974,6 +1062,7 @@
                                         </div>
                                         <div class="result-info">
                                             <div class="result-title"><?php echo htmlspecialchars($ap['name']); ?></div>
+                                            <div class="result-description"><?php echo htmlspecialchars(substr($ap['description'] ?? '', 0, 50)) . '...'; ?></div>
                                             <div class="result-price-row">
                                                 <div class="result-price"><?php echo $ap['price']; ?></div>
                                                 <?php if (!empty($ap['original_price'])): ?>
@@ -999,73 +1088,9 @@
                 $selectedStore = $shops[0]['name'];
                 ?>
                 <!-- LANDING VIEW (Premium Enhanced Hero) -->
+                <!-- Old inline hero styles removed - using professional mall_hero.php component instead -->
+
                 <style>
-                    .shop-hero {
-                        height: 450px;
-                        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #172554 100%);
-                        border-radius: 24px;
-                        position: relative;
-                        overflow: hidden;
-                        margin-top: 20px;
-                        display: flex;
-                        align-items: center;
-                        padding: 0 60px;
-                        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                    }
-
-                    .hero-glass-card {
-                        background: rgba(255, 255, 255, 0.05);
-                        backdrop-filter: blur(10px);
-                        border: 1px solid rgba(255, 255, 255, 0.1);
-                        padding: 40px;
-                        border-radius: 30px;
-                        z-index: 2;
-                        max-width: 550px;
-                        animation: fadeInUp 0.8s ease-out;
-                    }
-
-                    @keyframes fadeInUp {
-                        from { opacity: 0; transform: translateY(30px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-
-                    .hero-badge {
-                        display: inline-block;
-                        padding: 6px 16px;
-                        background: linear-gradient(90deg, #3b82f6, #60a5fa);
-                        color: white;
-                        border-radius: 50px;
-                        font-size: 0.85rem;
-                        font-weight: 700;
-                        margin-bottom: 20px;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
-                        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-                    }
-
-                    .floating-img-wrapper {
-                        flex: 1;
-                        display: flex;
-                        justify-content: flex-end;
-                        z-index: 2;
-                        animation: float 6s ease-in-out infinite;
-                    }
-
-                    @keyframes float {
-                        0%, 100% { transform: translateY(0) rotate(0deg); }
-                        50% { transform: translateY(-20px) rotate(2deg); }
-                    }
-
-                    .hero-glow {
-                        position: absolute;
-                        width: 400px;
-                        height: 400px;
-                        background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
-                        border-radius: 50%;
-                        filter: blur(40px);
-                        pointer-events: none;
-                    }
-
                     .premium-card {
                         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                         cursor: pointer;
@@ -1119,44 +1144,20 @@
                     }
                 </style>
 
-                <div class="shop-hero">
-                    <div class="hero-glow" style="top: -100px; left: -100px;"></div>
-                    <div class="hero-glow" style="bottom: -100px; right: 20%;"></div>
-                    
-                    <div class="hero-glass-card">
-                        <span class="hero-badge">Verified Official Mall</span>
-                        <h1 style="font-size: 3.5rem; font-weight: 800; color: white; margin: 0 0 15px; line-height: 1.1; letter-spacing: -1px;">
-                            Elevate Your <span style="background: linear-gradient(90deg, #60a5fa, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Shopping</span>
-                        </h1>
-                        <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8); line-height: 1.6; margin-bottom: 30px;">
-                            Discover a curated world of premium brands and exclusive collections. Experience the future of e-commerce today.
-                        </p>
-                        <div style="display: flex; gap: 15px;">
-                            <a href="?search=" class="btn-seller-primary" style="padding: 14px 40px; border-radius: 12px; font-size: 1rem; text-decoration: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-                                Explore All Stores
-                            </a>
-                            <a href="#premium-collections" style="padding: 14px 25px; color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; text-decoration: none; font-weight: 600; backdrop-filter: blur(5px);">
-                                <i class="fas fa-play" style="margin-right: 8px; font-size: 0.8em;"></i> Highlights
-                            </a>
-                        </div>
-                    </div>
+                <!-- LANDING VIEW: Professional Mall Hero Component -->
+                <?php include '../Components/mall_hero.php'; ?>
 
-                    <div class="floating-img-wrapper" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                        <div style="position: relative;">
-                            <img src="../image/Dashboard/brand%20new%20bag.jpeg" alt="Premium Bag" 
-                                 style="height: 350px; width: 320px; object-fit: cover; border-radius: 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 8px solid rgba(255,255,255,0.1);">
-                            <!-- Floating decorative tags -->
-                            <div style="position: absolute; top: 15%; left: -25px; background: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; transform: rotate(-8deg); z-index: 3;">
-                                <i class="fas fa-tag" style="color: #3b82f6;"></i>
-                                <span style="font-size: 0.8rem; font-weight: 700; color: #1e293b;">SALE -40%</span>
-                            </div>
-                            <div style="position: absolute; bottom: 20%; right: -20px; background: #1e293b; color: white; padding: 10px 15px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; transform: rotate(8deg); z-index: 3;">
-                                <i class="fas fa-crown" style="color: #f59e0b;"></i>
-                                <span style="font-size: 0.8rem; font-weight: 600;">LUXURY</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Helper function for hex to RGB conversion -->
+                <?php
+                function hexToRgb($hex) {
+                    $hex = str_replace('#', '', $hex);
+                    if(strlen($hex) == 6) {
+                        list($r, $g, $b) = sscanf($hex, '%02x%02x%02x');
+                        return "$r,$g,$b";
+                    }
+                    return "99,102,241"; // Default indigo fallback
+                }
+                ?>
 
                 <!-- Premium Store Collections Section -->
                 <div id="premium-collections" class="featured-section" style="margin-top: 60px; margin-bottom: 70px;">
@@ -1164,80 +1165,172 @@
                         <div>
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                                 <div style="width: 25px; height: 3px; background: #3b82f6; border-radius: 10px;"></div>
-                                <span style="font-weight: 800; color: #3b82f6; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">Curated For You</span>
+                                <span style="font-weight: 800; color: #3b82f6; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">All Official Stores</span>
                             </div>
-                            <h2 style="font-size: 2.2rem; color: #0f172a; margin: 0; font-weight: 800;">Premium Store <span style="color: #3b82f6;">Collections</span></h2>
+                            <h2 style="font-size: 2.2rem; color: #0f172a; margin: 0; font-weight: 800;">Premium Store <span style="color: #3b82f6;">Partners</span></h2>
                         </div>
                         <a href="?search=" style="color: #64748b; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; transition: all 0.3s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.color='#3b82f6'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#64748b'">
-                            Explore All Mall Brands <i class="fas fa-arrow-right" style="margin-left: 8px; font-size: 0.8em;"></i>
+                            Browse Categories <i class="fas fa-arrow-right" style="margin-left: 8px; font-size: 0.8em;"></i>
                         </a>
                     </div>
 
-                    <div class="featured-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
-                        <!-- Item 1: UrbanWear -->
-                        <div class="premium-card" onclick="window.location.href='?store=UrbanWear+PH'">
-                            <div class="premium-shop-badge">Official Store</div>
-                            <img src="../image/Shop/UrbanWear%20PH/Men_HM_Loose_Fit_Sweatshirt.jpeg" alt="UrbanWear">
-                            <div class="premium-overlay">
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                                    <i class="fas fa-tshirt" style="color: #60a5fa;"></i>
-                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #60a5fa;">Lifestyle</span>
+                    <div class="featured-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        <?php 
+                        $categoryIcons = [
+                            'UrbanWear PH' => ['icon' => 'fa-tshirt', 'color' => '#60a5fa', 'label' => 'Fashion'],
+                            'StyleHub Manila' => ['icon' => 'fa-crown', 'color' => '#f59e0b', 'label' => 'Trending'],
+                            'DailyFits Co.' => ['icon' => 'fa-heart', 'color' => '#ef4444', 'label' => 'Everyday'],
+                            'LuxeBasics' => ['icon' => 'fa-gem', 'color' => '#8b5cf6', 'label' => 'Premium'],
+                            'TechZone PH' => ['icon' => 'fa-bolt', 'color' => '#a855f7', 'label' => 'Tech'],
+                            'SmartGear Store' => ['icon' => 'fa-mobile', 'color' => '#06b6d4', 'label' => 'Gadgets'],
+                            'GadgetLab PH' => ['icon' => 'fa-laptop', 'color' => '#3b82f6', 'label' => 'Electronics'],
+                            'CozyLiving Store' => ['icon' => 'fa-home', 'color' => '#ec4899', 'label' => 'Home'],
+                            'GlowUp Beauty' => ['icon' => 'fa-magic', 'color' => '#f472b6', 'label' => 'Beauty'],
+                            'FreshLook PH' => ['icon' => 'fa-spa', 'color' => '#10b981', 'label' => 'Care'],
+                            'HomeEssentials PH' => ['icon' => 'fa-utensils', 'color' => '#f97316', 'label' => 'Kitchen'],
+                            'TrendyBags PH' => ['icon' => 'fa-bag-shopping', 'color' => '#6366f1', 'label' => 'Bags']
+                        ];
+                        
+                        foreach($shops as $shop): 
+                            $storeName = $shop['name'];
+                            $storeEnc = urlencode($storeName);
+                            $iconInfo = $categoryIcons[$storeName] ?? ['icon' => 'fa-store', 'color' => '#64748b', 'label' => 'Shop'];
+                            $initials = $shop['initials'];
+                            $bgColor = $shop['bg'];
+                        ?>
+                        <div class="premium-card" onclick="window.location.href='?store=<?php echo $storeEnc; ?>'" style="cursor: pointer;">
+                            <div class="premium-shop-badge" style="background: linear-gradient(135deg, #<?php echo $bgColor; ?>, rgba(<?php echo hexToRgb($bgColor); ?>, 0.7)); font-size: 11px;"><?php echo $shop['rating']; ?> ★</div>
+                            <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #<?php echo $bgColor; ?>, rgba(<?php echo hexToRgb($bgColor); ?>, 0.6)); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                                <div style="position: absolute; width: 100%; height: 100%; background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2220%22 cy=%2220%22 r=%225%22 fill=%22white%22 opacity=%220.05%22/><circle cx=%2270%22 cy=%2280%22 r=%228%22 fill=%22white%22 opacity=%220.05%22/></svg>'); opacity: 0.5;"></div>
+                                <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 32px; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 2;"><?php echo $initials; ?></div>
+                            </div>
+                            <div class="premium-overlay" style="padding: 16px;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <i class="fas <?php echo $iconInfo['icon']; ?>" style="color: <?php echo $iconInfo['color']; ?>;font-size:14px;"></i>
+                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: <?php echo $iconInfo['color']; ?>;"><?php echo $iconInfo['label']; ?></span>
                                 </div>
-                                <h3 style="margin: 0; font-size: 1.6rem; font-weight: 800;">UrbanWear PH</h3>
-                                <p style="margin: 8px 0 0; font-size: 0.95rem; opacity: 0.8; font-weight: 400;">Premium Streetwear & Style Experts</p>
-                                <div style="margin-top: 20px; width: 0; height: 3px; background: #3b82f6; transition: width 0.4s ease;" class="hover-line"></div>
+                                <h3 style="margin: 0; font-size: 1rem; font-weight: 800; line-height: 1.2;"><?php echo htmlspecialchars($storeName); ?></h3>
+                                <p style="margin: 6px 0 0; font-size: 0.85rem; opacity: 0.75; font-weight: 400; line-height: 1.3;"><?php echo htmlspecialchars($shop['category']); ?></p>
+                                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                    <span style="font-size: 11px; font-weight: 600; opacity: 0.8;"><?php echo $shop['sold']; ?> sold</span>
+                                    <div style="width: 0; height: 2px; background: rgba(255,255,255,0.6); transition: width 0.3s ease;" class="hover-line"></div>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Item 2: TechZone -->
-                        <div class="premium-card" onclick="window.location.href='?store=TechZone+PH'">
-                            <div class="premium-shop-badge">Tech Partner</div>
-                            <img src="../image/electronics/Noise_Cancelling_Headphones.jpeg" alt="TechZone">
-                            <div class="premium-overlay" style="background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 40%, transparent 100%);">
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                                    <i class="fas fa-bolt" style="color: #a855f7;"></i>
-                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #a855f7;">Electronics</span>
-                                </div>
-                                <h3 style="margin: 0; font-size: 1.6rem; font-weight: 800;">TechZone PH</h3>
-                                <p style="margin: 8px 0 0; font-size: 0.95rem; opacity: 0.8; font-weight: 400;">Innovation & Future Gadgets</p>
-                            </div>
-                        </div>
-
-                        <!-- Item 3: GlowUp -->
-                        <div class="premium-card" onclick="window.location.href='?store=GlowUp+Beauty'">
-                            <div class="premium-shop-badge">Beauty Expert</div>
-                            <img src="../image/Shop/GlowUp%20Beauty/I_White_Korea_Glow_Up_Whip.jpeg" alt="GlowUp">
-                            <div class="premium-overlay">
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                                    <i class="fas fa-magic" style="color: #f472b6;"></i>
-                                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #f472b6;">Beauty</span>
-                                </div>
-                                <h3 style="margin: 0; font-size: 1.6rem; font-weight: 800;">GlowUp Beauty</h3>
-                                <p style="margin: 8px 0 0; font-size: 0.95rem; opacity: 0.8; font-weight: 400;">Certified Skincare & Cosmetics</p>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
                 <style>
+                    .premium-card {
+                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        transform-origin: center;
+                    }
+                    .premium-card:hover {
+                        transform: translateY(-8px) scale(1.02);
+                        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15), 0 0 1px rgba(99, 102, 241, 0.1);
+                    }
                     .premium-card:hover .hover-line {
-                        width: 50% !important;
+                        width: 100% !important;
+                    }
+                    .premium-card .premium-overlay {
+                        background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.85) 50%, transparent 100%);
+                        transition: all 0.3s ease;
+                    }
+                    .premium-card:hover .premium-overlay {
+                        background: linear-gradient(to top, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.1) 50%, transparent 100%);
                     }
                 </style>
 
-                <!-- Featured / Shop Grid (Premium Highlights) -->
-                <div class="content-card" style="margin-top: 50px; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+                <!-- Best Selling Products Section -->
+                <div class="content-card" style="margin-top: 50px; background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%); padding: 40px; border-radius: 24px; box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1); border: 2px solid #c7d2fe;">
                     <div class="section-header" style="text-align: center; margin-bottom: 40px;">
-                        <h2 style="font-size: 2.2rem; color: #0f172a; margin-bottom: 12px; font-weight: 800;">Mall <span style="color: #3b82f6;">Highlights</span></h2>
-                        <div style="width: 60px; height: 4px; background: #3b82f6; margin: 0 auto 15px; border-radius: 10px;"></div>
-                        <p style="color: #64748b; font-size: 1.1rem;">Handpicked essentials from our top-rated official stores</p>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px;">
+                            <i class="fas fa-star" style="color: #6366f1; font-size: 22px;"></i>
+                            <span style="font-weight: 800; color: #6366f1; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">Most Popular</span>
+                            <i class="fas fa-star" style="color: #6366f1; font-size: 22px;"></i>
+                        </div>
+                        <h2 style="font-size: 2.2rem; color: #0f172a; margin-bottom: 12px; font-weight: 800;">Customer Favorites & <span style="color: #6366f1;">Best Sellers</span></h2>
+                        <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #6366f1, #a855f7); margin: 0 auto 15px; border-radius: 10px;"></div>
+                        <p style="color: #64748b; font-size: 1.1rem;">Top-rated products loved by thousands of customers across the mall</p>
                     </div>
 
                     <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;">
                         <?php 
-                        // Fetch a few products from top shops for the landing page
+                        // Fetch best-selling products from database
+                        include '../Categories/best_selling/get_best_sellers.php';
+                        $bestSellers = getBestSellingProducts($conn, 4);
+                        
+                        foreach ($bestSellers as $bs):
+                            $soldDisp = $bs['total_sold'] ?? 0;
+                            if ($soldDisp > 1000) {
+                                $soldDisp = number_format($soldDisp / 1000, 1) . 'k';
+                            }
+                        ?>
+                            <div class="product-card" 
+                                style="border: 1px solid #c7d2fe; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; box-shadow: 0 4px 6px rgba(99, 102, 241, 0.05);"
+                                onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(99, 102, 241, 0.15); this.style.borderColor='#a855f7';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(99, 102, 241, 0.05)'; this.style.borderColor='#c7d2fe';"
+                                data-name="<?php echo htmlspecialchars($bs['name']); ?>"
+                                data-price="<?php echo $bs['price']; ?>" 
+                                data-raw-price="<?php echo $bs['price']; ?>"
+                                data-image="<?php echo $bs['image']; ?>" 
+                                data-rating="4.5" 
+                                data-sold="<?php echo $soldDisp; ?>"
+                                data-description="<?php echo htmlspecialchars($bs['description'] ?? ''); ?>"
+                                data-store="Best Sellers" 
+                                onclick="openProductModal(this)">
+                                
+                                <!-- Popular Badge -->
+                                <div style="position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); z-index: 10; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-fire"></i> Bestseller
+                                </div>
+                                
+                                <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden; position: relative; background: #f8fafc;">
+                                    <img src="<?php echo str_replace(' ', '%20', $bs['image']); ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                                </div>
+                                
+                                <div class="result-info" style="padding: 20px;">
+                                    <div style="font-size: 11px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-chart-line" style="font-size: 10px;"></i> Customer Choice
+                                    </div>
+                                    <div class="result-title" style="font-weight: 600; font-size: 15px; color: #1e293b; margin-bottom: 8px; height: 2.8em; overflow: hidden; line-height: 1.4;"><?php echo htmlspecialchars($bs['name']); ?></div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <div class="result-price" style="color: #0f172a; font-weight: 800; font-size: 18px;"><?php echo $bs['price']; ?></div>
+                                        <div style="font-size: 12px; color: #6366f1; font-weight: 700; background: #e0e7ff; padding: 4px 12px; border-radius: 20px;"><?php echo $soldDisp; ?> sold</div>
+                                    </div>
+                                    
+                                    <button style="width: 100%; padding: 12px; background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s;" 
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(99, 102, 241, 0.3)'" 
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                                        onclick="event.stopPropagation(); openProductModal(this.closest('.product-card'))">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Featured / Shop Grid (Premium Highlights) -->
+                <div class="content-card" style="margin-top: 50px; background: linear-gradient(135deg, #dcfce7 0%, #ccfbf1 100%); padding: 40px; border-radius: 24px; box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1); border: 2px solid #a7f3d0;">
+                    <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px;">
+                            <i class="fas fa-gem" style="color: #059669; font-size: 22px;"></i>
+                            <span style="font-weight: 800; color: #059669; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">Premium Selection</span>
+                            <i class="fas fa-gem" style="color: #059669; font-size: 22px;"></i>
+                        </div>
+                        <h2 style="font-size: 2.2rem; color: #0f172a; margin-bottom: 12px; font-weight: 800;">Mall <span style="color: #059669;">Highlights</span></h2>
+                        <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #059669, #14b8a6); margin: 0 auto 15px; border-radius: 10px;"></div>
+                        <p style="color: #64748b; font-size: 1.1rem;">Curated collection from our most trusted and best-reviewed stores</p>
+                    </div>
+
+                    <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        <?php 
+                        // Fetch products from multiple top shops for the landing page
                         $landing_products = [];
-                        $shops_to_sample = ['UrbanWear PH', 'TechZone PH', 'TrendyBags PH', 'GlowUp Beauty'];
+                        $shops_to_sample = ['UrbanWear PH', 'TechZone PH', 'TrendyBags PH', 'GlowUp Beauty', 'DailyFits Co.', 'SmartGear Store', 'CozyLiving Store', 'StyleHub Manila'];
                         foreach($shops_to_sample as $sname) {
                             $sprod = getMockProducts($sname);
                             if(!empty($sprod)) {
@@ -1251,9 +1344,9 @@
                             $soldDisp = ($ap['sold'] > 1000) ? number_format($ap['sold'] / 1000, 1) . 'k' : $ap['sold'];
                         ?>
                             <div class="product-card" 
-                                style="border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;"
-                                onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1)';"
-                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                                style="border: 1px solid #a7f3d0; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.05);"
+                                onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(16, 185, 129, 0.15)'; this.style.borderColor='#14b8a6';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(16, 185, 129, 0.05)'; this.style.borderColor='#a7f3d0';"
                                 data-name="<?php echo htmlspecialchars($ap['name']); ?>"
                                 data-price="<?php echo $ap['price']; ?>" 
                                 data-raw-price="<?php echo $ap['raw_price']; ?>"
@@ -1262,40 +1355,61 @@
                                 data-image="<?php echo $ap['image']; ?>" 
                                 data-rating="<?php echo $ap['rating'] ?? 4.5; ?>" 
                                 data-sold="<?php echo $soldDisp; ?>"
+                                data-description="<?php echo htmlspecialchars($ap['description'] ?? ''); ?>"
                                 data-store="<?php echo htmlspecialchars($ap['shop_name']); ?>" 
                                 onclick="openProductModal(this)">
                                 
-                                <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden; position: relative; background: #f8fafc;">
+                                <div style="position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #059669, #14b8a6); color: white; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); z-index: 10; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-crown"></i> Featured
+                                </div>
+                                
+                                <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden; position: relative; background: #f0fdf4;">
                                     <img src="<?php echo str_replace(' ', '%20', $ap['image']); ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
                                     <?php if (!empty($ap['discount'])): ?>
-                                        <div style="position: absolute; top: 12px; left: 12px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);">
-                                            <?php echo $ap['discount']; ?>
+                                        <div style="position: absolute; bottom: 10px; left: 10px; background: linear-gradient(135deg, #dc2626, #991b1b); color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 800; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); display: flex; align-items: center; gap: 4px;">
+                                            <i class="fas fa-tag"></i> <?php echo $ap['discount']; ?>
                                         </div>
                                     <?php endif; ?>
                                 </div>
                                 
-                                <div class="result-info" style="padding: 20px;">
-                                    <div style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
-                                        <i class="fas fa-check-circle" style="font-size: 10px;"></i> Mall Verified
+                                <div class="result-info" style="padding: 18px;">
+                                    <div style="font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+                                        <i class="fas fa-certificate" style="font-size: 10px;"></i> Official Certified
                                     </div>
-                                    <div class="result-title" style="font-weight: 600; font-size: 15px; color: #1e293b; margin-bottom: 12px; height: 2.8em; overflow: hidden; line-height: 1.4;"><?php echo htmlspecialchars($ap['name']); ?></div>
+                                    <div class="result-title" style="font-weight: 600; font-size: 15px; color: #1e293b; margin-bottom: 8px; height: 2.8em; overflow: hidden; line-height: 1.4;"><?php echo htmlspecialchars($ap['name']); ?></div>
                                     
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="result-description" style="font-size: 12px; color: #64748b; margin-bottom: 12px; height: 2.4em; overflow: hidden; line-height: 1.2;"><?php echo htmlspecialchars(substr($ap['description'] ?? '', 0, 80)); ?></div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                         <div class="result-price" style="color: #0f172a; font-weight: 800; font-size: 18px;"><?php echo $ap['price']; ?></div>
-                                        <div style="font-size: 12px; color: #64748b; font-weight: 500; background: #f1f5f9; padding: 2px 8px; border-radius: 4px;"><?php echo $soldDisp; ?> sold</div>
+                                        <div style="font-size: 12px; color: #059669; font-weight: 700; background: #dcfce7; padding: 4px 12px; border-radius: 20px;"><?php echo $soldDisp; ?> sold</div>
                                     </div>
                                     
-                                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 10px;">
-                                        <div style="width: 24px; height: 24px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #64748b;">
+                                    <button style="width: 100%; padding: 10px; background: linear-gradient(135deg, #059669, #14b8a6); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 14px;" 
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(16, 185, 129, 0.3)'" 
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                                        onclick="event.stopPropagation(); openProductModal(this.closest('.product-card'))">
+                                        <i class="fas fa-shopping-bag" style="margin-right: 6px;"></i> View Details
+                                    </button>
+                                    
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #a7f3d0; display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 20px; height: 20px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #059669; border: 1px solid #a7f3d0;">
                                             <i class="fas fa-store"></i>
                                         </div>
-                                        <span style="font-size: 12px; color: #64748b; font-weight: 600;"><?php echo htmlspecialchars($ap['shop_name']); ?></span>
+                                        <span style="font-size: 11px; color: #64748b; font-weight: 600;"><?php echo htmlspecialchars($ap['shop_name']); ?></span>
                                     </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
+                
+                <style>
+                    .mall-highlights-card:hover {
+                        transform: translateY(-10px) scale(1.02);
+                        box-shadow: 0 25px 50px rgba(16, 185, 129, 0.15);
+                    }
+                </style>
                 <!-- You can add featured categories or other content here later -->
                 <?php
             }
@@ -1373,10 +1487,65 @@
                 </div>
 
                 <div class="pv-actions">
-                    <a id="modalAddToCartBtn" href="#" class="pv-btn pv-btn-cart">
+                    <a id="modalAddToCartBtn" href="#" onclick="event.preventDefault(); window.location.href = document.getElementById('modalAddToCartBtn').href;" class="pv-btn pv-btn-cart">
                         <i class="fas fa-cart-plus" style="margin-right: 8px;"></i> Add to Cart
                     </a>
-                    <a id="modalBuyNowBtn" href="#" class="pv-btn pv-btn-buy">Buy Now</a>
+                    <a id="modalBuyNowBtn" href="#" onclick="event.preventDefault(); window.location.href = document.getElementById('modalBuyNowBtn').href;" class="pv-btn pv-btn-buy">Buy Now</a>
+                </div>
+
+                <!-- Product Details Section -->
+                <div class="product-details-section">
+                    <div class="details-grid">
+                        <div class="detail-item material" id="materialDetail" style="display:none;">
+                            <div class="detail-label"><i class="fas fa-shirt"></i> Material Quality</div>
+                            <div class="detail-value" id="materialValue"></div>
+                        </div>
+                        <div class="detail-item origin" id="originDetail" style="display:none;">
+                            <div class="detail-label"><i class="fas fa-globe"></i> Origin</div>
+                            <div class="detail-value" id="originValue"></div>
+                        </div>
+                        <div class="detail-item warranty" id="warrantyDetail" style="display:none;">
+                            <div class="detail-label"><i class="fas fa-shield-alt"></i> Warranty</div>
+                            <div class="detail-value" id="warrantyValue"></div>
+                        </div>
+                        <div class="detail-item weight" id="weightDetail" style="display:none;">
+                            <div class="detail-label"><i class="fas fa-weight"></i> Weight</div>
+                            <div class="detail-value" id="weightValue"></div>
+                        </div>
+                    </div>
+
+                    <!-- Size Chart -->
+                    <div class="size-chart-section" id="sizeChartSection" style="display:none;">
+                        <h4><i class="fas fa-ruler"></i> Size Chart</h4>
+                        <table class="size-table" id="sizeTable">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Specifications -->
+                    <div class="specifications-section" id="specsSection" style="display:none;">
+                        <h4><i class="fas fa-cogs"></i> Specifications</h4>
+                        <ul class="specs-list" id="specsList"></ul>
+                    </div>
+
+                    <!-- Dimensions -->
+                    <div class="physical-specs" id="physicalSpecsSection" style="display:none;">
+                        <div class="spec-card" id="dimensionsCard" style="display:none;">
+                            <div class="spec-card-icon"><i class="fas fa-cube"></i></div>
+                            <div class="spec-card-label">Dimensions</div>
+                            <div class="spec-card-value" id="dimensionsValue"></div>
+                        </div>
+                    </div>
+
+                    <!-- Care Instructions -->
+                    <div class="care-section" id="careSection" style="display:none;">
+                        <h4><i class="fas fa-hand-holding-water"></i> Care Instructions</h4>
+                        <ul class="care-list" id="careList"></ul>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="trust-badges" id="trustBadges" style="display:none;margin-top:20px;"></div>
                 </div>
 
                 <!-- Reviews Section -->
@@ -1395,6 +1564,152 @@
 
     <script>
         let currentProduct = {};
+
+        function populateProductDetails(product) {
+            // Material
+            const materialEl = document.getElementById('materialDetail');
+            if (product.material) {
+                materialEl.style.display = 'block';
+                document.getElementById('materialValue').innerText = product.material;
+            } else {
+                materialEl.style.display = 'none';
+            }
+
+            // Origin
+            const originEl = document.getElementById('originDetail');
+            if (product.origin) {
+                originEl.style.display = 'block';
+                document.getElementById('originValue').innerText = product.origin;
+            } else {
+                originEl.style.display = 'none';
+            }
+
+            // Warranty
+            const warrantyEl = document.getElementById('warrantyDetail');
+            if (product.warranty) {
+                warrantyEl.style.display = 'block';
+                document.getElementById('warrantyValue').innerText = product.warranty;
+            } else {
+                warrantyEl.style.display = 'none';
+            }
+
+            // Weight
+            const weightEl = document.getElementById('weightDetail');
+            if (product.weight) {
+                weightEl.style.display = 'block';
+                document.getElementById('weightValue').innerText = product.weight;
+            } else {
+                weightEl.style.display = 'none';
+            }
+
+            // Size Chart
+            const sizeChartEl = document.getElementById('sizeChartSection');
+            if (product.sizeChart && typeof product.sizeChart === 'object') {
+                sizeChartEl.style.display = 'block';
+                const thead = sizeChartEl.querySelector('thead');
+                const tbody = sizeChartEl.querySelector('tbody');
+                thead.innerHTML = '';
+                tbody.innerHTML = '';
+
+                const headers = Object.keys(product.sizeChart[0] || {});
+                const headerRow = thead.insertRow();
+                headers.forEach(h => {
+                    const th = document.createElement('th');
+                    th.innerText = h.charAt(0).toUpperCase() + h.slice(1);
+                    headerRow.appendChild(th);
+                });
+
+                product.sizeChart.forEach(row => {
+                    const tr = tbody.insertRow();
+                    headers.forEach(h => {
+                        const td = tr.insertCell();
+                        td.innerText = row[h] || '-';
+                    });
+                });
+            } else {
+                sizeChartEl.style.display = 'none';
+            }
+
+            // Specifications
+            const specsEl = document.getElementById('specsSection');
+            if (product.specs && Array.isArray(product.specs)) {
+                specsEl.style.display = 'block';
+                const specsList = document.getElementById('specsList');
+                specsList.innerHTML = '';
+                product.specs.forEach(spec => {
+                    const li = document.createElement('li');
+                    if (typeof spec === 'object') {
+                        li.innerHTML = `<strong>${spec.key || spec.name || 'Feature'}:</strong> ${spec.value || ''}`;
+                    } else {
+                        li.innerText = spec;
+                    }
+                    specsList.appendChild(li);
+                });
+            } else {
+                specsEl.style.display = 'none';
+            }
+
+            // Dimensions
+            const dimensionsCard = document.getElementById('dimensionsCard');
+            if (product.dimensions) {
+                const physicalSection = document.getElementById('physicalSpecsSection');
+                physicalSection.style.display = 'block';
+                dimensionsCard.style.display = 'block';
+                document.getElementById('dimensionsValue').innerText = product.dimensions;
+            } else {
+                dimensionsCard.style.display = 'none';
+            }
+
+            // Care Instructions
+            const careEl = document.getElementById('careSection');
+            if (product.careInstructions && Array.isArray(product.careInstructions) && product.careInstructions.length > 0) {
+                careEl.style.display = 'block';
+                const careList = document.getElementById('careList');
+                careList.innerHTML = '';
+                product.careInstructions.forEach(instruction => {
+                    const li = document.createElement('li');
+                    li.innerText = instruction.trim();
+                    careList.appendChild(li);
+                });
+            } else {
+                careEl.style.display = 'none';
+            }
+
+            // Trust Badges
+            const trustBadges = document.getElementById('trustBadges');
+            trustBadges.innerHTML = '';
+            let hasBadges = false;
+
+            if (product.warranty) {
+                const badge = document.createElement('div');
+                badge.className = 'trust-badge warranty';
+                badge.innerHTML = '<i class="fas fa-check-circle"></i> ' + product.warranty + ' Warranty';
+                trustBadges.appendChild(badge);
+                hasBadges = true;
+            }
+
+            if (product.origin) {
+                const badge = document.createElement('div');
+                badge.className = 'trust-badge verified';
+                badge.innerHTML = '<i class="fas fa-globe"></i> Made in ' + product.origin;
+                trustBadges.appendChild(badge);
+                hasBadges = true;
+            }
+
+            if (product.material) {
+                const badge = document.createElement('div');
+                badge.className = 'trust-badge';
+                badge.innerHTML = '<i class="fas fa-leaf"></i> ' + product.material;
+                trustBadges.appendChild(badge);
+                hasBadges = true;
+            }
+
+            if (hasBadges) {
+                trustBadges.style.display = 'flex';
+            } else {
+                trustBadges.style.display = 'none';
+            }
+        }
 
         function selectOption(btn) {
             // Remove selected from siblings
@@ -1415,8 +1730,31 @@
             const sold = element.getAttribute('data-sold');
             const store = element.getAttribute('data-store');
             const category = element.getAttribute('data-category') || 'General';
+            const description = element.getAttribute('data-description') || 'Product description not available.';
+            
+            // Detailed product attributes
+            const material = element.getAttribute('data-material');
+            const origin = element.getAttribute('data-origin');
+            const warranty = element.getAttribute('data-warranty');
+            const weight = element.getAttribute('data-weight');
+            const dimensions = element.getAttribute('data-dimensions');
+            let sizeChart = element.getAttribute('data-size-chart');
+            let specs = element.getAttribute('data-specifications');
+            let careInstructions = element.getAttribute('data-care-instructions');
 
-            currentProduct = { name, price, rawPrice, originalPrice, discount, image, store, category };
+            // Parse JSON if needed
+            if (sizeChart) {
+                try { sizeChart = JSON.parse(sizeChart); } catch(e) { sizeChart = null; }
+            }
+            if (specs) {
+                try { specs = JSON.parse(specs); } catch(e) { specs = null; }
+            }
+            if (careInstructions && typeof careInstructions === 'string') {
+                careInstructions = careInstructions.split('\n').filter(i => i.trim());
+            }
+
+            currentProduct = { name, price, rawPrice, originalPrice, discount, image, store, category, description, 
+                            material, origin, warranty, weight, dimensions, sizeChart, specs, careInstructions };
 
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = price;
@@ -1437,6 +1775,24 @@
                 discountEl.style.display = 'none';
             }
             document.getElementById('modalImg').src = image;
+            // Populate modal color variants (if any) and select default
+            populateModalVariantsFromElement(element);
+            
+            // Add description to modal
+            let descriptionEl = document.getElementById('modalDescription');
+            if (!descriptionEl) {
+                // Create the description element if it doesn't exist
+                const metaEl = document.querySelector('.pv-meta');
+                descriptionEl = document.createElement('div');
+                descriptionEl.id = 'modalDescription';
+                descriptionEl.className = 'pv-description';
+                descriptionEl.style.cssText = 'margin: 15px 0; padding: 15px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px; font-size: 14px; line-height: 1.6; color: #475569;';
+                metaEl.parentNode.insertBefore(descriptionEl, metaEl.nextSibling);
+            }
+            descriptionEl.innerHTML = '<strong style="color: #1e293b; display: block; margin-bottom: 8px;">Product Description</strong>' + description;
+
+            // Populate detailed product information
+            populateProductDetails(currentProduct);
 
             document.getElementById('modalSold').innerText = sold + ' Sold';
 
@@ -1497,10 +1853,11 @@
         function updateModalLinks() {
             const qty = document.getElementById('modalQty').value;
             // Construct URL for Add to Cart
-            const baseAdd = `../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&store=${encodeURIComponent(currentProduct.store)}&image=${encodeURIComponent(currentProduct.image)}&quantity=${qty}`;
+            const selectedImage = currentProduct.selectedImage || currentProduct.image || '';
+            const baseAdd = `../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&store=${encodeURIComponent(currentProduct.store)}&image=${encodeURIComponent(selectedImage)}&quantity=${qty}`;
 
             // Construct URL for Buy Now (Direct Checkout)
-            const buyNowUrl = `../Content/Payment.php?product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&quantity=${qty}&image=${encodeURIComponent(currentProduct.image)}`;
+            const buyNowUrl = `../Content/Payment.php?product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&quantity=${qty}&image=${encodeURIComponent(selectedImage)}`;
 
             document.getElementById('modalAddToCartBtn').href = baseAdd;
             document.getElementById('modalBuyNowBtn').href = buyNowUrl;
@@ -1508,6 +1865,166 @@
             // Rate Product Link
             document.getElementById('modalRateLink').href = `Rate-Reviews.php?product_name=${encodeURIComponent(currentProduct.name)}`;
         }
+
+        // initialize swatches once DOM ready
+        window.addEventListener('DOMContentLoaded', function () { initVariantSwatches(); });
+
+        /* Variant / Color Swatch Helpers */
+        function generatePlaceholderVariants(name, baseImage) {
+            // simple set of demo colors
+            const cols = [
+                { key: 'Black', hex: '111111' },
+                { key: 'White', hex: 'ffffff' },
+                { key: 'Blue', hex: '3b82f6' }
+            ];
+            const variants = {};
+            cols.forEach(c => {
+                // Placeholder image with background color and the product name
+                const text = encodeURIComponent(name + ' ' + c.key);
+                const url = `https://via.placeholder.com/600x800/${c.hex}/ffffff?text=${text}`;
+                variants[c.key] = { image: url, color: '#' + c.hex, name: c.key };
+            });
+            return variants;
+        }
+
+        function buildSwatchesForElement(el) {
+            try {
+                const variantsAttr = el.getAttribute('data-variants');
+                let variants = [];
+                if (variantsAttr && variantsAttr.trim() !== '') {
+                    try { variants = JSON.parse(variantsAttr); } catch(e) { variants = variantsAttr; }
+                }
+
+                // If variants is an object/associative map (PHP style), normalize to array of {key,image,color}
+                let normalized = [];
+                if (variants && typeof variants === 'object' && !Array.isArray(variants)) {
+                    for (const k in variants) {
+                        if (variants.hasOwnProperty(k)) {
+                            const v = variants[k];
+                            if (typeof v === 'string') normalized.push({ key: k, image: v, color: '' });
+                            else normalized.push({ key: k, image: v.image || '', color: v.color || '' });
+                        }
+                    }
+                } else if (Array.isArray(variants) && variants.length > 0) {
+                    normalized = variants.map(v => ({ key: v.key || v.color || v.name || 'Variant', image: v.image || '', color: v.color || '' }));
+                }
+
+                // If still empty, generate placeholder variants
+                const name = el.getAttribute('data-name') || 'Product';
+                const baseImg = el.getAttribute('data-image') || '';
+                if (normalized.length === 0) {
+                    const gen = generatePlaceholderVariants(name, baseImg);
+                    for (const k in gen) normalized.push({ key: k, image: gen[k].image, color: gen[k].color });
+                }
+
+                // Find the image element in this card/result
+                const imgEl = el.querySelector('img');
+                const swatchContainer = el.querySelector('.variant-swatches');
+                if (!swatchContainer) return;
+                swatchContainer.innerHTML = '';
+
+                normalized.forEach((v, i) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'variant-swatch';
+                    btn.title = v.key;
+                    btn.dataset.image = v.image || '';
+                    btn.dataset.key = v.key;
+                    
+                    // Create image thumbnail instead of color swatch
+                    const img = document.createElement('img');
+                    img.src = v.image || '';
+                    img.alt = v.key;
+                    img.onerror = function() { this.style.display = 'none'; btn.style.background = '#e0e0e0'; };
+                    btn.appendChild(img);
+                    
+                    if (i === 0) btn.classList.add('selected');
+                    btn.onclick = function (ev) {
+                        ev.stopPropagation();
+                        // swap main product image
+                        if (imgEl && btn.dataset.image) imgEl.src = btn.dataset.image;
+                        // mark selected
+                        const sibs = swatchContainer.querySelectorAll('.variant-swatch');
+                        sibs.forEach(s => s.classList.remove('selected'));
+                        btn.classList.add('selected');
+                    };
+                    swatchContainer.appendChild(btn);
+                });
+            } catch (err) {
+                console.error('buildSwatchesForElement error', err);
+            }
+        }
+
+        function initVariantSwatches() {
+            // Build swatches for product cards, mini-products, results, etc.
+            const nodes = document.querySelectorAll('[data-variants]');
+            nodes.forEach(n => buildSwatchesForElement(n));
+        }
+
+        // Modal-specific variant selection (image thumbnails)
+        function populateModalVariantsFromElement(el) {
+            const variantsAttr = el.getAttribute('data-variants') || '';
+            let variants = {};
+            try { variants = JSON.parse(variantsAttr); } catch(e){ variants = {}; }
+            const name = el.getAttribute('data-name') || 'Product';
+            const baseImg = el.getAttribute('data-image') || '';
+            if (!variants || Object.keys(variants).length === 0) variants = generatePlaceholderVariants(name, baseImg);
+
+            // Clear existing variant options and replace with image thumbnails
+            const container = document.getElementById('modal-color-options');
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            container.style.gap = '8px';
+            container.style.flexWrap = 'wrap';
+            container.style.alignItems = 'center';
+            
+            let firstImage = '';
+            let firstKey = '';
+            for (const key in variants) {
+                if (!variants.hasOwnProperty(key)) continue;
+                const v = variants[key];
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'variant-swatch';
+                btn.title = key;
+                btn.style.width = '50px';
+                btn.style.height = '50px';
+                btn.dataset.image = (typeof v === 'string') ? v : (v.image || '');
+                
+                // Add image thumbnail to button
+                const img = document.createElement('img');
+                img.src = btn.dataset.image;
+                img.alt = key;
+                img.onerror = function() { this.style.display = 'none'; btn.style.background = '#e0e0e0'; };
+                btn.appendChild(img);
+                
+                btn.onclick = function () {
+                    // mark selected
+                    const sibs = container.querySelectorAll('.variant-swatch');
+                    sibs.forEach(s => s.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    const modalImg = document.getElementById('modalImg');
+                    if (btn.dataset.image) modalImg.src = btn.dataset.image;
+                    currentProduct.selectedImage = btn.dataset.image || currentProduct.image;
+                    updateModalLinks();
+                };
+                container.appendChild(btn);
+                if (!firstImage) {
+                    firstImage = btn.dataset.image;
+                    firstKey = key;
+                }
+            }
+            // auto-select first
+            if (firstImage) {
+                const img = document.getElementById('modalImg');
+                img.src = firstImage;
+                currentProduct.selectedImage = firstImage;
+                // mark first button selected
+                const firstBtn = container.querySelector('.variant-swatch');
+                if (firstBtn) firstBtn.classList.add('selected');
+            }
+        }
+
 
         window.onclick = function (event) {
             const modal = document.getElementById('productModal');

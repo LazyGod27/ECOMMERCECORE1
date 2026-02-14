@@ -1,12 +1,50 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FASHION & APPAREL | IMARKETPH - IMarket</title>
+    <title>FASHION & APPAREL | IMARKETPH - Latest Trends & Styles</title>
     <link rel="icon" type="image/x-icon" href="../../image/logo.png">
     <link rel="stylesheet" href="../../css/components/category-base.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .category-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #ec4899 0%, #f97316 100%);
+            color: white;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 20;
+        }
+
+        /* Optimize slideshow images for better resolution */
+        .fade-slider {
+            background-color: #f5f5f5;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+        }
+        
+        .fade-slide {
+            width: 100%;
+            height: 100%;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed;
+        }
+
+        .variant-swatches{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;position:absolute;bottom:8px;left:8px;z-index:5;}
+        .variant-swatch{width:40px;height:40px;border-radius:6px;border:2px solid transparent;padding:0;cursor:pointer;background:#f0f0f0;overflow:hidden;background-size:cover;background-position:center;position:relative;transition:all 0.2s;}
+        .variant-swatch:hover{transform:scale(1.08);border-color:#999}
+        .variant-swatch.selected{border-color:#3b82f6;box-shadow:0 0 0 2px #3b82f6;transform:scale(1.15)}
+        .variant-swatch img{width:100%;height:100%;object-fit:cover;display:block}
+    </style>
 </head>
 
 <body>
@@ -18,15 +56,15 @@
 
     <div class="content">
         <div class="best_selling-container">
-            <!-- Text Section (Left) -->
-            
-
             <!-- Slider Section (Right)-->
             <div class="slider-section">
+                <div class="category-label">
+                    👗 FASHION & APPAREL
+                </div>
                 <div class="fade-slider">
                     <!-- Slides -->
                     <div class="fade-slide active"
-                        style="background-image: url('../../image/fashion-apparel/Men’s Plain T-Shirt (Cotton).jpeg');">
+                        style="background-image: url('../../image/fashion-apparel/green.avif');">
                     </div>
                     <div class="fade-slide"
                         style="background-image: url('../../image/fashion-apparel/Women’s Oversized Blouse.jpeg');">
@@ -56,8 +94,8 @@
 
     <div class="content-card">
         <div class="section-header">
-            <h2>Fashion & Apparel</h2>
-            <p>Check out our Fashion & Apparel!</p>
+            <h2>👗 Fashion & Apparel</h2>
+            <p>Latest trends and styles</p>
         </div>
         <?php
  include 'card.php'; ?>
@@ -96,10 +134,69 @@
 
         function resetInterval() {
             clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, 4000);
+            slideInterval = setInterval(nextSlide, 5000);
         }
 
         resetInterval();
+
+        // Variant swatches functionality
+        function buildSwatchesForElement(el) {
+            try {
+                const variantsAttr = el.getAttribute('data-variants');
+                let variants = [];
+                if (variantsAttr && variantsAttr.trim() !== '') {
+                    try { variants = JSON.parse(variantsAttr); } catch(e) { variants = []; }
+                }
+                
+                let normalized = [];
+                if (variants && typeof variants === 'object' && !Array.isArray(variants)) {
+                    for (const k in variants) {
+                        if (variants.hasOwnProperty(k)) {
+                            const v = variants[k];
+                            if (typeof v === 'string') normalized.push({ key: k, image: v });
+                            else normalized.push({ key: k, image: v.image || '' });
+                        }
+                    }
+                }
+                
+                const imgEl = el.querySelector('img.product-img');
+                const swatchContainer = el.querySelector('.variant-swatches');
+                if (!swatchContainer || normalized.length === 0) return;
+                swatchContainer.innerHTML = '';
+                
+                normalized.forEach((v, i) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'variant-swatch';
+                    btn.title = v.key;
+                    btn.dataset.image = v.image || '';
+                    btn.dataset.key = v.key;
+                    
+                    const img = document.createElement('img');
+                    img.src = v.image || '';
+                    img.alt = v.key;
+                    img.onerror = function() { this.style.display = 'none'; btn.style.background = '#e0e0e0'; };
+                    btn.appendChild(img);
+                    
+                    if (i === 0) btn.classList.add('selected');
+                    btn.onclick = function (ev) {
+                        ev.stopPropagation();
+                        if (imgEl && btn.dataset.image) imgEl.src = btn.dataset.image;
+                        const sibs = swatchContainer.querySelectorAll('.variant-swatch');
+                        sibs.forEach(s => s.classList.remove('selected'));
+                        btn.classList.add('selected');
+                    };
+                    swatchContainer.appendChild(btn);
+                });
+            } catch (err) {
+                console.error('buildSwatchesForElement error', err);
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            const nodes = document.querySelectorAll('[data-variants]');
+            nodes.forEach(n => buildSwatchesForElement(n));
+        });
     </script>
 
     <footer>
@@ -109,6 +206,7 @@
 </body>
 
 </html>
+
 
 
 

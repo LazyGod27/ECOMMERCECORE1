@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/3-in-1 Wireless Charging Station.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => '3-in-1 wireless charging station to power phone, earbuds and watch simultaneously with fast charging support.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Active-Noise Cancelling Earbuds.jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'True wireless earbuds with active noise cancelling and long battery runtime for clear audio on the go.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Heavy-Duty Braided USB-C Cable (2m).jpeg',
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Durable braided USB-C cable offering high-speed charging and reinforced connectors for daily use.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/MagSafe Magnetic Car Mount.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'MagSafe-compatible magnetic car mount that securely holds your phone for hands-free navigation.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Ultra-Slim Power Bank (10,000mAh).jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Ultra-slim 10,000mAh power bank with quick-charge support and pocket-friendly design.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Privacy Tempered Glass Screen Protector.jpeg',
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => 'Privacy tempered glass protector that shields your display and limits viewing angles for privacy.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Universal Neck Phone Holder.jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Flexible neck phone holder for hands-free viewing, perfect for reading or watching videos.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/65W GaN Fast Wall Charger.jpeg', // Using stylized image
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Compact 65W GaN fast charger for rapid charging of laptops and phones with USB-C PD support.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Bluetooth Remote Camera Shutter.jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'Small Bluetooth shutter remote that pairs easily to capture photos and control cameras from a distance.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Shockproof Clear Magnetic Case.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'Shockproof clear magnetic phone case offering slim protection and MagSafe compatibility.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Portable Pocket Vlog Tripod.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Portable pocket-sized tripod for vlogging and mobile content creation with flexible mounting options.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/LED Ring Light for Selfies.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'LED ring light designed for selfies and video calls with adjustable brightness and color temperature.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Tile-Compatible Smart Tag Tracker.jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Tile-compatible smart tracker for keys and bags; compact and easy to attach.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/Universal Waterproof Phone Pouch.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Waterproof phone pouch designed to protect devices during pool or beach activities.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/SmartGear Store/LaptopTablet Sleeve.jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Padded laptop/tablet sleeve with soft lining to protect devices from scratches and minor bumps.'
         ]
     ];
     return; // Stop processing

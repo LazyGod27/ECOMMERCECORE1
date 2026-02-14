@@ -1,7 +1,6 @@
-<?php
-session_start();
-include("../Database/config.php");
-
+    <?php
+include_once('../Components/security.php'); 
+include_once('../Database/config.php');
 // 1. Auth Check
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../php/login.php");
@@ -64,43 +63,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($action == 'save_address') {
         $addr_id = isset($_POST['address_id']) ? intval($_POST['address_id']) : 0;
-        $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-        $phone = mysqli_real_escape_string($conn, $_POST['phone']);
-        $address = mysqli_real_escape_string($conn, $_POST['address']);
-        $city = mysqli_real_escape_string($conn, $_POST['city']);
-        $zip = mysqli_real_escape_string($conn, $_POST['zip']);
+        $fullname = $_POST['fullname'];
+        $phone = $_POST['phone'];
+        $address = $_POST['address'];
+        $city = $_POST['city'];
+        $zip = $_POST['zip'];
         $is_default = isset($_POST['is_default']) ? 1 : 0;
 
         if ($is_default) {
-            mysqli_query($conn, "UPDATE user_addresses SET is_default = 0 WHERE user_id = '$user_id'");
+            $stmt = $conn->prepare("UPDATE user_addresses SET is_default = 0 WHERE user_id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $stmt->close();
         }
 
         if ($addr_id > 0) {
-            // Update
-            $sql = "UPDATE user_addresses SET fullname='$fullname', phone='$phone', address='$address', city='$city', zip='$zip', is_default='$is_default' WHERE id='$addr_id' AND user_id='$user_id'";
+            $stmt = $conn->prepare("UPDATE user_addresses SET fullname=?, phone=?, address=?, city=?, zip=?, is_default=? WHERE id=? AND user_id=?");
+            $stmt->bind_param("sssssiis", $fullname, $phone, $address, $city, $zip, $is_default, $addr_id, $user_id);
         } else {
-            // Insert
-            $sql = "INSERT INTO user_addresses (user_id, fullname, phone, address, city, zip, is_default) VALUES ('$user_id', '$fullname', '$phone', '$address', '$city', '$zip', '$is_default')";
+            $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, fullname, phone, address, city, zip, is_default) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("isssss", $user_id, $fullname, $phone, $address, $city, $zip, $is_default);
         }
-
-        if (mysqli_query($conn, $sql)) {
+        
+        if ($stmt->execute()) {
             $msg = "<div class='alert-success'>Address saved successfully!</div>";
         } else {
-            $msg = "<div class='alert-error'>Error saving address: " . mysqli_error($conn) . "</div>";
+            $msg = "<div class='alert-error'>Error saving address: " . $conn->error . "</div>";
         }
+        $stmt->close();
     }
 
     if ($action == 'delete_address') {
         $addr_id = intval($_POST['address_id']);
-        if (mysqli_query($conn, "DELETE FROM user_addresses WHERE id='$addr_id' AND user_id='$user_id'")) {
+        $stmt = $conn->prepare("DELETE FROM user_addresses WHERE id=? AND user_id=?");
+        $stmt->bind_param("ii", $addr_id, $user_id);
+        if ($stmt->execute()) {
             $msg = "<div class='alert-success'>Address deleted successfully!</div>";
         }
+        $stmt->close();
     }
 
     if ($action == 'set_default') {
         $addr_id = intval($_POST['address_id']);
-        mysqli_query($conn, "UPDATE user_addresses SET is_default = 0 WHERE user_id = '$user_id'");
-        mysqli_query($conn, "UPDATE user_addresses SET is_default = 1 WHERE id = '$addr_id' AND user_id = '$user_id'");
+        $stmt1 = $conn->prepare("UPDATE user_addresses SET is_default = 0 WHERE user_id = ?");
+        $stmt1->bind_param("i", $user_id);
+        $stmt1->execute();
+        $stmt1->close();
+        $stmt2 = $conn->prepare("UPDATE user_addresses SET is_default = 1 WHERE id = ? AND user_id = ?");
+        $stmt2->bind_param("ii", $addr_id, $user_id);
+        $stmt2->execute();
+        $stmt2->close();
         $msg = "<div class='alert-success'>Default address updated!</div>";
     }
 }
@@ -109,19 +121,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 // HANDLE FORM SUBMISSIONS (Profile Update)
 // ---------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] == 'update_profile') {
-    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
-    $address = mysqli_real_escape_string($conn, $_POST['address']);
-    $city = mysqli_real_escape_string($conn, $_POST['city']);
-    $zip = mysqli_real_escape_string($conn, $_POST['zip']);
-    // Optional fields
-    $gender = isset($_POST['gender']) ? mysqli_real_escape_string($conn, $_POST['gender']) : '';
-    $birthdate = isset($_POST['birthdate']) ? mysqli_real_escape_string($conn, $_POST['birthdate']) : NULL;
-    $bd_sql_part = $birthdate ? ", birthdate='$birthdate'" : "";
+    $fullname = $_POST['fullname'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $zip = $_POST['zip'];
+    $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
+    $birthdate = isset($_POST['birthdate']) ? $_POST['birthdate'] : NULL;
 
-    $update_sql = "UPDATE users SET fullname='$fullname', phone='$phone', address='$address', city='$city', zip='$zip', gender='$gender' $bd_sql_part WHERE id='$user_id'";
+    $update_sql = "UPDATE users SET fullname=?, phone=?, address=?, city=?, zip=?, gender=?"; 
+    if ($birthdate) {
+        $update_sql .= ", birthdate=?";
+    }
+    $update_sql .= " WHERE id=?";
+    
+    $stmt = $conn->prepare($update_sql);
+    if ($birthdate) {
+        $stmt->bind_param("sssssssi", $fullname, $phone, $address, $city, $zip, $gender, $birthdate, $user_id);
+    } else {
+        $stmt->bind_param("ssssssi", $fullname, $phone, $address, $city, $zip, $gender, $user_id);
+    }
 
-    if (mysqli_query($conn, $update_sql)) {
+    if ($stmt->execute()) {
+        $stmt->close();
         // Handle Profile Picture Upload
         if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] == 0) {
             $target_dir = "../uploads/profile/";
@@ -133,12 +155,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $target_file = $target_dir . $new_filename;
 
             if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $target_file)) {
-                mysqli_query($conn, "UPDATE users SET profile_pic='$new_filename' WHERE id='$user_id'");
+                $pic_stmt = $conn->prepare("UPDATE users SET profile_pic=? WHERE id=?");
+                $pic_stmt->bind_param("si", $new_filename, $user_id);
+                $pic_stmt->execute();
+                $pic_stmt->close();
             }
         }
         $msg = "<div class='alert-success'><i class='fas fa-check-circle'></i> Profile updated successfully!</div>";
     } else {
-        $msg = "<div class='alert-error'>Error updating profile: " . mysqli_error($conn) . "</div>";
+        $msg = "<div class='alert-error'>Error updating profile: " . $conn->error . "</div>";
     }
 }
 
@@ -148,20 +173,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $new_pass = $_POST['new_password'];
     $confirm_pass = $_POST['confirm_password'];
 
-    // Verify current password
-    $verify_sql = "SELECT password FROM users WHERE id='$user_id'";
-    $verify_res = mysqli_query($conn, $verify_sql);
-    $user_data = mysqli_fetch_assoc($verify_res);
+    $verify_stmt = $conn->prepare("SELECT password FROM users WHERE id=?");
+    $verify_stmt->bind_param("i", $user_id);
+    $verify_stmt->execute();
+    $verify_res = $verify_stmt->get_result();
+    $user_data = $verify_res->fetch_assoc();
+    $verify_stmt->close();
 
     if (password_verify($current_pass, $user_data['password'])) {
         if ($new_pass === $confirm_pass) {
             $hashed_password = password_hash($new_pass, PASSWORD_DEFAULT);
-            $update_pass_sql = "UPDATE users SET password='$hashed_password' WHERE id='$user_id'";
-            if (mysqli_query($conn, $update_pass_sql)) {
+            $update_stmt = $conn->prepare("UPDATE users SET password=? WHERE id=?");
+            $update_stmt->bind_param("si", $hashed_password, $user_id);
+            if ($update_stmt->execute()) {
                 $msg = "<div class='alert-success'>Password updated successfully!</div>";
             } else {
                 $msg = "<div class='alert-error'>Error updating password.</div>";
             }
+            $update_stmt->close();
         } else {
             $msg = "<div class='alert-error'>New passwords do not match.</div>";
         }
@@ -173,30 +202,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Handle Order Cancellation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] == 'cancel_order') {
     $order_id_to_cancel = intval($_POST['order_id']);
-    $cancel_sql = "UPDATE orders SET status='Cancelled' WHERE id='$order_id_to_cancel' AND user_id='$user_id'";
-    if (mysqli_query($conn, $cancel_sql)) {
+    $status = 'Cancelled';
+    $cancel_stmt = $conn->prepare("UPDATE orders SET status=? WHERE id=? AND user_id=?");
+    $cancel_stmt->bind_param("sii", $status, $order_id_to_cancel, $user_id);
+    if ($cancel_stmt->execute()) {
         $msg = "<div class='alert-success'>Order cancelled successfully.</div>";
     } else {
         $msg = "<div class='alert-error'>Error cancelling order.</div>";
     }
+    $cancel_stmt->close();
 }
 
 // ---------------------------------------------------------
 // FETCH USER DATA
 // ---------------------------------------------------------
-$sql = "SELECT * FROM users WHERE id='$user_id'";
-$res = mysqli_query($conn, $sql);
-$user = mysqli_fetch_assoc($res);
+$stmt = $conn->prepare("SELECT * FROM users WHERE id=?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$res = $stmt->get_result();
+$user = $res->fetch_assoc();
+$stmt->close();
 
 // ---------------------------------------------------------
 // FETCH ADDRESSES
 // ---------------------------------------------------------
 $user_addresses = [];
 if ($view == 'address') {
-    $addr_res = mysqli_query($conn, "SELECT * FROM user_addresses WHERE user_id='$user_id' ORDER BY is_default DESC, id DESC");
-    while ($row = mysqli_fetch_assoc($addr_res)) {
+    $addr_stmt = $conn->prepare("SELECT * FROM user_addresses WHERE user_id=? ORDER BY is_default DESC, id DESC");
+    $addr_stmt->bind_param("i", $user_id);
+    $addr_stmt->execute();
+    $addr_res = $addr_stmt->get_result();
+    while ($row = $addr_res->fetch_assoc()) {
         $user_addresses[] = $row;
     }
+    $addr_stmt->close();
 }
 
 // ---------------------------------------------------------
@@ -214,11 +253,15 @@ if ($view == 'orders' || $view == 'tracking') {
         if ($tab == 'Completed') $filter_sql = " AND status IN ('Delivered', 'Completed')";
         if ($tab == 'Cancelled') $filter_sql = " AND status='Cancelled'";
 
-        $order_sql = "SELECT * FROM orders WHERE user_id='$user_id' $filter_sql ORDER BY created_at DESC";
-        $order_res = mysqli_query($conn, $order_sql);
-        while ($r = mysqli_fetch_assoc($order_res)) {
+        $order_sql = "SELECT * FROM orders WHERE user_id=? " . $filter_sql . " ORDER BY created_at DESC";
+        $order_stmt = $conn->prepare($order_sql);
+        $order_stmt->bind_param("i", $user_id);
+        $order_stmt->execute();
+        $order_res = $order_stmt->get_result();
+        while ($r = $order_res->fetch_assoc()) {
             $my_orders[] = $r;
         }
+        $order_stmt->close();
     }
 }
 
@@ -236,33 +279,973 @@ if ($view == 'orders' || $view == 'tracking') {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- CSS -->
     <link rel="stylesheet" href="../css/components/user-account.css?v=<?php echo time(); ?>">
 
     <style>
-        /* Inline overrides if needed */
+        :root {
+            --primary-navy: #2A3B7E;
+            --primary-dark: #1a2657;
+            --accent-blue: #3b82f6;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --soft-gray: #f8fafc;
+            --light-border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
+            color: var(--text-primary);
             margin: 0;
         }
 
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
+            background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
+            color: #065f46;
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease-out;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .alert-success::before {
+            content: '✓';
+            font-size: 20px;
+            font-weight: bold;
         }
 
         .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #7f1d1d;
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease-out;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+        }
+
+        .alert-error::before {
+            content: '⚠';
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-account-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1400px;
+            margin: 30px auto;
+            gap: 30px;
+            padding: 0 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* SIDEBAR STYLES */
+        .account-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--light-border);
+        }
+
+        .sidebar-profile {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--light-border);
+        }
+
+        .sidebar-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-navy), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.2);
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .sidebar-username {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-edit-link {
+            color: var(--primary-navy);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar-edit-link:hover {
+            color: var(--accent-blue);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu-item {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .sidebar-menu-title:hover {
+            background: var(--soft-gray);
+            color: var(--primary-navy);
+        }
+
+        .sidebar-menu-title.active-nav {
+            background: linear-gradient(135deg, rgba(42, 59, 126, 0.1), rgba(59, 130, 246, 0.1));
+            color: var(--primary-navy);
+            border-left: 3px solid var(--primary-navy);
+            padding-left: 12px;
+        }
+
+        .sidebar-submenu {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+            display: none;
+        }
+
+        .sidebar-menu-item:hover .sidebar-submenu {
+            display: block;
+        }
+
+        .sidebar-submenu li {
+            margin-bottom: 3px;
+        }
+
+        .sidebar-submenu a {
+            display: block;
+            padding: 10px 15px 10px 40px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar-submenu a::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-navy);
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-submenu a:hover {
+            background: var(--soft-gray);
+            color: var(--primary-navy);
+        }
+
+        .sidebar-submenu a:hover::before {
+            opacity: 1;
+        }
+
+        .sidebar-submenu a.active {
+            background: linear-gradient(135deg, rgba(42, 59, 126, 0.1), rgba(59, 130, 246, 0.1));
+            color: var(--primary-navy);
+            font-weight: 600;
+        }
+
+        .seller-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.3);
+        }
+
+        .seller-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(42, 59, 126, 0.4);
+        }
+
+        /* MAIN CONTENT */
+        .account-content {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--light-border);
+            min-height: 400px;
+        }
+
+        /* SECTION STYLES */
+        .content-section {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-border);
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* PROFILE FORM */
+        .profile-form, .password-form {
+            max-width: 800px;
+        }
+
+        .profile-pic-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(42, 59, 126, 0.05), rgba(59, 130, 246, 0.05));
+            border-radius: 12px;
+            border: 2px dashed var(--light-border);
+        }
+
+        .profile-pic-display {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-navy), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.2);
+        }
+
+        .profile-pic-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-pic-controls {
+            flex: 1;
+        }
+
+        .btn-upload {
+            background: var(--primary-navy);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn-upload:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.3);
+        }
+
+        .profile-pic-controls small {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* FORM STYLES */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            padding: 12px 14px;
+            border: 1.5px solid var(--light-border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 3px rgba(42, 59, 126, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(42, 59, 126, 0.4);
+        }
+
+        /* ADDRESS SECTION */
+        .addresses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .address-card {
+            border: 2px solid var(--light-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .address-card.default {
+            border-color: var(--primary-navy);
+            background: linear-gradient(135deg, rgba(42, 59, 126, 0.02), rgba(59, 130, 246, 0.02));
+        }
+
+        .address-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-default {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-navy);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .address-info {
             margin-bottom: 15px;
         }
+
+        .address-info h4 {
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .address-info p {
+            margin: 6px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .address-info .phone {
+            color: var(--primary-navy);
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-border);
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            border: 1px solid var(--light-border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            flex: 1;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: var(--soft-gray);
+            color: var(--primary-navy);
+            border-color: var(--primary-navy);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-navy);
+            color: white;
+        }
+
+        .btn-default {
+            background: var(--success-green);
+            color: white;
+            border-color: var(--success-green);
+        }
+
+        .btn-default:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: var(--danger-red);
+            border-color: var(--danger-red);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+        }
+
+        /* PASSWORD SECTION */
+        .security-tips {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05));
+            border-left: 4px solid var(--success-green);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .security-tips h4 {
+            margin: 0 0 12px 0;
+            color: var(--text-primary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .security-tips ul {
+            margin: 0;
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        .security-tips li {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin: 6px 0;
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .security-tips li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        /* ORDERS SECTION */
+        .orders-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--light-border);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 20px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .tab:hover {
+            color: var(--primary-navy);
+        }
+
+        .tab.active {
+            color: var(--primary-navy);
+            border-bottom-color: var(--primary-navy);
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .order-card {
+            border: 1px solid var(--light-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        .order-number {
+            display: block;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .order-date {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-paid {
+            background: #dbeafe;
+            color: #0c2d6b;
+        }
+
+        .status-shipped {
+            background: #e0e7ff;
+            color: #312e81;
+        }
+
+        .status-delivered,
+        .status-completed {
+            background: #dcfce7;
+            color: #065f46;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .order-body {
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .order-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: var(--soft-gray);
+        }
+
+        .order-item-info h4 {
+            margin: 0 0 6px 0;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .order-item-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .order-item-total {
+            text-align: right;
+        }
+
+        .order-item-total strong {
+            font-size: 16px;
+            color: var(--primary-navy);
+        }
+
+        .order-footer {
+            display: flex;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-border);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: var(--light-border);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin: 0;
+        }
+        .modal-overlay {
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay > div {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--light-border);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        #modalTitle {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-overlay input,
+        .modal-overlay textarea,
+        .modal-overlay select {
+            border: 1.5px solid var(--light-border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .modal-overlay input:focus,
+        .modal-overlay textarea:focus,
+        .modal-overlay select:focus {
+            outline: none;
+            border-color: var(--primary-navy);
+            box-shadow: 0 0 0 3px rgba(42, 59, 126, 0.1);
+        }
+
+        .modal-overlay .btn-primary {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.3);
+        }
+
+        .modal-overlay .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(42, 59, 126, 0.4);
+        }
+
+        .modal-overlay .btn-outline {
+            background: white;
+            border: 1.5px solid var(--light-border);
+            color: var(--text-primary);
+            padding: 12px 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay .btn-outline:hover {
+            border-color: var(--primary-navy);
+            color: var(--primary-navy);
+            background: var(--soft-gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .user-account-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .account-sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .account-content {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .user-account-wrapper {
+                margin: 15px auto;
+                gap: 20px;
+                padding: 0 15px;
+            }
+
+            .account-sidebar {
+                padding: 20px;
+            }
+
+            .account-content {
+                padding: 20px;
+            }
+
+            .modal-overlay > div {
+                width: 90% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        /* Loading spinner animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fa-spin {
+            animation: spin 1.5s linear infinite;
+        }
+
+        .fa-circle-notch {
+            color: #2A3B7E;
+        }
     </style>
+
+    <!-- Dashboard Integration: AJAX Navigation System -->
+    <!-- <script src="../javascript/dashboard-integration.js" defer></script> -->
+
+    <script>
+        // Set profile picture with proper fallback
+        function setupProfilePicture() {
+            <?php 
+            $profilePic = !empty($user['profile_pic']) ? '../uploads/profile/'.$user['profile_pic'] : null;
+            ?>
+            const avatarDiv = document.getElementById('sidebarAvatar');
+            if (avatarDiv && '<?php echo $profilePic; ?>') {
+                avatarDiv.style.backgroundImage = 'url("<?php echo $profilePic; ?>")';
+                avatarDiv.style.backgroundSize = 'cover';
+                avatarDiv.style.backgroundPosition = 'center';
+            }
+        }
+
+        // Initialize on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setupProfilePicture();
+            });
+        } else {
+            setupProfilePicture();
+        }
+    </script>
 </head>
 
 <body>
@@ -279,11 +1262,11 @@ if ($view == 'orders' || $view == 'tracking') {
         <!-- SIDEBAR -->
         <aside class="account-sidebar">
             <div class="sidebar-profile">
-                <div class="sidebar-avatar" style="background-image: url('<?php echo !empty($user['profile_pic']) ? '../uploads/profile/'.$user['profile_pic'] : '../image/logo.png'; ?>'); background-size: cover; background-position: center;">
-                    <?php if(empty($user['profile_pic'])): ?><i class="far fa-user"></i><?php endif; ?>
+                <div class="sidebar-avatar" id="sidebarAvatar">
+                    <i class="far fa-user"></i>
                 </div>
                 <div>
-                    <div class="sidebar-username">
+                    <div class="sidebar-username" id="sidebarUsername">
                         <?php echo htmlspecialchars(!empty($user['username']) ? $user['username'] : (!empty($user['fullname']) ? $user['fullname'] : $user['email'])); ?>
                     </div>
                     <a href="?view=profile" class="sidebar-edit-link"><i class="fas fa-pen"></i> Edit Profile</a>
@@ -292,27 +1275,23 @@ if ($view == 'orders' || $view == 'tracking') {
 
             <ul class="sidebar-menu">
                 <li class="sidebar-menu-item">
-                    <a href="?view=profile" class="sidebar-menu-title">
+                    <a href="?view=profile" class="sidebar-menu-title" data-menu="account">
                         <i class="fas fa-user"></i> My Account
                     </a>
                     <ul class="sidebar-submenu">
-                        <li><a href="?view=profile"
-                                class="<?php echo $view == 'profile' ? 'active' : ''; ?>">Profile</a></li>
-                        <li><a href="?view=banks" class="<?php echo $view == 'banks' ? 'active' : ''; ?>">Banks &
-                                Cards</a></li>
-                        <li><a href="?view=address"
-                                class="<?php echo $view == 'address' ? 'active' : ''; ?>">Addresses</a></li>
-                        <li><a href="?view=password" class="<?php echo $view == 'password' ? 'active' : ''; ?>">Change
-                                Password</a></li>
+                        <li><a href="?view=profile" class="sidebar-submenu-link" data-view="profile">Profile</a></li>
+                        <li><a href="?view=banks" class="sidebar-submenu-link" data-view="banks">Banks & Cards</a></li>
+                        <li><a href="?view=address" class="sidebar-submenu-link" data-view="address">Addresses</a></li>
+                        <li><a href="?view=password" class="sidebar-submenu-link" data-view="password">Change Password</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="?view=orders" class="sidebar-menu-title">
+                    <a href="?view=orders" class="sidebar-menu-title" data-view="orders">
                         <i class="fas fa-clipboard-list"></i> My Purchase
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="?view=notifications" class="sidebar-menu-title <?php echo $view == 'notifications' ? 'active-nav' : ''; ?>">
+                    <a href="?view=notifications" class="sidebar-menu-title" data-view="notifications">
                         <i class="fas fa-bell"></i> Notifications
                     </a>
                 </li>
@@ -326,605 +1305,252 @@ if ($view == 'orders' || $view == 'tracking') {
         </aside>
 
         <!-- MAIN CONTENT -->
-        <main class="account-content">
-
-            <!-- VIEW: PROFILE -->
+        <main class="account-content" role="main">
+            <?php echo $msg; ?>
+            
             <?php if ($view == 'profile'): ?>
-                <div class="content-header">
-                    <div class="content-title">My Profile</div>
-                    <div class="content-subtitle">Manage and protect your account</div>
-                </div>
+                <!-- PROFILE SECTION -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+                        <p>Update your personal information</p>
+                    </div>
 
-                <?php echo $msg; ?>
-
-                <form action="" method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="update_profile">
-
-                    <div style="display: flex;">
-                        <div style="flex: 1; padding-right: 40px;">
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">Username</div>
-                                <div class="profile-input-field" style="padding-top:10px;">
-                                    <?php echo htmlspecialchars(!empty($user['username']) ? $user['username'] : (!empty($user['fullname']) ? $user['fullname'] : $user['email'])); ?>
-                                </div>
-                            </div>
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">Name</div>
-                                <div class="profile-input-field">
-                                    <input type="text" name="fullname"
-                                        value="<?php echo htmlspecialchars($user['fullname'] ?? ''); ?>" required>
-                                </div>
-                            </div>
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">Phone Number</div>
-                                <div class="profile-input-field">
-                                    <input type="text" name="phone"
-                                        value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
-                                </div>
-                            </div>
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">Address</div>
-                                <div class="profile-input-field">
-                                    <textarea name="address"
-                                        rows="2"><?php echo htmlspecialchars($user['address'] ?? ''); ?></textarea>
-                                </div>
-                            </div>
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">City</div>
-                                <div class="profile-input-field">
-                                    <input type="text" name="city"
-                                        value="<?php echo htmlspecialchars($user['city'] ?? ''); ?>">
-                                </div>
-                            </div>
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">Postal Code</div>
-                                <div class="profile-input-field">
-                                    <input type="text" name="zip"
-                                        value="<?php echo htmlspecialchars($user['zip'] ?? ''); ?>">
-                                </div>
-                            </div>
-
-                            <div class="profile-input-group">
-                                <div class="profile-input-label">Gender</div>
-                                <div class="profile-input-field"> <!-- Simple Radio or Select -->
-                                    <?php $g = $user['gender'] ?? ''; ?>
-                                    <select name="gender">
-                                        <option value="" disabled <?php echo empty($g) ? 'selected' : ''; ?>>Select Gender
-                                        </option>
-                                        <option value="Male" <?php echo ($g == 'Male') ? 'selected' : ''; ?>>Male</option>
-                                        <option value="Female" <?php echo ($g == 'Female') ? 'selected' : ''; ?>>Female
-                                        </option>
-                                        <option value="Other" <?php echo ($g == 'Other') ? 'selected' : ''; ?>>Other</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="save-btn-container">
-                                <button type="submit" class="btn-primary">Save</button>
-                            </div>
-
-                        </div>
-
-                        <!-- Avatar Section -->
-                        <div
-                            style="width: 280px; border-left: 1px solid #efefef; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-left: 40px;">
-                            <div id="avatarPreview"
-                                style="width: 100px; height: 100px; background: #eee; border-radius: 50%; margin-bottom: 20px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:40px; overflow:hidden; border:1px solid #ddd; background-image: url('<?php echo !empty($user['profile_pic']) ? '../uploads/profile/'.$user['profile_pic'] : ''; ?>'); background-size: cover; background-position: center;">
-                                <?php if(empty($user['profile_pic'])): ?>
+                    <form method="POST" enctype="multipart/form-data" class="profile-form">
+                        <input type="hidden" name="action" value="update_profile">
+                        
+                        <div class="profile-pic-section">
+                            <div class="profile-pic-display" id="profilePicDisplay">
+                                <?php if (!empty($user['profile_pic'])): ?>
+                                    <img src="../uploads/profile/<?php echo htmlspecialchars($user['profile_pic']); ?>" alt="Profile">
+                                <?php else: ?>
                                     <i class="fas fa-user"></i>
                                 <?php endif; ?>
                             </div>
-                            <input type="file" name="profile_pic" id="profile_pic_input" style="display:none;" onchange="previewImage(this)">
-                            <button type="button" class="btn-outline" onclick="document.getElementById('profile_pic_input').click()">Select Image</button>
-                            <div style="margin-top: 15px; font-size: 12px; color: #999; text-align: center;">
-                                File size: maximum 1 MB<br>
-                                File extension: .JPEG, .PNG
+                            <div class="profile-pic-controls">
+                                <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" style="display:none;">
+                                <button type="button" class="btn-upload" onclick="document.getElementById('profilePicInput').click();">
+                                    <i class="fas fa-camera"></i> Change Photo
+                                </button>
+                                <small>JPG, PNG up to 5MB</small>
                             </div>
                         </div>
 
-                        <script>
-                        function previewImage(input) {
-                            if (input.files && input.files[0]) {
-                                var reader = new FileReader();
-                                reader.onload = function(e) {
-                                    const preview = document.getElementById('avatarPreview');
-                                    preview.style.backgroundImage = 'url(' + e.target.result + ')';
-                                    preview.innerHTML = '';
-                                }
-                                reader.readAsDataURL(input.files[0]);
-                            }
-                        }
-                        </script>
-                    </div>
-                </form>
-
-                <!-- VIEW: ORDERS -->
-            <?php elseif ($view == 'orders'): ?>
-
-                <div class="order-tabs">
-                    <a href="?view=orders&tab=All" class="order-tab <?php echo $tab == 'All' ? 'active' : ''; ?>">All</a>
-                    <a href="?view=orders&tab=To Pay" class="order-tab <?php echo $tab == 'To Pay' ? 'active' : ''; ?>">To Pay</a>
-                    <a href="?view=orders&tab=To Ship" class="order-tab <?php echo $tab == 'To Ship' ? 'active' : ''; ?>">To Ship</a>
-                    <a href="?view=orders&tab=To Receive" class="order-tab <?php echo $tab == 'To Receive' ? 'active' : ''; ?>">To Receive</a>
-                    <a href="?view=orders&tab=Completed" class="order-tab <?php echo $tab == 'Completed' ? 'active' : ''; ?>">Completed</a>
-                    <a href="?view=orders&tab=Cancelled" class="order-tab <?php echo $tab == 'Cancelled' ? 'active' : ''; ?>">Cancelled</a>
-                </div>
-
-                <!-- Search Bar for Orders -->
-                <div style="background:#eaeaea; padding:10px; margin-bottom:20px; border-radius:2px;">
-                    <i class="fas fa-search" style="color:#666; margin-left:10px;"></i>
-                    <input type="text" placeholder="Search orders by Order ID or Product Name"
-                        style="background:transparent; border:none; outline:none; padding:5px; width:90%;">
-                </div>
-
-                <?php if (empty($my_orders)): ?>
-                    <div class="empty-state">
-                        <img src="../image/no-orders.png" alt="" style="width:100px; opacity:0.5; margin-bottom:15px;">
-                        <div>No orders yet</div>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($my_orders as $order): ?>
-                        <div class="order-card">
-                            <div class="order-header">
-                                <div class="shop-name">
-                                    <i class="fas fa-store"></i> IMarket Shop <button class="btn-outline"
-                                        style="padding:2px 8px; font-size:11px; margin-left:10px;">Chat</button>
-                                </div>
-                                <div class="order-status">
-                                    <?php
-                                    // Status Mapping
-                                    echo htmlspecialchars($order['status']);
-                                    if ($order['status'] == 'Pending')
-                                        echo " | To Pay";
-                                    ?>
-                                </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" name="fullname" value="<?php echo htmlspecialchars($user['fullname'] ?? ''); ?>" required>
                             </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" value="<?php echo htmlspecialchars($user['email']); ?>" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" placeholder="+63 XXX XXXX XXX" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select name="gender">
+                                    <option value="Not Specified" <?php echo ($user['gender'] == 'Not Specified') ? 'selected' : ''; ?>>Not Specified</option>
+                                    <option value="Male" <?php echo ($user['gender'] == 'Male') ? 'selected' : ''; ?>>Male</option>
+                                    <option value="Female" <?php echo ($user['gender'] == 'Female') ? 'selected' : ''; ?>>Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Birth Date</label>
+                                <input type="date" name="birthdate" value="<?php echo htmlspecialchars($user['birthdate'] ?? ''); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" name="city" value="<?php echo htmlspecialchars($user['city'] ?? ''); ?>" required>
+                            </div>
+                        </div>
 
-                            <a href="?view=tracking&order_id=<?php echo $order['id']; ?>" style="text-decoration:none;">
-                                <div class="order-items">
-                                    <div class="order-item-row">
-                                        <?php
-                                        // Resolve Image Path
-                                        $img_file = isset($order['image_url']) ? $order['image_url'] : '';
-                                        $final_img_src = '../image/imarket.png'; // Default fallback
+                        <div class="form-group full-width">
+                            <label>Address</label>
+                            <textarea name="address" rows="3" required><?php echo htmlspecialchars($user['address'] ?? ''); ?></textarea>
+                        </div>
 
-                                        if (!empty($img_file)) {
-                                            $clean_path = str_replace('../../', '../', $img_file);
-                                            $basename = basename($clean_path);
-                                            $basename_dashed = str_replace(' ', '-', $basename);
+                        <div class="form-group">
+                            <label>Postal Code</label>
+                            <input type="text" name="zip" value="<?php echo htmlspecialchars($user['zip'] ?? ''); ?>" required>
+                        </div>
 
-                                            $candidates = [
-                                                $clean_path,
-                                                '../image/Best-seller/' . $basename,
-                                                '../image/Best-seller/' . $basename_dashed,
-                                                '../image/best_selling/' . $basename,
-                                                '../image/' . $basename,
-                                                '../image/Shop/' . $basename,
-                                                '../image/Shop/UrbanWear PH/' . $basename,
-                                                $img_file,
-                                                $basename
-                                            ];
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
-                                            foreach ($candidates as $candidate) {
-                                                if (!empty($candidate) && file_exists($candidate) && !is_dir($candidate)) {
-                                                    $final_img_src = $candidate;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        ?>
-                                        <img src="<?php echo htmlspecialchars($final_img_src); ?>"
-                                            class="item-img" alt="Product">
-                                        <div class="item-info">
-                                            <div class="item-name"><?php echo htmlspecialchars($order['product_name']); ?></div>
-                                            <div class="item-meta">Quantity: x<?php echo $order['quantity']; ?></div>
-                                        </div>
-                                        <div class="item-price">₱<?php echo number_format($order['price'], 2); ?></div>
+            <?php elseif ($view == 'address'): ?>
+                <!-- ADDRESS SECTION -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <div>
+                            <h2><i class="fas fa-map-marker-alt"></i> My Addresses</h2>
+                            <p>Manage your delivery addresses</p>
+                        </div>
+                        <button class="btn-primary" onclick="openAddressModal()">
+                            <i class="fas fa-plus"></i> Add New Address
+                        </button>
+                    </div>
+
+                    <div class="addresses-grid">
+                        <?php if (empty($user_addresses)): ?>
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>No addresses yet. Add one to get started!</p>
+                            </div>
+                        <?php else: ?>
+                            <?php foreach ($user_addresses as $addr): ?>
+                                <div class="address-card <?php echo $addr['is_default'] ? 'default' : ''; ?>">
+                                    <?php if ($addr['is_default']): ?>
+                                        <span class="badge-default">Default Address</span>
+                                    <?php endif; ?>
+                                    <div class="address-info">
+                                        <h4><?php echo htmlspecialchars($addr['fullname']); ?></h4>
+                                        <p><?php echo htmlspecialchars($addr['address']); ?></p>
+                                        <p><?php echo htmlspecialchars($addr['city']); ?>, <?php echo htmlspecialchars($addr['zip']); ?></p>
+                                        <p class="phone"><i class="fas fa-phone"></i> <?php echo htmlspecialchars($addr['phone']); ?></p>
                                     </div>
-                                </div>
-                            </a>
-
-                            <div class="order-footer" style="padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; align-items: flex-end;">
-                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                                    <span style="font-size: 0.9rem; color: #64748b;">Order Total:</span>
-                                    <span style="font-size: 1.4rem; font-weight: 700; color: #2A3B7E;">₱<?php echo number_format($order['total_amount'], 2); ?></span>
-                                </div>
-
-                                <div class="order-actions" style="display:flex; gap:12px; justify-content: flex-end; width: 100%; margin-top: 5px;">
-                                    <!-- TRACK ORDER -->
-                                    <a href="../Categories/best_selling/Tracking.php?order_id=<?php echo $order['id']; ?>" 
-                                       style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #fff; border: 1px solid #e0e0e0; color: #333; text-decoration: none; transition: all 0.2s;">
-                                        <i class="fas fa-truck-fast"></i> Track Order
-                                    </a>
-                                    
-                                    <?php if (in_array($order['status'], ['Delivered', 'Completed'])): 
-                                        $oid = $order['id'];
-                                        $rev_check = mysqli_query($conn, "SELECT id FROM reviews WHERE order_id='$oid' LIMIT 1");
-                                        $is_reviewed = (mysqli_num_rows($rev_check) > 0);
-                                    ?>
-                                        <!-- RATE BUTTON -->
-                                        <?php if (!$is_reviewed): ?>
-                                            <a href="Rate.php?product_id=<?php echo urlencode($order['product_id'] ?? 0); ?>&order_id=<?php echo $order['id']; ?>" 
-                                               style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #2A3B7E; color: #fff; border: none; text-decoration: none;">
-                                                <i class="fas fa-star"></i> Rate
-                                            </a>
-                                        <?php else: ?>
-                                            <span style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; color: #10b981; font-weight: 600;">
-                                                <i class="fas fa-check-circle"></i> Reviewed
-                                            </span>
+                                    <div class="address-actions">
+                                        <button class="btn-sm btn-edit" onclick="editAddress(<?php echo htmlspecialchars(json_encode($addr)); ?>)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <?php if (!$addr['is_default']): ?>
+                                            <button class="btn-sm btn-default" onclick="setDefault(<?php echo $addr['id']; ?>)">
+                                                <i class="fas fa-check"></i> Set Default
+                                            </button>
                                         <?php endif; ?>
-
-                                        <!-- DELETE BUTTON (MOCK) -->
-                                        <button style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #ef4444; color: #fff; border: none; cursor: pointer;">
+                                        <button class="btn-sm btn-danger" onclick="deleteAddress(<?php echo $addr['id']; ?>)">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
-
-                                    <?php endif; ?>
-
-                                    <?php if ($order['status'] == 'Pending'): ?>
-                                        <button onclick="cancelOrder(<?php echo $order['id']; ?>)" 
-                                                style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #fff; border: 1px solid #fca5a5; color: #ef4444; cursor: pointer;">
-                                            <i class="fas fa-times"></i> Cancel Order
-                                        </button>
-                                    <?php endif; ?>
-
-                                    <button style="display: flex; align-items: center; gap: 8px; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: 4px; background: #fff; border: 1px solid #ddd; color: #555; cursor: pointer;">
-                                        Buy Again
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-
-                <!-- VIEW: TRACKING -->
-            <?php elseif ($view == 'tracking'):
-                $track_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
-                // Fetch specific order
-                $curr_order = null;
-                foreach ($my_orders as $o) {
-                    if ($o['id'] == $track_id) {
-                        $curr_order = $o;
-                        break;
-                    }
-                }
-
-                if (!$curr_order) {
-                    echo "<div class='empty-state'>Order not found. <a href='?view=orders'>Back to orders</a></div>";
-                } else {
-                    $st = $curr_order['status']; // Pending, Paid, Shipped, Delivered
-                    // Determine step active index
-                    $step_idx = 1;
-                    if (strcasecmp($st, 'Pending') == 0)
-                        $step_idx = 1;
-                    if (strcasecmp($st, 'Paid') == 0)
-                        $step_idx = 2;
-                    if (strcasecmp($st, 'Shipped') == 0)
-                        $step_idx = 3;
-                    if (strcasecmp($st, 'Delivered') == 0)
-                        $step_idx = 4;
-                    if (strcasecmp($st, 'Completed') == 0)
-                        $step_idx = 5;
-                    ?>
-                    <div class="content-header">
-                        <a href="?view=orders" style="text-decoration:none; color:#555; font-size:14px; margin-right:10px;"><i
-                                class="fas fa-arrow-left"></i> Back</a>
-                        <span class="content-title" style="font-size:18px;">Order Details |
-                            <?php echo htmlspecialchars($curr_order['tracking_number']); ?></span>
-                    </div>
-
-                    <div class="tracking-container">
-
-                        <div
-                            style="background:#fffcf5; border:1px solid #ffeedb; padding:15px; margin-bottom:30px; border-radius:4px; display:flex; justify-content:space-between;">
-                            <div>
-                                <div style="font-size:16px; color:#2A3B7E; font-weight:500;">Order Status:
-                                    <?php echo htmlspecialchars($st); ?>
-                                </div>
-                                <div style="font-size:13px; color:#777; margin-top:5px;">Estimated Delivery: 3-5 days</div>
-                            </div>
-                        </div>
-
-                        <!-- STEPPER -->
-                        <div class="track-stepper">
-                            <!-- Step 1 -->
-                            <div class="track-step <?php echo ($step_idx >= 1) ? 'active' : ''; ?>">
-                                <div class="step-icon"><i class="fas fa-file-invoice"></i></div>
-                                <div class="step-label">Order Placed</div>
-                                <div class="track-time"><?php echo date('M d H:i', strtotime($curr_order['created_at'])); ?>
-                                </div>
-                            </div>
-                            <!-- Step 2 -->
-                            <div class="track-step <?php echo ($step_idx >= 2) ? 'active' : ''; ?>">
-                                <div class="step-icon"><i class="fas fa-money-bill-wave"></i></div>
-                                <div class="step-label">Paid</div>
-                                <?php if ($step_idx >= 2): ?>
-                                    <div class="track-time">
-                                        <?php echo date('M d H:i', strtotime($curr_order['created_at'] . ' + 1 hour')); ?>
                                     </div>
-                                <?php endif; ?>
-                            </div>
-                            <!-- Step 3 -->
-                            <div class="track-step <?php echo ($step_idx >= 3) ? 'active' : ''; ?>">
-                                <div class="step-icon"><i class="fas fa-box-open"></i></div>
-                                <div class="step-label">Shipped Out</div>
-                                <?php if ($step_idx >= 3): ?>
-                                    <div class="track-time">
-                                        <?php echo date('M d H:i', strtotime($curr_order['created_at'] . ' + 1 day')); ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <!-- Step 4 -->
-                            <div class="track-step <?php echo ($step_idx >= 4) ? 'active' : ''; ?>">
-                                <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
-                                <div class="step-label">To Receive</div>
-                            </div>
-                            <!-- Step 5 -->
-                            <div class="track-step <?php echo ($step_idx >= 5) ? 'active' : ''; ?>">
-                                <div class="step-icon"><i class="fas fa-star"></i></div>
-                                <div class="step-label">Completed</div>
-                            </div>
-                        </div>
-
-                        <!-- Detailed Timeline -->
-                        <div style="margin-top:40px;">
-                            <div style="font-weight:500; color:#333; margin-bottom:15px;">Tracking History</div>
-                            <div
-                                style="border-left:2px solid #e0e0e0; margin-left:15px; padding-left:25px; padding-bottom:20px; position:relative;">
-                                <div
-                                    style="position:absolute; left:-6px; top:0; width:10px; height:10px; background:#2A3B7E; border-radius:50%;">
                                 </div>
-                                <div style="font-size:14px; color:#333;">Your order is being processed by the seller.</div>
-                                <div style="font-size:12px; color:#999; margin-top:2px;">
-                                    <?php echo date('Y-m-d H:i', strtotime($curr_order['created_at'])); ?>
-                                </div>
-                            </div>
-                            <?php if ($step_idx >= 2): ?>
-                                <div
-                                    style="border-left:2px solid #e0e0e0; margin-left:15px; padding-left:25px; padding-bottom:20px; position:relative;">
-                                    <div
-                                        style="position:absolute; left:-6px; top:0; width:10px; height:10px; background:#ccc; border-radius:50%;">
-                                    </div>
-                                    <div style="font-size:14px; color:#333;">Payment confirmed.</div>
-                                    <div style="font-size:12px; color:#999; margin-top:2px;">...</div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Order Items Small View -->
-                        <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
-                            <div style="font-weight:500; margin-bottom:10px;">Product Info</div>
-                            <div style="display:flex; gap:15px;">
-                                <?php
-                                // Resolve Image Path for Tracking
-                                $track_img = isset($curr_order['image_url']) ? $curr_order['image_url'] : '';
-                                $final_track_img = '../image/imarket.png';
-
-                                if (!empty($track_img)) {
-                                    $clean_t = str_replace('../../', '../', $track_img);
-                                    $t_base = basename($clean_t);
-                                    $t_base_d = str_replace(' ', '-', $t_base);
-
-                                    $t_candidates = [
-                                        $clean_t,
-                                        '../image/Best-seller/' . $t_base,
-                                        '../image/Best-seller/' . $t_base_d,
-                                        '../image/best_selling/' . $t_base,
-                                        '../image/' . $t_base,
-                                        '../image/Shop/' . $t_base,
-                                        '../image/Shop/UrbanWear PH/' . $t_base,
-                                        $track_img,
-                                        $t_base
-                                    ];
-
-                                    foreach ($t_candidates as $c) {
-                                        if (!empty($c) && file_exists($c) && !is_dir($c)) {
-                                            $final_track_img = $c;
-                                            break;
-                                        }
-                                    }
-                                }
-                                ?>
-                                <img src="<?php echo htmlspecialchars($final_track_img); ?>"
-                                    style="width:60px; height:60px; border:1px solid #eee; object-fit: contain;">
-                                <div>
-                                    <div style="font-size:14px; font-weight:600;">
-                                        <?php echo htmlspecialchars($curr_order['product_name']); ?>
-                                    </div>
-                                    <div style="font-size:13px; color:#777;">Quantity: x<?php echo $curr_order['quantity']; ?>
-                                    </div>
-                                    <div style="font-size:14px; color:#2A3B7E;">
-                                        ₱<?php echo number_format($curr_order['total_amount'], 2); ?></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <?php if ($curr_order['status'] == 'Pending'): ?>
-                            <div style="margin-top: 30px; display: flex; justify-content: center; border-top: 1px solid #eee; padding-top: 25px;">
-                                <button class="btn-outline" style="padding: 12px 30px; border-radius: 8px; color: #ef4444; border: 2px solid #fca5a5; font-weight: 700; background: #fffcfc; cursor: pointer; transition: all 0.2s;" 
-                                        onmouseover="this.style.background='#ef4444'; this.style.color='white';" 
-                                        onmouseout="this.style.background='#fffcfc'; this.style.color='#ef4444';"
-                                        onclick="cancelOrder(<?php echo $curr_order['id']; ?>)">
-                                    <i class="fas fa-times-circle" style="margin-right: 8px;"></i> Cancel Order
-                                </button>
-                            </div>
+                            <?php endforeach; ?>
                         <?php endif; ?>
+                    </div>
+                </div>
 
+            <?php elseif ($view == 'password'): ?>
+                <!-- PASSWORD SECTION -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-lock"></i> Change Password</h2>
+                        <p>Update your password to keep your account secure</p>
                     </div>
 
-                    <?php
-                } // End if/else for curr_order
-            endif;
-            ?>
-
-            <!-- VIEW: BANKS & CARDS -->
-            <?php if ($view == 'banks'): ?>
-                <div class="content-header">
-                    <div class="content-title">Credit / Debit Cards</div>
-                    <div class="content-subtitle">Manage your payment methods</div>
-                </div>
-
-                <div class="empty-state">
-                    <i class="fas fa-credit-card" style="font-size: 40px; margin-bottom: 20px; color: #ccc;"></i>
-                    <p>You have not added any cards yet.</p>
-                    <button class="btn-primary" style="margin-top: 10px;">+ Add New Card</button>
-                </div>
-
-                <!-- VIEW: ADDRESSES -->
-            <?php elseif ($view == 'address'): ?>
-                <div class="content-header">
-                    <div class="content-title">My Addresses</div>
-                    <div class="content-subtitle">Manage your shipping addresses</div>
-                </div>
-
-                <?php echo $msg; ?>
-
-                <div class="address-list">
-                    <?php if (empty($user_addresses)): ?>
-                        <div class="empty-state">
-                            <i class="fas fa-map-marker-alt" style="font-size: 40px; color: #ccc; margin-bottom: 20px;"></i>
-                            <p>You have no saved addresses.</p>
-                        </div>
-                    <?php else: ?>
-                        <?php foreach ($user_addresses as $addr): ?>
-                            <div class="address-card"
-                                style="border: 1px solid #ddd; padding: 20px; border-radius: 4px; position: relative; margin-bottom: 15px; background: #fff;">
-                                <span style="position: absolute; right: 20px; top: 20px;">
-                                    <a href="javascript:void(0)"
-                                        onclick="editAddress(<?php echo htmlspecialchars(json_encode($addr)); ?>)"
-                                        style="color: #0f8392; margin-right: 15px; font-size: 14px; font-weight: 500; text-decoration: none;">Edit</a>
-                                    <a href="javascript:void(0)" onclick="deleteAddress(<?php echo $addr['id']; ?>)"
-                                        style="color: #d9534f; font-size: 14px; font-weight: 500; text-decoration: none;">Delete</a>
-                                </span>
-
-                                <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">
-                                    <?php echo htmlspecialchars($addr['fullname']); ?>
-                                    <span
-                                        style="font-weight: normal; color: #777; margin-left: 10px; border-left: 1px solid #eee; padding-left: 10px;">
-                                        <?php echo htmlspecialchars($addr['phone']); ?>
-                                    </span>
-                                </div>
-
-                                <div style="color: #555; font-size: 14px; line-height: 1.6;">
-                                    <?php echo htmlspecialchars($addr['address']); ?><br>
-                                    <?php echo htmlspecialchars($addr['city']); ?>, <?php echo htmlspecialchars($addr['zip']); ?>
-                                </div>
-
-                                <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
-                                    <?php if ($addr['is_default']): ?>
-                                        <span
-                                            style="border: 1px solid #ee4d2d; color: #ee4d2d; font-size: 11px; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; font-weight: 600;">Default</span>
-                                    <?php else: ?>
-                                        <button onclick="setDefault(<?php echo $addr['id']; ?>)"
-                                            style="background: none; border: 1px solid #ccc; color: #666; font-size: 12px; padding: 4px 10px; border-radius: 2px; cursor: pointer;">Set
-                                            as Default</button>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
-
-                <button class="btn-primary" onclick="openAddressModal()"
-                    style="margin-top: 20px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-plus"></i> Add New Address
-                </button>
-
-                <!-- VIEW: CHANGE PASSWORD -->
-            <?php elseif ($view == 'password'): ?>
-                <div class="content-header">
-                    <div class="content-title">Change Password</div>
-                    <div class="content-subtitle">For your account's security, do not share your password with anyone.</div>
-                </div>
-
-                <?php echo $msg; ?>
-
-                <form action="" method="POST" style="max-width: 500px;">
-                    <input type="hidden" name="action" value="change_password">
-
-                    <div class="profile-input-group">
-                        <div class="profile-input-label" style="width: 180px;">Current Password</div>
-                        <div class="profile-input-field">
+                    <form method="POST" class="password-form">
+                        <input type="hidden" name="action" value="change_password">
+                        
+                        <div class="form-group">
+                            <label>Current Password</label>
                             <input type="password" name="current_password" required>
                         </div>
-                    </div>
 
-                    <div class="profile-input-group">
-                        <div class="profile-input-label" style="width: 180px;">New Password</div>
-                        <div class="profile-input-field">
-                            <input type="password" name="new_password" required>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" name="new_password" required minlength="8" placeholder="At least 8 characters">
                         </div>
-                    </div>
 
-                    <div class="profile-input-group">
-                        <div class="profile-input-label" style="width: 180px;">Confirm Password</div>
-                        <div class="profile-input-field">
-                            <input type="password" name="confirm_password" required>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" name="confirm_password" required minlength="8">
                         </div>
-                    </div>
 
-                    <div class="save-btn-container" style="margin-left: 210px;">
-                        <button type="submit" class="btn-primary">Confirm</button>
-                    </div>
-                </form>
+                        <div class="security-tips">
+                            <h4><i class="fas fa-shield-alt"></i> Password Tips</h4>
+                            <ul>
+                                <li>Use at least 8 characters</li>
+                                <li>Mix uppercase and lowercase letters</li>
+                                <li>Include numbers and special characters</li>
+                                <li>Don't use personal information</li>
+                            </ul>
+                        </div>
 
-            <!-- VIEW: NOTIFICATIONS -->
-            <?php elseif ($view == 'notifications'): ?>
-                <div class="content-header">
-                    <div class="content-title">Notifications</div>
-                    <div class="content-subtitle">Stay updated with your activities and support responses</div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Update Password
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                <div class="notification-list">
-                    <?php
-                    // Fetch recent activities (Support Replies)
-                    $notif_sql = "SELECT * FROM support_tickets WHERE customer_id = '$user_id' AND (admin_reply IS NOT NULL OR status != 'Open') ORDER BY updated_at DESC LIMIT 10";
-                    $notif_res = mysqli_query($conn, $notif_sql);
-                    
-                    if ($notif_res && mysqli_num_rows($notif_res) > 0):
-                        while ($notif = mysqli_fetch_assoc($notif_res)):
-                            $is_unread = isset($notif['user_read']) && $notif['user_read'] == 0;
-                    ?>
-                        <div class="notification-item" style="padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; gap: 15px; <?php echo $is_unread ? 'background-color: #f0f7ff;' : ''; ?>">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #2A3B7E; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                <i class="fas fa-headset"></i>
+            <?php elseif ($view == 'orders'): ?>
+                <!-- ORDERS SECTION -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-shopping-bag"></i> My Orders</h2>
+                        <p>Track and manage your purchases</p>
+                    </div>
+
+                    <div class="orders-tabs">
+                        <a href="?view=orders&tab=All" class="tab <?php echo $tab == 'All' ? 'active' : ''; ?>">All Orders</a>
+                        <a href="?view=orders&tab=To Pay" class="tab <?php echo $tab == 'To Pay' ? 'active' : ''; ?>">To Pay</a>
+                        <a href="?view=orders&tab=To Ship" class="tab <?php echo $tab == 'To Ship' ? 'active' : ''; ?>">To Ship</a>
+                        <a href="?view=orders&tab=To Receive" class="tab <?php echo $tab == 'To Receive' ? 'active' : ''; ?>">To Receive</a>
+                        <a href="?view=orders&tab=Completed" class="tab <?php echo $tab == 'Completed' ? 'active' : ''; ?>">Completed</a>
+                        <a href="?view=orders&tab=Cancelled" class="tab <?php echo $tab == 'Cancelled' ? 'active' : ''; ?>">Cancelled</a>
+                    </div>
+
+                    <div class="orders-list">
+                        <?php if (empty($my_orders)): ?>
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>No orders yet. Start shopping!</p>
                             </div>
-                            <div style="flex: 1;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span style="font-weight: 600; color: #333;">Support Ticket Update</span>
-                                    <span style="font-size: 12px; color: #999;"><?php echo date('M d, H:i', strtotime($notif['updated_at'])); ?></span>
+                        <?php else: ?>
+                            <?php foreach ($my_orders as $order): ?>
+                                <div class="order-card">
+                                    <div class="order-header">
+                                        <div>
+                                            <span class="order-number">Order #<?php echo htmlspecialchars($order['id']); ?></span>
+                                            <span class="order-date"><?php echo date('M d, Y', strtotime($order['created_at'])); ?></span>
+                                        </div>
+                                        <span class="status-badge status-<?php echo strtolower(str_replace(' ', '-', $order['status'])); ?>">
+                                            <?php echo htmlspecialchars($order['status']); ?>
+                                        </span>
+                                    </div>
+
+                                    <div class="order-body">
+                                        <div class="order-item">
+                                            <img src="<?php echo htmlspecialchars($order['image_url'] ?? '../image/placeholder.png'); ?>" alt="Product" class="order-item-img">
+                                            <div class="order-item-info">
+                                                <h4><?php echo htmlspecialchars($order['product_name']); ?></h4>
+                                                <p>Qty: <?php echo intval($order['quantity']); ?> × ₱<?php echo number_format($order['price'], 2); ?></p>
+                                            </div>
+                                            <div class="order-item-total">
+                                                <strong>₱<?php echo number_format($order['total_amount'], 2); ?></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="order-footer">
+                                        <a href="?view=tracking&order_id=<?php echo $order['id']; ?>" class="btn-sm btn-secondary">
+                                            <i class="fas fa-map-marker-alt"></i> Track Order
+                                        </a>
+                                        <?php if ($order['status'] == 'Pending' || $order['status'] == 'Paid'): ?>
+                                            <button class="btn-sm btn-danger" onclick="cancelOrder(<?php echo $order['id']; ?>)">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
-                                <div style="font-size: 14px; color: #555; margin-bottom: 8px;">
-                                    Ticket <strong>#<?php echo $notif['ticket_number']; ?></strong> has been updated to <strong><?php echo $notif['status']; ?></strong>.
-                                    <?php if (!empty($notif['admin_reply'])): ?>
-                                        <br><span style="color: #666; font-style: italic;">"<?php echo substr(htmlspecialchars($notif['admin_reply']), 0, 100); ?>..."</span>
-                                    <?php endif; ?>
-                                </div>
-                                <a href="../Services/Customer_Service.php?tab=history&view=<?php echo $notif['ticket_number']; ?>" style="font-size: 13px; color: #2A3B7E; font-weight: 600; text-decoration: none;">View Detail & Reply</a>
-                            </div>
-                            <?php if ($is_unread): ?>
-                                <div style="width: 8px; height: 8px; background: #2A3B7E; border-radius: 50%; margin-top: 5px;"></div>
-                            <?php endif; ?>
-                        </div>
-                    <?php 
-                        endwhile;
-                    else:
-                    ?>
-                        <div style="text-align: center; padding: 50px 0; color: #999;">
-                            <i class="fas fa-bell-slash" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
-                            <p>No new notifications yet.</p>
-                        </div>
-                    <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
+            <?php else: ?>
+                <!-- Default Empty State -->
+                <div class="empty-state">
+                    <i class="fas fa-file-alt"></i>
+                    <p>This section is not available yet.</p>
+                </div>
             <?php endif; ?>
-
         </main>
     </div>
 
@@ -995,7 +1621,30 @@ if ($view == 'orders' || $view == 'tracking') {
         <input type="hidden" name="order_id" id="formOrderId">
     </form>
 
+    <!-- FOOTER -->
+    <div class="footer-account-wrapper" style="margin-top: 50px; background: #fff; border-top: 1px solid #e2e8f0;">
+        <?php
+        $path_prefix = '../';
+        include('../Components/footer.php');
+        ?>
+    </div>
+
     <script>
+        // Handle profile picture preview
+        const profilePicInput = document.getElementById('profilePicInput');
+        if (profilePicInput) {
+            profilePicInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('profilePicDisplay').innerHTML = '<img src="' + event.target.result + '" alt="Profile">';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
         function openAddressModal() {
             document.getElementById('modalTitle').innerText = 'New Address';
             document.getElementById('addressForm').reset();
@@ -1041,7 +1690,7 @@ if ($view == 'orders' || $view == 'tracking') {
             }
         }
 
-        // Detect Location in Account Modal
+        // Detect Location in Address Modal
         const detectBtnAcc = document.getElementById('btn-detect-account');
         if (detectBtnAcc) {
             detectBtnAcc.onclick = function () {
@@ -1076,12 +1725,6 @@ if ($view == 'orders' || $view == 'tracking') {
             }
         }
     </script>
-    <div class="footer-account-wrapper" style="margin-top: 50px;">
-        <?php
-        $path_prefix = '../';
-        include('../Components/footer.php');
-        ?>
-    </div>
 </body>
 
 </html>

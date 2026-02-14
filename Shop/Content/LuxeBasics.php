@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Luxe Ribbed Bodycon Midi.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Ribbed bodycon midi dress made from stretch fabric for a flattering silhouette and comfortable wear.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Premium Heavyweight Boxy Tee.jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'Heavyweight boxy tee crafted from premium cotton for a structured feel and lasting durability.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Seamless Sculpting Tank Top.jpeg',
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Seamless sculpting tank top designed for smooth shaping and comfortable everyday layering.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Soft-Touch Halter Neck Top.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'Halter neck top with soft-touch fabric and supportive fit ideal for evening wear.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Tailored Trouser Pants (Cream).jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Tailored trousers with a clean cream finish; made for a smart, minimalist wardrobe.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Classic Button-Down Linen Shirt.jpeg', // Fallback
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => 'Classic linen shirt with breathable fibres for effortless smart-casual styling.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Double-Lined Tube Top.jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Double-lined tube top offering smoother coverage and a secure fit.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Premium Knit Cardigan.jpeg', // Using stylized image
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Premium knit cardigan made from soft yarns to keep you warm without bulk.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/High-Waist Wide Leg Trousers.jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'High-waist wide leg trousers with a relaxed fit and flattering drape.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Minimalist Mock Neck Top.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'Minimalist mock neck top with clean lines and a soft touch fabric for layering.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Luxe Cotton Biker Shorts.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Cotton biker shorts with luxe finish; comfortable and form-flattering for workouts or casual wear.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Ribbed Square Neck Long Sleeve.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'Ribbed long sleeve with square neckline providing elegant shape and comfortable stretch.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Satin Slip Maxi Skirt.jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Satin slip maxi skirt with smooth finish and graceful movement for dressy occasions.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Premium Oversized Sweatshirt.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Oversized sweatshirt in a premium fabric blend with a cozy interior and relaxed fit.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/Luxe Basics/Old Money Knitted Vest.jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Knitted vest with retro-inspired design delivering texture and versatile layering options.'
         ]
     ];
     return; // Stop processing

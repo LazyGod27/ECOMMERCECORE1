@@ -96,57 +96,114 @@ if ($user_id) {
         ?>
     </nav>
 
-    <div class="return-container">
-        <!-- Sidebar Navigation -->
-        <div class="service-sidebar">
-            <h3>Customer Service</h3>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="Customer_Service.php?tab=faq"><i class="fas fa-question-circle"></i> FAQs</a></li>
-                    <li><a href="Customer_Service.php?tab=submit"><i class="fas fa-edit"></i> Submit Ticket</a></li>
-                    <li><a href="Customer_Service.php?tab=history"><i class="fas fa-history"></i> My Tickets</a></li>
-                    <li><a href="Return & Refund.php" class="active"><i class="fas fa-undo-alt"></i> Return & Refund</a>
-                    </li>
-                    <li><a href="Contact Us.php"><i class="fas fa-envelope"></i> Contact Us</a></li>
-                </ul>
-            </nav>
+    <!-- Modern Hero Section -->
+    <div style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%); padding: 70px 20px; color: white; text-align: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1;">
+            <div style="position: absolute; width: 400px; height: 400px; background: white; border-radius: 50%; top: -150px; right: -150px;"></div>
+            <div style="position: absolute; width: 300px; height: 300px; background: white; border-radius: 50%; bottom: -100px; left: -100px;"></div>
+        </div>
+        <div style="position: relative; z-index: 2; max-width: 900px; margin: 0 auto;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                <i class="fas fa-undo-alt" style="font-size: 2.5rem;"></i>
+                <h1 style="font-size: 3rem; font-weight: 800; margin: 0;">Easy Returns & Refunds</h1>
+            </div>
+            <p style="font-size: 1.15rem; opacity: 0.95; margin: 0; line-height: 1.6;">We make returns hassle-free. If you're not satisfied, we'll help you get a refund quickly and easily.</p>
+        </div>
+    </div>
+
+    <!-- Service Navigation Tabs -->
+    <div style="background: white; padding: 0; border-bottom: 2px solid #f1f5f9; position: sticky; top: 0; z-index: 100;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; overflow-x: auto;">
+            <a href="Customer_Service.php?tab=faq" style="flex: 1; text-align: center; padding: 18px 12px; text-decoration: none; color: #64748b; border-bottom: 3px solid transparent; transition: all 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 140px; cursor: pointer; white-space: nowrap;">
+                <i class="fas fa-question-circle" style="font-size: 16px;"></i> FAQs
+            </a>
+            <a href="Shipping & Delivery.php" style="flex: 1; text-align: center; padding: 18px 12px; text-decoration: none; color: #64748b; border-bottom: 3px solid transparent; transition: all 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 140px; cursor: pointer; white-space: nowrap;">
+                <i class="fas fa-shipping-fast" style="font-size: 16px;"></i> Shipping
+            </a>
+            <a href="Return & Refund.php" style="flex: 1; text-align: center; padding: 18px 12px; text-decoration: none; color: #06b6d4; border-bottom: 3px solid #06b6d4; transition: all 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 140px; cursor: pointer; white-space: nowrap; background: #ecf8fa;">
+                <i class="fas fa-undo-alt" style="font-size: 16px;"></i> Returns
+            </a>
+            <a href="Contact Us.php" style="flex: 1; text-align: center; padding: 18px 12px; text-decoration: none; color: #64748b; border-bottom: 3px solid transparent; transition: all 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 140px; cursor: pointer; white-space: nowrap;">
+                <i class="fas fa-envelope" style="font-size: 16px;"></i> Contact
+            </a>
+            <a href="Customer_Service.php?tab=history" style="flex: 1; text-align: center; padding: 18px 12px; text-decoration: none; color: #64748b; border-bottom: 3px solid transparent; transition: all 0.3s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 140px; cursor: pointer; white-space: nowrap;">
+                <i class="fas fa-headset" style="font-size: 16px;"></i> Support
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 50px 20px;">
+        <?php if (!empty($msg)): ?>
+            <div style="margin-bottom: 30px;">
+                <?php echo $msg; ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Return Policy Cards -->
+        <div style="margin-bottom: 60px;">
+            <h2 style="font-size: 2rem; color: #1e293b; margin-bottom: 12px; font-weight: 800;">Return Policy</h2>
+            <p style="color: #64748b; font-size: 1.05rem; margin-bottom: 35px;">Everything you need to know about returns and refunds</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
+                <div style="background: white; border-radius: 16px; border: 2px solid #cffafe; overflow: hidden; transition: all 0.3s; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.08);" onmouseover="this.style.boxShadow='0 15px 40px rgba(6, 182, 212, 0.2)'; this.style.transform='translateY(-8px)'; this.style.borderColor='#06b6d4'" onmouseout="this.style.boxShadow='0 4px 12px rgba(6, 182, 212, 0.08)'; this.style.transform='translateY(0)'; this.style.borderColor='#cffafe'">
+                    <div style="background: linear-gradient(135deg, #ecf8fa 0%, #cffafe 100%); padding: 25px; text-align: center;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);">
+                            <i class="fas fa-calendar" style="color: white; font-size: 32px;"></i>
+                        </div>
+                        <h3 style="margin: 0; color: #1e293b; font-size: 1.2rem; font-weight: 700;">7-Day Window</h3>
+                    </div>
+                    <div style="padding: 25px;">
+                        <p style="margin: 0; color: #64748b; line-height: 1.7; font-size: 14px;">Return items within 7 days of delivery for a full refund. Items must be unused and in original condition.</p>
+                    </div>
+                </div>
+
+                <div style="background: white; border-radius: 16px; border: 2px solid #cffafe; overflow: hidden; transition: all 0.3s; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.08);" onmouseover="this.style.boxShadow='0 15px 40px rgba(6, 182, 212, 0.2)'; this.style.transform='translateY(-8px)'; this.style.borderColor='#06b6d4'" onmouseout="this.style.boxShadow='0 4px 12px rgba(6, 182, 212, 0.08)'; this.style.transform='translateY(0)'; this.style.borderColor='#cffafe'">
+                    <div style="background: linear-gradient(135deg, #ecf8fa 0%, #cffafe 100%); padding: 25px; text-align: center;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);">
+                            <i class="fas fa-box" style="color: white; font-size: 32px;"></i>
+                        </div>
+                        <h3 style="margin: 0; color: #1e293b; font-size: 1.2rem; font-weight: 700;">Original Packaging</h3>
+                    </div>
+                    <div style="padding: 25px;">
+                        <p style="margin: 0; color: #64748b; line-height: 1.7; font-size: 14px;">Items must come in original packaging with all tags attached and in unused condition.</p>
+                    </div>
+                </div>
+
+                <div style="background: white; border-radius: 16px; border: 2px solid #cffafe; overflow: hidden; transition: all 0.3s; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.08);" onmouseover="this.style.boxShadow='0 15px 40px rgba(6, 182, 212, 0.2)'; this.style.transform='translateY(-8px)'; this.style.borderColor='#06b6d4'" onmouseout="this.style.boxShadow='0 4px 12px rgba(6, 182, 212, 0.08)'; this.style.transform='translateY(0)'; this.style.borderColor='#cffafe'">
+                    <div style="background: linear-gradient(135deg, #ecf8fa 0%, #cffafe 100%); padding: 25px; text-align: center;">
+                        <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);">
+                            <i class="fas fa-wallet" style="color: white; font-size: 32px;"></i>
+                        </div>
+                        <h3 style="margin: 0; color: #1e293b; font-size: 1.2rem; font-weight: 700;">Quick Refunds</h3>
+                    </div>
+                    <div style="padding: 25px;">
+                        <p style="margin: 0; color: #64748b; line-height: 1.7; font-size: 14px;">Refunds processed within 5-10 business days to your original payment method after approval.</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="return-content">
-            <div class="section-header">
-                <h2>Return & Refund Request</h2>
-                <p>We're sorry you weren't satisfied with your purchase. Request a return below.</p>
-            </div>
-
-            <?php echo $msg; ?>
-
-            <div class="policy-card">
-                <h4><i class="fas fa-info-circle"></i> Return Policy Update</h4>
-                <ul class="policy-list">
-                    <li>Items can be returned within <strong>7 days</strong> of delivery.</li>
-                    <li>Items must be unused, in original packaging, and with all tags attached.</li>
-                    <li>Refunds are processed to the original payment method within 5-10 business days after approval.
-                    </li>
-                </ul>
-            </div>
-
-            <?php if ($user_id): ?>
-                <form action="" method="POST" enctype="multipart/form-data" class="return-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Order ID</label>
-                            <input type="text" name="order_id" placeholder="e.g., ORD-12345" required>
+        <!-- Return Request Form -->
+        <?php if ($user_id): ?>
+            <div style="max-width: 800px; margin: 0 auto 60px;">
+                <h2 style="font-size: 2rem; color: #1e293b; margin-bottom: 30px; font-weight: 800;">Submit Return Request</h2>
+                
+                <form action="" method="POST" enctype="multipart/form-data" style="background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                        <div>
+                            <label style="display: block; font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 14px;">Order ID <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="order_id" placeholder="e.g., ORD-12345" required style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; transition: all 0.3s;" onfocus="this.style.borderColor='#06b6d4'; this.style.boxShadow='0 0 0 3px rgba(6, 182, 212, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                         </div>
-                        <div class="form-group">
-                            <label>Product Name / SKU</label>
-                            <input type="text" name="product_name" placeholder="Item to return" required>
+                        <div>
+                            <label style="display: block; font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 14px;">Product Name / SKU <span style="color: #ef4444;">*</span></label>
+                            <input type="text" name="product_name" placeholder="Item to return" required style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; transition: all 0.3s;" onfocus="this.style.borderColor='#06b6d4'; this.style.boxShadow='0 0 0 3px rgba(6, 182, 212, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Reason for Return</label>
-                        <select name="reason" required>
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 14px;">Reason for Return <span style="color: #ef4444;">*</span></label>
+                        <select name="reason" required style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; transition: all 0.3s; background: white;" onfocus="this.style.borderColor='#06b6d4'; this.style.boxShadow='0 0 0 3px rgba(6, 182, 212, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                             <option value="">Select a Reason</option>
                             <option value="Damaged">Damaged / Defective</option>
                             <option value="Wrong Item">Received Wrong Item</option>
@@ -156,78 +213,91 @@ if ($user_id) {
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Additional Details</label>
-                        <textarea name="details" rows="5" required
-                            placeholder="Please provide more details about the issue..."></textarea>
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 14px;">Additional Details <span style="color: #ef4444;">*</span></label>
+                        <textarea name="details" rows="5" required placeholder="Please provide more details about the issue..." style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; transition: all 0.3s; font-family: inherit; resize: vertical;" onfocus="this.style.borderColor='#06b6d4'; this.style.boxShadow='0 0 0 3px rgba(6, 182, 212, 0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label>Upload Proof (Image)</label>
-                        <input type="file" name="image_proof" accept="image/*">
-                        <small style="color: #6c757d;">Recommended for damaged or wrong items.</small>
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 14px;">Upload Proof (Image)</label>
+                        <input type="file" name="image_proof" accept="image/*" style="display: block; width: 100%; padding: 12px; border: 2px dashed #cffafe; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                        <small style="color: #64748b; display: block; margin-top: 8px;">Recommended for damaged or wrong items</small>
                     </div>
 
-                    <button type="submit" name="submit_return" class="btn-submit">
-                        Submit Request <i class="fas fa-paper-plane"></i>
+                    <button type="submit" name="submit_return" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(6, 182, 212, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(6, 182, 212, 0.2)'">
+                        <i class="fas fa-paper-plane" style="margin-right: 8px;"></i> Submit Return Request
                     </button>
                 </form>
+            </div>
 
-                <!-- History Section -->
-                <?php if (!empty($my_requests)): ?>
-                    <div style="margin-top: 50px;">
-                        <h3>My Return Requests</h3>
-                        <div style="overflow-x: auto;">
-                            <table class="request-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Date</th>
-                                        <th>Order ID</th>
-                                        <th>Product</th>
-                                        <th>Reason</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($my_requests as $req): ?>
-                                        <tr>
-                                            <td>#<?php echo $req['request_id']; ?></td>
-                                            <td><?php echo date('M d, Y', strtotime($req['created_at'])); ?></td>
-                                            <td><?php echo htmlspecialchars($req['order_id']); ?></td>
-                                            <td><?php echo htmlspecialchars($req['product_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($req['reason']); ?></td>
-                                            <td>
-                                                <?php
-                                                $statusClass = 'status-pending';
-                                                if ($req['status'] == 'Approved')
-                                                    $statusClass = 'status-approved';
-                                                if ($req['status'] == 'Rejected')
-                                                    $statusClass = 'status-rejected';
-                                                if ($req['status'] == 'Refunded')
-                                                    $statusClass = 'status-refunded';
-                                                ?>
-                                                <span class="badge <?php echo $statusClass; ?>"><?php echo $req['status']; ?></span>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+            <!-- Return History -->
+            <?php if (!empty($my_requests)): ?>
+                <div style="margin-bottom: 60px;">
+                    <h2 style="font-size: 2rem; color: #1e293b; margin-bottom: 30px; font-weight: 800;">My Return Requests</h2>
+                    
+                    <div style="display: grid; gap: 20px;">
+                        <?php foreach ($my_requests as $req): ?>
+                            <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 24px rgba(6, 182, 212, 0.15)'; this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'; this.style.transform='translateY(0)'">
+                                <div style="display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;">
+                                    <div>
+                                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                            <h3 style="margin: 0; color: #1e293b; font-size: 1.1rem; font-weight: 700;">#<?php echo $req['request_id']; ?> - <?php echo htmlspecialchars($req['product_name']); ?></h3>
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                                            <div>
+                                                <span style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 700;">Order ID</span>
+                                                <p style="margin: 5px 0 0 0; color: #1e293b; font-weight: 600;"><?php echo htmlspecialchars($req['order_id']); ?></p>
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 700;">Reason</span>
+                                                <p style="margin: 5px 0 0 0; color: #1e293b; font-weight: 600;"><?php echo htmlspecialchars($req['reason']); ?></p>
+                                            </div>
+                                            <div>
+                                                <span style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 700;">Date</span>
+                                                <p style="margin: 5px 0 0 0; color: #1e293b; font-weight: 600;"><?php echo date('M d, Y', strtotime($req['created_at'])); ?></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <?php
+                                        $statusColor = '#059669';
+                                        $statusBg = '#dcfce7';
+                                        $statusText = $req['status'];
+                                        if ($req['status'] == 'Pending') {
+                                            $statusColor = '#f59e0b';
+                                            $statusBg = '#fef3c7';
+                                        } elseif ($req['status'] == 'Rejected') {
+                                            $statusColor = '#ef4444';
+                                            $statusBg = '#fee2e2';
+                                        } elseif ($req['status'] == 'Refunded') {
+                                            $statusColor = '#3b82f6';
+                                            $statusBg = '#dbeafe';
+                                        }
+                                        ?>
+                                        <div style="background: <?php echo $statusBg; ?>; border: 2px solid <?php echo $statusColor; ?>; color: <?php echo $statusColor; ?>; padding: 10px 16px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 13px; white-space: nowrap;">
+                                            <?php echo $statusText; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-                <?php endif; ?>
-
-            <?php else: ?>
-                <div style="text-align: center; padding: 40px; color: #6c757d;">
-                    <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                    <h3>Login Required</h3>
-                    <p>Please log in to submit a return request.</p>
                 </div>
             <?php endif; ?>
-        </div>
+
+        <?php else: ?>
+            <div style="text-align: center; padding: 80px 20px; background: white; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #06b6d4, #0891b2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 8px 25px rgba(6, 182, 212, 0.2);">
+                    <i class="fas fa-lock" style="color: white; font-size: 40px;"></i>
+                </div>
+                <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; color: #1e293b; font-weight: 700;">Login Required</h3>
+                <p style="color: #64748b; margin: 0 0 25px 0; font-size: 1.05rem;">Sign in to your account to submit return requests and track their status.</p>
+                <a href="../Admin/login.php" style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(6, 182, 212, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">Login Now</a>
+            </div>
+        <?php endif; ?>
     </div>
 
-    <footer>
+    <footer style="margin-top: 80px;">
         <?php include '../Components/footer.php'; ?>
     </footer>
 </body>

@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Adjustable Vest Top.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Adjustable vest top with a fitted shape and soft fabric — ideal for layered summer looks.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Korean Style Oversized Shirt.jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'Oversized Korean-style shirt in breathable fabric for relaxed everyday or streetwear looks.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Summer Floral Dress.jpeg', // Fallback as I don't have a dress img, reusing generic or similar
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Lightweight floral dress with breathable material and a flattering silhouette for warm days.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Ivana Puff Sleeve Formal Dress.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'Elegant puff-sleeve formal dress with delicate details and structured fit for special occasions.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Tyla Linen Dress.jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Linen dress with a breezy fit and natural texture, perfect for summer or resort wear.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/HUILISHI Korean Plain Men’s Long Sleeve Shirt.jpeg', // Fallback
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => 'Classic long-sleeve men\'s shirt with clean lines and versatile styling for smart-casual wear.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/INCERUN Korean Style Men Casual Shirt.jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Casual men\'s shirt crafted in lightweight fabric for comfortable all-day wear.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Giordano Korean Style Summer Men’s Polo.jpeg', // Using stylized image
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Summer polo with soft knit and breathable construction — great for warm-weather layering.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Chicly Korean Men’s Casual Long Sleeve Polo.jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'Casual long sleeve polo with refined stitching and versatile style for day-to-day wear.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Korea Floral Polo For Men.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'Floral polo designed for a modern fit; soft fabric and subtle patterning for a polished casual look.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Denim Streetwear Jacket.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Durable denim jacket with streetwear-inspired details and a comfortable cut for layering.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Graphic Tee (Astig Design).jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'Graphic tee featuring bold artwork printed on premium cotton for long-lasting wear.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Bucket Hat (Streetwear).jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Street-style bucket hat made from lightweight fabric — a versatile accessory for sun protection.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Ripped Jogger Pants.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Ripped jogger pants with a modern cut and comfortable stretch for an edgy street look.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/StyleHub Manila/Button‑Up Street Shirt.jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Button-up street shirt with clean tailoring and contemporary detailing for smart-casual outfits.'
         ]
     ];
     return; // Stop processing

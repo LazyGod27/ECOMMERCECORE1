@@ -125,8 +125,8 @@ if (!function_exists('send_otp_email')) {
             $mail->isSMTP();
             $mail->Host = gethostbyname('smtp.gmail.com');
             $mail->SMTPAuth = true;
-            $mail->Username = 'linbilcelestre31@gmail.com';
-            $mail->Password = 'ptkm lwud sfgh twdh';
+            $mail->Username = 'longkinog@gmail.com';
+            $mail->Password = 'krgh vcoz trow gedy';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             $mail->Timeout = 20;
@@ -141,33 +141,31 @@ if (!function_exists('send_otp_email')) {
             );
 
             // Recipients
-            $mail->setFrom('linbilcelestre31@gmail.com', 'IMarket PH Admin Portal');
+            $mail->setFrom('longkinog@gmail.com', 'iMarket Admin');
             $mail->addAddress($email, $username);
 
             // Content
             $mail->isHTML(true);
-            $mail->Subject = 'Admin Login Verification Code';
+            $mail->Subject = 'Admin Verification Code - ' . $otp;
             $mail->Body = "
-            <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
-                <h2 style='color: #2A3B7E;'>Admin Login Verification</h2>
-                <p>Hello <b>{$username}</b>,</p>
-                <p>Your One-Time Password (OTP) for admin access is:</p>
-                <h1 style='background: #f4f4f4; padding: 10px; display: inline-block; border-radius: 5px; color: #2A3B7E;'>{$otp}</h1>
-                <p>This code is valid for 5 minutes. Do not share this code with anyone.</p>
-                <br>
-                <p>If you did not request this, please contact the system administrator immediately.</p>
-            </div>
-        ";
-            $mail->AltBody = "Hello {$username}, Your Admin OTP code is: {$otp}. Do not share this.";
+            <div style='font-family: Arial, sans-serif; padding: 20px;'>
+                <h2 style='color: #333; text-align: center;'>Admin Verification Code</h2>
+                <p style='color: #555;'>Hi <b>{$username}</b>,</p>
+                <p style='color: #555;'>Your verification code for admin login is:</p>
+                <div style='text-align: center; padding: 20px; background: #f0f0f0; border-radius: 8px; margin: 20px 0;'>
+                    <h1 style='color: #007bff; letter-spacing: 2px; margin: 0;'>{$otp}</h1>
+                </div>
+                <p style='color: #999; font-size: 12px;'>⏱ This code is valid for 5 minutes only. Do not share this code with anyone.</p>
+                <p style='color: #666; margin-top: 20px;'>If you didn't request this code, please ignore this email.</p>
+            </div>";
+            $mail->AltBody = "Your admin verification code is: {$otp}. Valid for 5 minutes. Do not share.";
 
             $mail->send();
-            // Mask the email for privacy in the message
-            $at_pos = strpos($email, '@');
-            $masked_email = substr($email, 0, 3) . '****' . substr($email, $at_pos);
-            return "A verification code has been sent to your email <b>{$masked_email}</b>.";
+            return "<div class='alert alert-success'>Verification code sent to your email, Check your inbox</div>";
+            
         } catch (Exception $e) {
-            error_log("OTP Email Sending Error: {$mail->ErrorInfo}");
-            return "Error sending OTP email. Check logs.";
+            error_log("OTP Email Error: {$mail->ErrorInfo}");
+            return "<div class='alert alert-danger'>Error sending verification code. Please try again.</div>";
         }
     }
 }
@@ -874,20 +872,64 @@ if (!function_exists('get_transactions_list')) {
             $stmt = $pdo->prepare("
         SELECT 
             o.id,
-            CONCAT('#TRX-', o.id) as transaction_number,
+            CONCAT('#ORD-', o.id) as transaction_number,
             o.id as order_number,
             o.full_name as customer_name,
+            o.product_name,
+            o.quantity,
             o.total_amount as amount,
             o.payment_method,
             o.status,
-            o.created_at as transaction_date
+            o.created_at as transaction_date,
+            u.email as customer_email
         FROM orders o
+        LEFT JOIN users u ON o.user_id = u.id
         ORDER BY o.created_at DESC
+        LIMIT 50
     ");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Database Error in get_transactions_list: " . $e->getMessage());
+            return [];
+        }
+    }
+}
+
+// ===========================================
+// GET RECENT TRANSACTIONS FOR NOTIFICATIONS
+// ===========================================
+
+if (!function_exists('get_recent_transactions')) {
+    function get_recent_transactions($pdo = null, $limit = 10)
+    {
+        if ($pdo === null) {
+            $pdo = get_pdo();
+        }
+        if (!$pdo)
+            return [];
+        try {
+            $stmt = $pdo->prepare("
+        SELECT 
+            o.id,
+            CONCAT('#ORD-', o.id) as transaction_number,
+            o.full_name as customer_name,
+            o.total_amount as amount,
+            o.payment_method,
+            o.status,
+            o.created_at as transaction_date,
+            o.product_name,
+            o.quantity,
+            u.email as customer_email
+        FROM orders o
+        LEFT JOIN users u ON o.user_id = u.id
+        ORDER BY o.created_at DESC
+        LIMIT ?
+    ");
+            $stmt->execute([$limit]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database Error in get_recent_transactions: " . $e->getMessage());
             return [];
         }
     }

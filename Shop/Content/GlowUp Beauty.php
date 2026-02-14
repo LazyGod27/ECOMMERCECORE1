@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Glow Up Facial Serum (30ml).jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Brightening facial serum formulated to hydrate and improve skin radiance with lightweight absorption.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Secret Glow Tone Up Cream.jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'Tone-up cream that smooths complexion and provides a natural, dewy finish with SPF protection.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/SevenGlow Brightening Soap.jpeg',
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Brightening soap bar enriched with natural extracts to help even skin tone and cleanse gently.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Shantahl Ultimate Glow Up Set.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'Complete glow-up skincare set containing cleanser, serum, and moisturizer for a refreshed routine.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/I White Korea Glow-Up Whip.jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Whipping cream formula for skin brightening with silky texture and quick absorption.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Hey Skin Glow Up Serum.jpeg',
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => 'Lightweight serum designed to boost radiance and deliver targeted hydration for dull skin.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Glow Up Night Cream (15ml).jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Night cream formulated to repair and restore skin overnight with nourishing ingredients.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/SkinTouch Magic Set A.jpeg', // Using stylized image
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Value skincare set providing curated essentials for a simple but effective routine.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Avocado Papaya Collagen Drink.jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'Collagen drink with avocado and papaya extracts to support skin elasticity and hydration.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Mango Melon Creamy Collagen.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'Creamy collagen supplement with mango and melon flavors for daily skin support.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Strawberry Banana Collagen.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Strawberry-banana flavored collagen supplement for skin nourishment and delightful taste.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/AiBeauty Glow Up Iced Tea.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'Iced tea beverage formulation with beauty-supporting ingredients for hydration and glow.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Glow Up Magic Blusher (30ml).jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Liquid blusher with blendable pigment to add a natural flushed glow to the cheeks.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Yeoubi Glow Up Whitening Soap.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Whitening soap bar with gentle cleansers and nourishing oils for brighter-looking skin.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/GlowUp Beauty/Sevendays Sun Protect (Pouch).jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Sun protect pouch with essential sunscreen formulations for portable sun protection.'
         ]
     ];
     return; // Stop processing

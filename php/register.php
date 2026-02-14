@@ -34,13 +34,13 @@ if (isset($_POST['submit'])) {
             if (mysqli_query($conn, $sql)) {
                 $mail = new PHPMailer(true);
                 try {
-                    $mail->isSMTP();
-                    $mail->Host = gethostbyname('smtp.gmail.com');
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'linbilcelestre31@gmail.com';
-                    $mail->Password = 'ptkm lwud sfgh twdh';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = 587;
+            $mail->isSMTP();
+            $mail->Host= 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'longkinog@gmail.com'; // Ang iyong Gmail
+            $mail->Password = 'krgh vcoz trow gedy'; // HUWAG ang regular password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port= 587;   // Gamitin ang 465 kung 'ssl'
                     $mail->Timeout = 20;
 
                     // Fix for XAMPP SSL issues
@@ -52,7 +52,7 @@ if (isset($_POST['submit'])) {
                         )
                     );
 
-                    $mail->setFrom('linbilcelestre31@gmail.com', 'iMarket Support');
+                    $mail->setFrom('longkinog@gmail.com', 'iMarket Support');
                     $mail->addAddress($email, $fullname);
 
                     // Attach Logo

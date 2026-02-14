@@ -47,11 +47,11 @@ header("X-Content-Type-Options: nosniff");
 
     <div class="hero-section">
         <div class="hero-slider">
-            <div class="slide active" style="background-image: url('../image/Dashboard/brand new bag.jpeg');"></div>
-            <div class="slide" style="background-image: url('../image/Dashboard/Ipone 17.jpeg');"></div>
-            <div class="slide" style="background-image: url('../image/Dashboard/laptop red dragon.jpeg');"></div>
-            <div class="slide" style="background-image: url('../image/Dashboard/logitech.jpeg');"></div>
-            <div class="slide" style="background-image: url('../image/Dashboard/nike logo basketball.jpeg');"></div>
+            <div class="slide active" style="background-image: url('../image/Dashboard/f1.avif');"></div>
+            <div class="slide" style="background-image: url('../image/Dashboard/msi.jpg');"></div>
+            <div class="slide" style="background-image: url('../image/Dashboard/kobe.jpg');"></div>
+            <div class="slide" style="background-image: url('../image/Dashboard/jbl.webp');"></div>
+            <div class="slide" style="background-image: url('../image/Dashboard/watch.jpg');"></div>
         </div>
 
         <div class="hero-content">
@@ -64,6 +64,9 @@ header("X-Content-Type-Options: nosniff");
             <div class="hero-buttons">
                 <a href="../Shop/index.php?store=UrbanWear+PH" class="btn-shop">
                     <i class="fas fa-shopping-bag"></i> Shop Now
+                </a>
+                <a href="../Categories/flash-deals/index.php" class="btn-flash">
+                    <i class="fas fa-bolt"></i> Flash Deals
                 </a>
                 <a href="../Categories/best_selling/index.php" class="btn-best">
                     <i class="fas fa-fire"></i> Best Sellers
@@ -129,7 +132,6 @@ header("X-Content-Type-Options: nosniff");
 
 
     <div style="background: white; padding-top: 50px;">
-        <?php include '../Components/footer.php'; ?>
     </div>
 </body>
 

@@ -70,7 +70,7 @@ if (isset($_SESSION['user_id'])) {
                         class="fas fa-home"></i>
                     Home</a>
                 <a href="<?php echo $path_prefix; ?>Shop/index.php" class="nav-item"><i class="fas fa-store"></i> Mall</a>
-                <a href="<?php echo $path_prefix; ?>Categories/best_selling/index.php" class="nav-item"><i class="fas fa-percent"></i> Flash Deals</a>
+                <a href="<?php echo $path_prefix; ?>Categories/flash-deals/index.php" class="nav-item"><i class="fas fa-bolt"></i> Flash Deals</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="dropdown-toggle"><i class="fas fa-list"></i> Categories <i
                             class="fas fa-chevron-down"></i></a>
@@ -105,7 +105,7 @@ if (isset($_SESSION['user_id'])) {
 
         <!-- Right Section: Icons -->
         <div class="header-right">
-            <a href="<?php echo $path_prefix; ?>Content/Check-out.php" class="header-icon"><i
+            <a href="<?php echo $path_prefix; ?>Content/add-to-cart.php" class="header-icon"><i
                     class="fas fa-shopping-cart"></i></a>
 
             <?php if (isset($_SESSION['user_name'])): ?>

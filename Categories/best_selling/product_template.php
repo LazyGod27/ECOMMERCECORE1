@@ -11,6 +11,12 @@ $products_data = [
         'discount' => '35% OFF',
         'image' => '../../image/Best-seller/bag-men.jpeg',
         'stock' => 1209,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Model' => '../../image/Best-seller/bag-men.jpeg',
+            'Grey Model' => '../../image/Best-seller/bag-men.jpeg',
+            'Blue Model' => '../../image/Best-seller/bag-men.jpeg'
+        ],
         'colors' => ['Black', 'Grey', 'Blue'],
         'sizes' => ['S', 'M', 'L']
     ],
@@ -201,6 +207,116 @@ $products_data = [
 
 <link rel="stylesheet" href="../../css/components/shared-product-view.css?v=<?php echo time(); ?>">
 
+<style>
+    .pv-variant-images {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        margin-top: 10px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+
+    .pv-variant-img-wrapper {
+        position: relative;
+    }
+
+    .pv-variant-img {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 80px;
+    }
+
+    .pv-variant-img:hover {
+        border-color: #999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .pv-variant-img.selected {
+        border-color: #0f172a;
+        border-width: 2px;
+        box-shadow: 0 0 0 2px white, 0 0 0 3px #0f172a;
+        background: #f9fafb;
+    }
+
+    .pv-color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .pv-color-swatch-wrapper {
+        position: relative;
+    }
+
+    .pv-color-swatch {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 3px solid #e5e7eb;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .pv-color-swatch:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: #999;
+    }
+
+    .pv-color-swatch.selected {
+        border-color: #0f172a;
+        border-width: 3px;
+        box-shadow: 0 0 0 2px white, 0 0 0 4px #0f172a;
+    }
+
+    .pv-color-name {
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f172a;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.2s, bottom 0.2s;
+        pointer-events: none;
+    }
+
+    .pv-color-swatch:hover .pv-color-name {
+        opacity: 1;
+        bottom: -30px;
+    }
+
+    /* Light color borders for visibility */
+    .pv-color-swatch[style*="#f5f5f5"],
+    .pv-color-swatch[style*="#ffffff"],
+    .pv-color-swatch[style*="#fff"] {
+        border-color: #d1d5db !important;
+    }
+</style>
+
 <div class="pv-left">
     <img class="pv-product-img" src="<?php echo $img; ?>" alt="Product">
 </div>
@@ -240,26 +356,42 @@ $products_data = [
         <?php endif; ?>
     </div>
 
-    <!-- Color Options -->
+    <!-- Variant Options -->
     <div class="pv-option-group">
-        <span class="pv-option-label">Color</span>
-        <div class="pv-options" id="color-options">
-            <?php foreach ($product['colors'] as $index => $color): ?>
-                <button class="pv-option-btn <?php echo $index === 0 ? 'selected' : ''; ?>" data-val="<?php echo $color; ?>">
-                    <?php echo $color; ?>
-                </button>
+        <span class="pv-option-label">Choose Variant</span>
+        <div class="pv-variant-images" id="color-options">
+            <?php 
+            $variant_images = isset($product['variant_images']) ? $product['variant_images'] : [];
+            if (empty($variant_images) && isset($product['colors'])) {
+                // Auto-generate variant images if not defined
+                foreach ($product['colors'] as $color) {
+                    $variant_images[$color] = $product['image'];
+                }
+            }
+            ?>
+            <?php foreach ($variant_images as $variant_label => $variant_img): ?>
+                <div class="pv-variant-img-wrapper">
+                    <button class="pv-variant-img <?php echo array_key_first($variant_images) === $variant_label ? 'selected' : ''; ?>" 
+                            data-val="<?php echo htmlspecialchars($variant_label); ?>" 
+                            onclick="selectVariantImage(this)"
+                            title="<?php echo htmlspecialchars($variant_label); ?>">
+                        <img src="<?php echo str_replace(' ', '%20', $variant_img); ?>" alt="<?php echo htmlspecialchars($variant_label); ?>" style="width: 60px; height: 60px; border-radius: 6px; object-fit: cover;">
+                        <span style="display: block; font-size: 11px; margin-top: 6px; text-align: center; font-weight: 500;"><?php echo htmlspecialchars($variant_label); ?></span>
+                    </button>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>
 
-    <!-- Size Options -->
+    <!-- Size -->
     <div class="pv-option-group">
         <span class="pv-option-label">Size</span>
-        <div class="pv-options" id="size-options">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <?php foreach ($product['sizes'] as $index => $size): ?>
-                <button class="pv-option-btn <?php echo $index === 0 ? 'selected' : ''; ?>" data-val="<?php echo $size; ?>"><?php echo $size; ?></button>
+                <span style="padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-weight: 500;"><?php echo htmlspecialchars($size); ?></span>
             <?php endforeach; ?>
         </div>
+        <input type="hidden" id="size-options" value="<?php echo htmlspecialchars($product['sizes'][0] ?? 'Standard'); ?>">
     </div>
 
     <!-- Quantity -->
@@ -285,27 +417,43 @@ $products_data = [
             class="pv-btn pv-btn-buy">Buy Now</a>
     </div>
 
+    <!-- Rate Product Button -->
+    <div class="pv-rate-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f4f8;">
+        <a href="../../Shop/Rate-Reviews.php?product_name=<?php echo urlencode($name); ?>" 
+           class="pv-btn pv-btn-rate" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fas fa-star"></i> Share Your Review
+        </a>
+        <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px;">Have you used this product? Share your experience!</p>
+    </div>
+
     <script>
         function addToCart() {
-            const colorBtn = document.querySelector('#color-options .pv-option-btn.selected');
-            const sizeBtn = document.querySelector('#size-options .pv-option-btn.selected');
-            const color = colorBtn ? colorBtn.getAttribute('data-val') : 'Default';
-            const size = sizeBtn ? sizeBtn.getAttribute('data-val') : 'Default';
+            const variantBtn = document.querySelector('#color-options .pv-variant-img.selected');
+            const variant = variantBtn ? variantBtn.getAttribute('data-val') : 'Default';
+            const sizeInput = document.querySelector('#size-options');
+            const size = sizeInput ? sizeInput.value : 'Standard';
             const qty = document.getElementById('qty').value;
-            const fullName = `<?php echo addslashes($name); ?> (${color}, ${size})`;
+            const fullName = `<?php echo addslashes($name); ?> (${variant}, ${size})`;
             const price = <?php echo floatval(preg_replace('/[^0-9.]/', '', $price)); ?>;
             const img = '<?php echo $img; ?>';
 
             window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Best%20Selling`;
         }
 
-        document.querySelectorAll('.pv-options').forEach(container => {
-            container.querySelectorAll('.pv-option-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    container.querySelectorAll('.pv-option-btn').forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-        });
+        function selectVariantImage(button) {
+            document.querySelectorAll('.pv-variant-img').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+        }
+
+        function selectColor(button) {
+            document.querySelectorAll('.pv-color-swatch').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+        }
+
+        // Initialize first variant as selected if it exists
+        const firstVariant = document.querySelector('#color-options .pv-variant-img');
+        if (firstVariant && !firstVariant.classList.contains('selected')) {
+            firstVariant.classList.add('selected');
+        }
     </script>
 </div>

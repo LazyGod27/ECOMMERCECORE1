@@ -91,95 +91,165 @@ if (!isset($timeline_events)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracking Order - <?php echo $order_id; ?></title>
+    <title>Track Order - <?php echo $order_id; ?> | iMarket</title>
     <link rel="icon" type="image/x-icon" href="../image/logo.png">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/best_selling/tracking.css"> <!-- Updated path -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Embedding crucial styles to ensure look */
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: #f5f5f5;
+        :root {
+            --primary-navy: #2A3B7E;
+            --primary-dark: #1a2657;
+            --accent-blue: #3b82f6;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --soft-gray: #f8fafc;
+            --light-border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--soft-gray) 0%, #f0f4f8 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
         .tracking-container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 0 15px;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
         }
 
-        .shop-header-branding {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 3px solid #eee;
-        }
-
-        .shop-header-branding img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .shop-header-branding h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: #2A3B7E;
-            font-weight: 700;
-        }
-
-        .shop-header-branding p {
-            margin: 0;
-            font-size: 0.8rem;
-            color: #777;
-        }
-
-        .tracking-header {
-            background: white;
-            padding: 15px;
+        /* Header Navigation */
+        .tracking-header-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .order-info {
+        .back-btn:hover {
+            background: var(--soft-gray);
+            color: var(--primary-navy);
+        }
+
+        .order-info-header {
             text-align: right;
         }
 
-        .status-text {
-            color: #26aa99;
-            font-weight: 600;
-            margin-left: 10px;
+        .order-id {
+            font-size: 12px;
+            color: var(--text-secondary);
             text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
 
-        .status-progress-card {
+        .order-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-navy);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Shop Branding */
+        .shop-branding {
             background: white;
-            padding: 30px 20px;
-            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-navy);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .shop-branding img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .shop-branding-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 3px;
+        }
+
+        .shop-branding-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Stepper */
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .stepper-wrapper {
             display: flex;
             justify-content: space-between;
             position: relative;
+            gap: 0;
+        }
+
+        .stepper-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 8%;
+            right: 8%;
+            height: 3px;
+            background: var(--light-border);
+            z-index: 0;
         }
 
         .stepper-item {
@@ -187,95 +257,296 @@ if (!isset($timeline_events)) {
             text-align: center;
             position: relative;
             z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .stepper-item .step-icon {
-            width: 50px;
-            height: 50px;
+        .step-icon {
+            width: 60px;
+            height: 60px;
             background: white;
-            border: 4px solid #ddd;
+            border: 3px solid var(--light-border);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px auto;
-            color: #ddd;
-            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-size: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .stepper-item.completed .step-icon {
-            border-color: #26aa99;
-            color: #26aa99;
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            border-color: var(--success-green);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .stepper-item.current .step-icon {
-            background: #26aa99;
-            border-color: #26aa99;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            border-color: var(--accent-blue);
             color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            animation: pulse 2s infinite;
         }
 
-        .stepper-item::after {
-            content: '';
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            width: 100%;
-            height: 4px;
-            background: #ddd;
-            z-index: -1;
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5); }
         }
 
-        .stepper-item:last-child::after {
-            content: none;
-        }
-
-        .stepper-item.completed::after {
-            background: #26aa99;
-        }
-
-        .title-sub {
+        .step-label {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .step-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Product & Actions Card */
+        .product-action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid var(--light-border);
+            flex-shrink: 0;
+        }
+
+        .product-image-placeholder {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--soft-gray), #e2e8f0);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 5px;
         }
 
-        .date-sub {
-            font-size: 0.75rem;
-            color: #888;
+        .product-shop {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
         }
 
-        .actions-card,
-        .details-container {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .thank-you-msg {
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 15px;
-            font-weight: 600;
+        .action-buttons-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 8px 20px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: 8px;
             text-decoration: none;
-            font-weight: 500;
-            display: inline-block;
-            margin-right: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: #2A3B7E;
+            background: linear-gradient(135deg, var(--primary-navy), var(--primary-dark));
             color: white;
+            box-shadow: 0 4px 12px rgba(42, 59, 126, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(42, 59, 126, 0.3);
         }
 
         .btn-secondary {
             background: white;
-            border: 1px solid #ddd;
-            color: #333;
+            border: 2px solid var(--light-border);
+            color: var(--primary-navy);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            background: var(--soft-gray);
+        }
+
+        /* Details Section */
+        .details-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .detail-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-navy);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-card h3 i {
+            color: var(--accent-blue);
+        }
+
+        .address-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .address-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .address-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .address-item i {
+            color: var(--accent-blue);
+            width: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Timeline */
+        .timeline-list {
+            list-style: none;
+            position: relative;
+            padding: 0;
+        }
+
+        .timeline-list::before {
+            content: '';
+            position: absolute;
+            left: 21px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-blue), var(--light-border));
+        }
+
+        .timeline-item {
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 70px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 11px;
+            top: 5px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border: 3px solid var(--light-border);
+            border-radius: 50%;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.1);
+            width: 26px;
+            height: 26px;
+            left: 9px;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .timeline-status {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .timeline-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .timeline-action {
+            display: inline-block;
+            margin-top: 8px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .timeline-action:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -290,125 +561,124 @@ if (!isset($timeline_events)) {
 
     <div class="tracking-container">
 
-        <!-- DYNAMIC SHOP BRANDING Header -->
-        <div class="shop-header-branding">
-            <img src="../image/logo.png" alt="Logo">
-            <div>
+        <!-- Header Navigation -->
+        <div class="tracking-header-nav">
+            <a href="Order-history.php" class="back-btn">
+                <i class="fas fa-chevron-left"></i> Back to Orders
+            </a>
+            <div class="order-info-header">
+                <div class="order-id">Order #</div>
+                <div class="order-number"><?php echo $order_id; ?></div>
+                <div class="status-badge">
+                    <i class="fas fa-check-circle" style="margin-right: 5px;"></i> <?php echo $order_status; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shop Branding -->
+        <div class="shop-branding">
+            <img src="../image/logo.png" alt="iMarket">
+            <div class="shop-branding-info">
                 <?php if ($is_best_selling): ?>
-                    <h2>| iMarket Best Selling</h2>
-                    <p>Top Rated Products</p>
+                    <h3>iMarket Best Selling</h3>
+                    <p>★★★★★ Top Rated Products</p>
                 <?php else: ?>
-                    <h2>| <?php echo htmlspecialchars($shop_name); ?></h2>
-                    <p>Official Store</p>
+                    <h3><?php echo htmlspecialchars($shop_name); ?></h3>
+                    <p>Official Store • Trusted Seller</p>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Header: Back | Order ID | Status -->
-        <div class="tracking-header">
-            <a href="Order-history.php" class="back-btn">
-                <i class="fas fa-chevron-left"></i> BACK
-            </a>
-            <div class="order-info">
-                ORDER ID. <?php echo $order_id; ?>
-                <span class="status-text"><?php echo $order_status; ?></span>
-            </div>
-        </div>
-
         <!-- Progress Stepper -->
-        <div class="status-progress-card">
+        <div class="progress-section">
             <div class="stepper-wrapper">
                 <?php foreach ($order_statuses as $index => $step): ?>
-                    <div
-                        class="stepper-item <?php echo $step['completed'] ? 'completed' : ''; ?> <?php echo ($index == count($order_statuses) - 1) ? 'current' : ''; ?>">
+                    <div class="stepper-item <?php echo $step['completed'] ? 'completed' : ''; ?> <?php echo ($index == 2) ? 'current' : ''; ?>">
                         <div class="step-icon">
                             <i class="fas <?php echo $step['icon']; ?>"></i>
                         </div>
-                        <div class="step-content">
-                            <div class="title-sub"><?php echo $step['label']; ?></div>
-                            <div class="date-sub"><?php echo $step['time']; ?></div>
-                        </div>
+                        <div class="step-label"><?php echo $step['label']; ?></div>
+                        <div class="step-time"><?php echo $step['time']; ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="actions-card" style="display: flex; align-items: center; gap: 20px; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Product & Action Buttons -->
+        <div class="product-action-card">
+            <div>
                 <?php if (!empty($order_data['image_url'])): ?>
-                    <img src="../<?php echo htmlspecialchars($order_data['image_url']); ?>" alt="Product" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+                    <img src="../<?php echo htmlspecialchars($order_data['image_url']); ?>" alt="Product" class="product-image">
                 <?php else: ?>
-                    <div style="width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #ccc;">
-                        <i class="fas fa-image" style="font-size: 2rem;"></i>
+                    <div class="product-image-placeholder">
+                        <i class="fas fa-image"></i>
                     </div>
                 <?php endif; ?>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.1rem; color: #333; margin-bottom: 5px;"><?php echo htmlspecialchars($order_data['product_name'] ?? 'Product'); ?></div>
-                    <div class="thank-you-msg" style="margin-bottom: 0;">Thank you for Shopping with <?php echo htmlspecialchars($shop_name); ?>!</div>
-                </div>
             </div>
-            <div class="action-buttons-group">
-                <?php
-                $buy_again_pid = isset($order_data['product_id']) ? $order_data['product_id'] : 1;
-                ?>
-                <a href="../Categories/best_selling/index.php?id=<?php echo $buy_again_pid; ?>" class="btn btn-primary" style="margin-bottom: 5px;">Buy Again</a>
-                <a href="../Services/Customer_Service.php?tab=chat" class="btn btn-secondary">Contact Seller</a>
+            <div class="product-info">
+                <div class="product-name"><?php echo htmlspecialchars($order_data['product_name'] ?? 'Product'); ?></div>
+                <div class="product-shop">from <?php echo htmlspecialchars($shop_name); ?></div>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">Thank you for shopping with us! Your order is being carefully prepared.</p>
+                <div class="action-buttons-group">
+                    <?php
+                    $buy_again_pid = isset($order_data['product_id']) ? $order_data['product_id'] : 1;
+                    ?>
+                    <a href="../Categories/best_selling/index.php?id=<?php echo $buy_again_pid; ?>" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag"></i> Buy Again
+                    </a>
+                    <a href="../Services/Customer_Service.php?tab=chat" class="btn btn-secondary">
+                        <i class="fas fa-comments"></i> Contact Seller
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Details: Address & Tracking History -->
-    <div class="details-container">
-        <div class="envelope-line"></div> <!-- Decorative Border -->
-
-        <div class="details-content">
+        <!-- Details Section: Address & Timeline -->
+        <div class="details-section">
             <!-- Delivery Address -->
-            <div class="address-section">
-                <h3>Delivery Address</h3>
-                <div class="address-box">
-                    <div class="name"><?php echo htmlspecialchars($fname); ?></div>
-                    <div class="phone"><?php echo htmlspecialchars($uphone); ?></div>
-                    <div class="text">
-                        <?php echo htmlspecialchars($uaddr); ?><br>
-                        <?php if ($ucity || $uzip): ?>
-                            <?php echo htmlspecialchars($ucity); ?>, <?php echo htmlspecialchars($uzip); ?>
-                        <?php endif; ?>
+            <div class="detail-card">
+                <h3>
+                    <i class="fas fa-map-marker-alt"></i> Delivery Address
+                </h3>
+                <div class="address-info">
+                    <div class="address-name"><?php echo htmlspecialchars($fname); ?></div>
+                    <div class="address-item">
+                        <i class="fas fa-phone"></i>
+                        <span><?php echo htmlspecialchars($uphone); ?></span>
                     </div>
+                    <div class="address-item">
+                        <i class="fas fa-map-pin"></i>
+                        <span><?php echo htmlspecialchars($uaddr); ?></span>
+                    </div>
+                    <?php if ($ucity || $uzip): ?>
+                        <div class="address-item">
+                            <i class="fas fa-city"></i>
+                            <span><?php echo htmlspecialchars($ucity); ?>, <?php echo htmlspecialchars($uzip); ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
-            <!-- Vertical Timeline -->
-            <div class="timeline-section">
-                <div style="font-size:0.8rem; text-align:right; margin-bottom:10px; color:#777;">
-                    ImarketPH<br>IMarketPH02393613507C
-                </div>
+            <!-- Timeline Events -->
+            <div class="detail-card">
+                <h3>
+                    <i class="fas fa-history"></i> Tracking Timeline
+                </h3>
                 <ul class="timeline-list">
                     <?php foreach ($timeline_events as $event): ?>
                         <li class="timeline-item <?php echo $event['active'] ? 'active' : ''; ?>">
-                            <div class="timeline-time">
-                                <?php echo $event['time']; ?>
-                            </div>
                             <div class="timeline-dot"></div>
-                            <div class="timeline-info">
-                                <div class="timeline-status"><?php echo $event['status']; ?></div>
-                                <div class="timeline-desc"><?php echo $event['desc']; ?></div>
-                                <?php if (isset($event['action'])): ?>
-                                    <a href="#" class="timeline-action"><?php echo $event['action']; ?></a>
-                                <?php endif; ?>
-                            </div>
+                            <div class="timeline-time"><?php echo $event['time']; ?></div>
+                            <div class="timeline-status"><?php echo $event['status']; ?></div>
+                            <div class="timeline-desc"><?php echo $event['desc']; ?></div>
+                            <?php if (isset($event['action'])): ?>
+                                <a href="#" class="timeline-action"><?php echo $event['action']; ?></a>
+                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
-                    <li class="timeline-item">
-                        <div class="timeline-time">...</div>
-                        <div class="timeline-info">
-                            <a href="#" style="color:#26aa99; font-size:0.9rem; text-decoration:none;">See More</a>
-                        </div>
-                    </li>
                 </ul>
             </div>
         </div>
-    </div>
 
     </div>
 

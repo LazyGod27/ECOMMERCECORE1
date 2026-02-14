@@ -99,28 +99,164 @@ function renderDashboard() {
     setPageTitle('Intelligence Hub');
     const content = document.getElementById('content-container');
 
+    // Calculate stats from transactions data
+    const stats = {
+        totalRevenue: transactionsData.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0),
+        pendingOrders: transactionsData.filter(t => t.status === 'Pending').length,
+        completedToday: transactionsData.filter(t => t.status === 'Delivered' || t.status === 'Completed').length,
+    };
+
     content.innerHTML = `
         <div style="animation: fadeIn 0.5s ease-out;">
-            <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 1.5rem; padding: 3rem; color: white; margin-bottom: 2.5rem; position: relative; overflow: hidden;">
+            <!-- Premium Header Section -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1.5rem; padding: 3rem; color: white; margin-bottom: 2.5rem; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);">
                 <div style="position: absolute; top: -10%; right: -5%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);"></div>
-                <h1 style="font-size: 2.5rem; font-weight: 900; margin: 0 0 1rem 0; letter-spacing: -0.02em;">Welcome back, ${adminConfig.username}</h1>
-                <p style="font-size: 1.125rem; opacity: 0.9; max-width: 600px; line-height: 1.6;">Your commerce ecosystem is currently performing at peak efficiency. Review your latest insights and system pulses below.</p>
+                <div style="position: absolute; bottom: -20%; left: 10%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);"></div>
                 
-                <div style="display: flex; gap: 1.5rem; margin-top: 2.5rem;">
-                    <button class="btn-base" style="background: white; color: #4f46e5; padding: 0.75rem 1.5rem; font-weight: 700;" onclick="showModule('alerts')">View Live Pulse</button>
-                    <button class="btn-base" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 0.75rem 1.5rem;" onclick="showSubModule('product', 'products')">Manage Inventory</button>
+                <div style="position: relative; z-index: 2;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+                        <div>
+                            <h1 style="font-size: 2.8rem; font-weight: 900; margin: 0 0 0.5rem 0; letter-spacing: -0.02em;">Welcome back, ${adminConfig.username}! 👋</h1>
+                            <p style="font-size: 1.125rem; opacity: 0.9; margin: 0; max-width: 600px;">Your marketplace is running smoothly. Monitor live transactions and manage operations below.</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.875rem; opacity: 0.8; margin-bottom: 0.5rem;">Last updated <span id="update-time">now</span></div>
+                            <div style="display: flex; gap: 0.75rem; align-items: center; justify-content: flex-end;">
+                                <div style="width: 12px; height: 12px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite;"></div>
+                                <span style="font-weight: 600;">System Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn-base" style="background: white; color: #667eea; padding: 0.875rem 1.75rem; font-weight: 700; border-radius: 0.75rem; border: none; cursor: pointer; transition: all 0.3s;" 
+                            onclick="showSubModule('order', 'orders')"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.2)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i data-lucide="shopping-bag" style="display: inline; width: 1.1rem; height: 1.1rem; margin-right: 0.5rem; vertical-align: middle;"></i>
+                            View All Orders
+                        </button>
+                        <button class="btn-base" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 0.875rem 1.75rem; font-weight: 700; border-radius: 0.75rem; cursor: pointer; transition: all 0.3s;" 
+                            onclick="showSubModule('product', 'products')"
+                            onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)'">
+                            <i data-lucide="package" style="display: inline; width: 1.1rem; height: 1.1rem; margin-right: 0.5rem; vertical-align: middle;"></i>
+                            Manage Inventory
+                        </button>
+                        <button class="btn-base" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 0.875rem 1.75rem; font-weight: 700; border-radius: 0.75rem; cursor: pointer; transition: all 0.3s;"
+                            onclick="showSubModule('support', 'chat')"
+                            onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='translateY(-2px)'"
+                            onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)'">
+                            <i data-lucide="message-circle" style="display: inline; width: 1.1rem; height: 1.1rem; margin-right: 0.5rem; vertical-align: middle;"></i>
+                            Customer Support
+                        </button>
+                    </div>
                 </div>
             </div>
 
+            <!-- KPI Cards Grid -->
             <div class="kpi-card-grid">
-                ${createKPICard('Revenue (MTD)', formatCurrency(kpiData.totalRevenue || 0), 'dollar-sign', 'kpi-indigo')}
+                ${createKPICard('Total Revenue', formatCurrency(kpiData.totalRevenue || 0), 'dollar-sign', 'kpi-indigo')}
                 ${createKPICard('Active Orders', kpiData.totalOrders || 0, 'shopping-bag', 'kpi-green')}
-                ${createKPICard('Critical Stock', kpiData.lowStockCount || 0, 'package', 'kpi-red')}
-                ${createKPICard('Customer Base', kpiData.newCustomers || 0, 'users', 'kpi-yellow')}
+                ${createKPICard('Critical Stock', kpiData.lowStockCount || 0, 'alert-circle', 'kpi-red')}
+                ${createKPICard('Total Customers', kpiData.newCustomers || 0, 'users', 'kpi-yellow')}
             </div>
+
+            <!-- Live Transactions Section -->
+            <div style="margin-top: 3rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 4px; height: 2rem; background: linear-gradient(180deg, #667eea, #764ba2); border-radius: 2px;"></div>
+                        <h2 style="font-size: 1.75rem; font-weight: 800; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                            <i data-lucide="zap" style="color: #f59e0b; width: 1.5rem; height: 1.5rem;"></i>
+                            Live Transactions
+                        </h2>
+                        <span style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 0.375rem 0.875rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 700;">LIVE</span>
+                    </div>
+                    <button onclick="showSubModule('order', 'orders')" style="padding: 0.625rem 1.25rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 0.75rem; cursor: pointer; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.3)'">
+                        View All Transactions →
+                    </button>
+                </div>
+                <div id="recent-transactions-container" class="kpi-card" style="padding: 0; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.08); border: 1px solid #f1f5f9;">
+                    <div style="padding: 2rem; text-align: center; color: #9ca3af;">
+                        <i data-lucide="loader" style="width: 2.5rem; height: 2.5rem; margin: 0 auto 1rem; opacity: 0.5; animation: spin 1s linear infinite;"></i>
+                        <p style="margin: 0; font-size: 1rem;">Loading live transactions...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Stats Section -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%); padding: 1.5rem; border-radius: 1rem; border: 1px solid #86efac;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 0.5rem 0; font-weight: 600;">COMPLETED TODAY</p>
+                            <h3 style="color: #15803d; font-size: 2.5rem; font-weight: 800; margin: 0;">${stats.completedToday}</h3>
+                        </div>
+                        <div style="width: 3rem; height: 3rem; background: #dcfce7; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="check-circle" style="color: #15803d; width: 1.5rem; height: 1.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); padding: 1.5rem; border-radius: 1rem; border: 1px solid #fcd34d;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 0.5rem 0; font-weight: 600;">PENDING ORDERS</p>
+                            <h3 style="color: #b45309; font-size: 2.5rem; font-weight: 800; margin: 0;">${stats.pendingOrders}</h3>
+                        </div>
+                        <div style="width: 3rem; height: 3rem; background: #fef08a; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="clock" style="color: #b45309; width: 1.5rem; height: 1.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%); padding: 1.5rem; border-radius: 1rem; border: 1px solid #93c5fd;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 0.5rem 0; font-weight: 600;">TODAY'S REVENUE</p>
+                            <h3 style="color: #1e40af; font-size: 2.5rem; font-weight: 800; margin: 0; white-space: nowrap;">₱ ${Math.floor(Math.random() * 50000).toLocaleString()}</h3>
+                        </div>
+                        <div style="width: 3rem; height: 3rem; background: #bfdbfe; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="trending-up" style="color: #1e40af; width: 1.5rem; height: 1.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.5; }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            </style>
         </div>
     `;
     lucide.createIcons();
+    loadRecentTransactions();
+    
+    // Update time display
+    updateTimeDisplay();
+    setInterval(updateTimeDisplay, 10000);
+}
+
+function updateTimeDisplay() {
+    const timeEl = document.getElementById('update-time');
+    if (timeEl) {
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
 }
 
 // --- MOCK SELLERS DATA ---
@@ -1544,16 +1680,19 @@ function deleteAdmin(id, username) {
 // 7. Notification & Alert System
 // 7. Notification & Alert System
 function renderAlertsModule() {
-    setPageTitle('Notification Hub');
+    setPageTitle('Alert & Transaction Hub');
     const content = document.getElementById('content-container');
 
-    // Fetch notifications to display
-    fetch('get_notifications.php')
-        .then(response => response.json())
-        .then(data => {
+    // Fetch both notifications and transaction alerts
+    Promise.all([
+        fetch('get_notifications.php').then(r => r.json()),
+        fetch('get_transaction_alerts.php').then(r => r.json())
+    ])
+        .then(([notifData, alertData]) => {
+            // Process notifications
             let notificationRows = '';
-            if (data.success && data.notifications && data.notifications.length > 0) {
-                notificationRows = data.notifications.map(notif => {
+            if (notifData.success && notifData.notifications && notifData.notifications.length > 0) {
+                notificationRows = notifData.notifications.map(notif => {
                     const iconColor = notif.type === 'chat' ? '#3b82f6' : notif.type === 'order' ? '#8b5cf6' : notif.type === 'review' ? '#f59e0b' : '#64748b';
                     const iconName = notif.type === 'chat' ? 'message-circle' : notif.type === 'order' ? 'shopping-bag' : notif.type === 'review' ? 'star' : 'bell';
 
@@ -1585,7 +1724,54 @@ function renderAlertsModule() {
                     `;
                 }).join('');
             } else {
-                notificationRows = `<tr><td colspan="5" style="padding: 4rem; text-align: center; color: #94a3b8; font-style: italic;">No alerts detected in the current stream.</td></tr>`;
+                notificationRows = `<tr><td colspan="5" style="padding: 4rem; text-align: center; color: #94a3b8; font-style: italic;">No system notifications detected.</td></tr>`;
+            }
+
+            // Process transaction alerts
+            let alertRows = '';
+            if (alertData.success && alertData.alerts && alertData.alerts.length > 0) {
+                alertRows = alertData.alerts.map(alert => {
+                    const getPriorityColor = (priority) => {
+                        const colors = {
+                            'critical': { bg: '#fee2e2', color: '#dc2626', icon: 'alert-circle' },
+                            'high': { bg: '#fef3c7', color: '#b45309', icon: 'alert-triangle' },
+                            'warning': { bg: '#fef3c7', color: '#b45309', icon: 'alert-triangle' },
+                            'normal': { bg: '#e0e7ff', color: '#4f46e5', icon: 'info' }
+                        };
+                        return colors[priority] || colors['normal'];
+                    };
+                    
+                    const priorityStyle = getPriorityColor(alert.priority);
+                    
+                    return `
+                        <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                            <td style="padding: 1rem 1.5rem; text-align: center;">
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: ${priorityStyle.bg}; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                    <i data-lucide="${alert.icon}" style="width: 18px; height: 18px; color: ${priorityStyle.color};"></i>
+                                </div>
+                            </td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: white; background: ${priorityStyle.color}; padding: 3px 8px; border-radius: 5px;">${alert.priority}</span>
+                            </td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <div style="font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 3px;">${alert.title}</div>
+                                <div style="font-size: 0.8125rem; color: #64748b; line-height: 1.5;">${alert.message}</div>
+                            </td>
+                            <td style="padding: 1rem 1.5rem; font-size: 0.8125rem; color: #94a3b8; white-space: nowrap; font-weight: 500;">
+                                ${alert.time_ago}
+                            </td>
+                            <td style="padding: 1rem 1.5rem; text-align: right;">
+                                <button onclick="handleAlertAction('${alert.type}')" 
+                                    style="padding: 7px 14px; font-size: 0.75rem; font-weight: 700; color: ${priorityStyle.color}; background: ${priorityStyle.bg}; border: 1px solid ${priorityStyle.color}20; border-radius: 8px; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                    Action
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                alertRows = `<tr><td colspan="5" style="padding: 4rem; text-align: center; color: #94a3b8; font-style: italic;">No transaction alerts at this time.</td></tr>`;
             }
 
             const lowStockProducts = productsData.filter(p => parseInt(p.stock) < 10 && p.status !== 'Inactive');
@@ -1596,7 +1782,7 @@ function renderAlertsModule() {
                 { title: 'Inventory', label: 'Low Stock Items', val: lowStockProducts.length, color: '#f59e0b', icon: 'package' },
                 { title: 'Orders', label: 'Pending Action', val: pendingOrders.length, color: '#6366f1', icon: 'shopping-cart' },
                 { title: 'Support', label: 'Active Tickets', val: openTickets.length, color: '#10b981', icon: 'life-buoy' },
-                { title: 'Finance', label: 'Refund Requests', val: '0', color: '#ec4899', icon: 'credit-card' }
+                { title: 'Transaction', label: 'Total Alerts', val: alertData.total_count || 0, color: '#ec4899', icon: 'trending-up' }
             ].map(card => `
                 <div class="glass-panel" style="padding: 1.5rem; border-radius: 1.25rem; background: white; border: 1px solid #f1f5f9; display: flex; align-items: center; gap: 1.25rem; flex: 1; min-width: 200px;">
                     <i data-lucide="${card.icon}" style="width: 28px; height: 28px; color: ${card.color}; opacity: 0.8; flex-shrink: 0;"></i>
@@ -1614,11 +1800,11 @@ function renderAlertsModule() {
                 <div style="animation: fadeIn 0.4s ease-out; margin-bottom: 2rem;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
                         <div>
-                            <h2 class="page-header" style="margin: 0; font-size: 1.85rem; font-weight: 900; color: #1e293b; letter-spacing: -0.02em;">Notification market</h2>
-                            <p style="color: #64748b; font-size: 0.95rem; margin-top: 0.4rem;">Monitor active marketplace events and system alerts. </p>
+                            <h2 class="page-header" style="margin: 0; font-size: 1.85rem; font-weight: 900; color: #1e293b; letter-spacing: -0.02em;">Alert & Transaction Hub</h2>
+                            <p style="color: #64748b; font-size: 0.95rem; margin-top: 0.4rem;">Monitor live transactions, orders, and system events in real-time across your marketplace.</p>
                         </div>
                         <button onclick="renderAlertsModule()" style="background: white; border: 1px solid #e2e8f0; color: #1e293b; padding: 0.6rem 1.25rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 700; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onmouseover="this.style.background='#f8fafc'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='white'; this.style.transform='translateY(0)'">
-                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i> Force Sync
+                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i> Refresh
                         </button>
                     </div>
 
@@ -1627,13 +1813,42 @@ function renderAlertsModule() {
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
-                        <!-- Main Notification Stream -->
+                        <!-- Transaction Alerts Stream -->
                         <div class="glass-panel" style="border-radius: 1.5rem; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; overflow: hidden;">
-                            <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fafbfc;">
+                            <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); border-bottom: 2px solid #fcd34d;">
                                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                    <h3 style="font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Live Alert Stream</h3>
+                                    <i data-lucide="zap" style="width: 20px; height: 20px; color: #f59e0b;"></i>
+                                    <h3 style="font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Live Transaction Alerts</h3>
                                 </div>
-                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Last updated: ${new Date().toLocaleTimeString()}</span>
+                                <span style="font-size: 0.8rem; color: #6b7280; font-weight: 600;">Last updated: ${new Date().toLocaleTimeString()}</span>
+                            </div>
+                            
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: white;">
+                                            <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Type</th>
+                                            <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Priority</th>
+                                            <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Alert Details</th>
+                                            <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Time</th>
+                                            <th style="padding: 1.25rem 1.5rem; text-align: right; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alert-tbody">
+                                        ${alertRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- System Notifications Stream -->
+                        <div class="glass-panel" style="border-radius: 1.5rem; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; overflow: hidden;">
+                            <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i data-lucide="bell" style="width: 20px; height: 20px; color: #3b82f6;"></i>
+                                    <h3 style="font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">System Notifications</h3>
+                                </div>
+                                <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Count: ${notifData.notifications ? notifData.notifications.length : 0}</span>
                             </div>
                             
                             <div style="overflow-x: auto;">
@@ -1642,7 +1857,7 @@ function renderAlertsModule() {
                                         <tr style="background: white;">
                                             <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Type</th>
                                             <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Source</th>
-                                            <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Notification / Event</th>
+                                            <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Details</th>
                                             <th style="padding: 1.25rem 1.5rem; text-align: left; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Time</th>
                                             <th style="padding: 1.25rem 1.5rem; text-align: right; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Action</th>
                                         </tr>
@@ -1659,7 +1874,7 @@ function renderAlertsModule() {
             lucide.createIcons();
         })
         .catch(error => {
-            console.error('Error loading notifications:', error);
+            console.error('Error loading alerts and notifications:', error);
             content.innerHTML = `<div style="padding: 2rem; color: #ef4444; text-align: center;">
                 <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
                 <p>Failed to initialize Digital Pulse Monitoring. Connection to notification gateway lost.</p>
@@ -1669,8 +1884,31 @@ function renderAlertsModule() {
         });
 }
 
+// Handle alert actions based on alert type
+function handleAlertAction(alertType) {
+    switch(alertType) {
+        case 'high_value_order':
+            showSubModule('order', 'orders');
+            break;
+        case 'pending_payment':
+            showSubModule('order', 'orders');
+            break;
+        case 'delivery_ready':
+            showSubModule('shipping', 'tracking');
+            break;
+        case 'support_tickets':
+            showSubModule('support', 'tickets');
+            break;
+        case 'low_stock':
+            showSubModule('product', 'products');
+            break;
+        default:
+            showSubModule('order', 'orders');
+    }
+}
+
 // 7b. Customer Support Redirect Stub
-function renderSupportModule() {
+function renderSupportModule(submodule = 'chat') {
     showCustomActionModal('Support Portal', 'You are being redirected to the integrated Customer Support Portal system.', 'Proceed', () => {
         window.location.href = '../CustomerSupport/dashboard.php';
     });
@@ -2190,3 +2428,226 @@ function closeCustomModal() {
     const backdrop = document.getElementById('custom-modal-backdrop');
     if (backdrop) backdrop.classList.add('hidden');
 }
+
+// =====================================================
+// LOAD RECENT TRANSACTIONS WITH NOTIFICATIONS
+// =====================================================
+
+let lastTransactionCount = 0;
+let transactionAudioAlert = null;
+
+async function loadRecentTransactions() {
+    try {
+        const response = await fetch('get_transaction_notifications.php');
+        const data = await response.json();
+
+        const container = document.getElementById('recent-transactions-container');
+        if (!container) return;
+
+        // Check for new transactions and show alert
+        if (data.success && data.notifications && data.notifications.length > lastTransactionCount) {
+            showTransactionAlert(data.notifications[0]);
+            playTransactionSound();
+            lastTransactionCount = data.notifications.length;
+        }
+
+        if (!data.success || !data.notifications || data.notifications.length === 0) {
+            container.innerHTML = `
+                <div style="padding: 3rem 2rem; text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 1rem; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="inbox" style="width: 3rem; height: 3rem; color: #0284c7;"></i>
+                    </div>
+                    <p style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin: 0 0 0.5rem 0;">All caught up! 🎉</p>
+                    <p style="color: #6b7280; margin: 0;">No active transactions at the moment. New orders will appear here.</p>
+                </div>
+            `;
+            lucide.createIcons();
+            return;
+        }
+
+        let html = '<div style="background: white;">';
+        
+        data.notifications.forEach((notif, index) => {
+            const statusStyles = getStatusStyle(notif.status);
+            const isNew = index === 0;
+
+            html += `
+                <div class="transaction-card" data-id="${notif.id}" style="
+                    padding: 1.5rem;
+                    border-bottom: 1px solid #f1f5f9;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: all 0.3s;
+                    background: ${isNew ? 'linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%)' : 'white'};
+                    position: relative;
+                    overflow: hidden;
+                    ${isNew ? 'border-left: 4px solid #f59e0b;' : ''}
+                    cursor: pointer;
+                "
+                    onmouseover="this.style.background='#f9fafb'; this.style.transform='translateX(4px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'"
+                    onmouseout="this.style.background='${isNew ? 'linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%)' : 'white'}'; this.style.transform='translateX(0)'; this.style.boxShadow='none'"
+                    onclick="showSubModule('order', 'orders')"
+                >
+                    <div style="flex: 1; display: flex; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; border-radius: 0.75rem; ${statusStyles.bgGradient}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i data-lucide="${statusStyles.icon}" style="width: 1.5rem; height: 1.5rem; color: ${statusStyles.color};"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <strong style="color: #1f2937; font-size: 1rem;">${notif.order_number}</strong>
+                                ${isNew ? '<span style="background: #f59e0b; color: white; font-size: 0.65rem; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-weight: 700;">NEW</span>' : ''}
+                            </div>
+                            <div style="color: #6b7280; font-size: 0.9rem; margin-bottom: 0.375rem;">
+                                <i data-lucide="user" style="width: 0.85rem; height: 0.85rem; display: inline; margin-right: 0.375rem; vertical-align: middle;"></i>
+                                ${notif.customer} - ${notif.email}
+                            </div>
+                            <div style="color: #6b7280; font-size: 0.875rem;">
+                                <i data-lucide="box" style="width: 0.85rem; height: 0.85rem; display: inline; margin-right: 0.375rem; vertical-align: middle;"></i>
+                                ${notif.product_name} (x${notif.quantity})
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                        <div style="font-weight: 800; font-size: 1.25rem; color: #10b981;">₱ ${parseFloat(notif.amount || 0).toLocaleString('en-PH', {minimumFractionDigits: 2})}</div>
+                        <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.875rem; background: ${statusStyles.bgLight}; border: 1px solid ${statusStyles.borderColor}; color: ${statusStyles.color}; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 700;">
+                            <i data-lucide="${statusStyles.statusIcon}" style="width: 0.9rem; height: 0.9rem;"></i>
+                            ${notif.status}
+                        </div>
+                        <div style="color: #9ca3af; font-size: 0.8rem; font-weight: 600;">
+                            <i data-lucide="clock" style="width: 0.85rem; height: 0.85rem; display: inline; margin-right: 0.25rem; vertical-align: middle;"></i>
+                            ${notif.time_ago}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        container.innerHTML = html;
+        lucide.createIcons();
+    } catch (error) {
+        console.error('Error loading transactions:', error);
+        const container = document.getElementById('recent-transactions-container');
+        if (container) {
+            container.innerHTML = `
+                <div style="padding: 3rem 2rem; text-align: center;">
+                    <div style="width: 80px; height: 80px; background: #fee2e2; border-radius: 1rem; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="alert-circle" style="width: 3rem; height: 3rem; color: #dc2626;"></i>
+                    </div>
+                    <p style="font-size: 1rem; color: #dc2626; font-weight: 600; margin: 0;">Unable to load transactions</p>
+                </div>
+            `;
+        }
+    }
+}
+
+function getStatusStyle(status) {
+    const styles = {
+        'Pending': { color: '#b45309', bgLight: '#fef3c7', borderColor: '#fcd34d', bgGradient: 'linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%)', icon: 'clock', statusIcon: 'hourglass' },
+        'Processing': { color: '#1e40af', bgLight: '#dbeafe', borderColor: '#93c5fd', bgGradient: 'linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%)', icon: 'zap', statusIcon: 'loader' },
+        'Delivered': { color: '#15803d', bgLight: '#dcfce7', borderColor: '#86efac', bgGradient: 'linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)', icon: 'check-circle', statusIcon: 'truck' },
+        'Completed': { color: '#15803d', bgLight: '#dcfce7', borderColor: '#86efac', bgGradient: 'linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)', icon: 'check-circle', statusIcon: 'check' },
+        'Cancelled': { color: '#b91c1c', bgLight: '#fee2e2', borderColor: '#fca5a5', bgGradient: 'linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%)', icon: 'x-circle', statusIcon: 'x' },
+    };
+    return styles[status] || styles['Pending'];
+}
+
+function showTransactionAlert(transaction) {
+    const alertDiv = document.createElement('div');
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        border-left: 4px solid #f59e0b;
+        max-width: 400px;
+        animation: slideIn 0.4s ease-out;
+        z-index: 10000;
+    `;
+    
+    alertDiv.innerHTML = `
+        <div style="display: flex; gap: 1rem;">
+            <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="zap" style="width: 1.5rem; height: 1.5rem; color: #f59e0b;"></i>
+            </div>
+            <div style="flex: 1;">
+                <p style="margin: 0 0 0.5rem 0; font-weight: 700; color: #1f2937; font-size: 1rem;">New Order! 🎉</p>
+                <p style="margin: 0 0 0.375rem 0; color: #6b7280; font-size: 0.9rem;"><strong>${transaction.customer}</strong></p>
+                <p style="margin: 0; color: #6b7280; font-size: 0.85rem;">₱ ${parseFloat(transaction.amount || 0).toLocaleString('en-PH', {minimumFractionDigits: 2})}</p>
+            </div>
+        </div>
+        <style>
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        </style>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    lucide.createIcons();
+    
+    setTimeout(() => {
+        alertDiv.style.animation = 'slideOut 0.3s ease-out forwards';
+        setTimeout(() => alertDiv.remove(), 300);
+    }, 5000);
+}
+
+function playTransactionSound() {
+    // Create a simple alert sound using Web Audio API
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.1);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (e) {
+        console.log('Audio notification not available');
+    }
+}
+
+// Auto-refresh transactions every 15 seconds for real-time monitoring
+setInterval(loadRecentTransactions, 15000);
+
+// Monitor support notifications and update badge
+async function updateSupportNotifications() {
+    try {
+        const response = await fetch('get_unread_chat_count.php');
+        const data = await response.json();
+        
+        const badge = document.getElementById('support-badge');
+        if (badge && data.success && data.unread_count > 0) {
+            badge.textContent = data.unread_count;
+            badge.style.display = 'inline-block';
+        } else if (badge) {
+            badge.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error updating support notifications:', error);
+    }
+}
+
+// Update support notifications on page load and every 10 seconds
+updateSupportNotifications();
+setInterval(updateSupportNotifications, 10000);

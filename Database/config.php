@@ -1,17 +1,10 @@
 <?php
+$host = "localhost:3307"; // Siguraduhing 3307 ang nasa XAMPP mo, kung hindi, gawing 3306
+$user = "core1_marketph";           // Default user ng XAMPP
+$password = "123";           // Default ay walang password sa XAMPP
+$db = "core1_marketph";   // Pangalan ng database na ginawa mo sa phpMyAdmin
 
-$host = "localhost";
-$user = "core1_marketph";
-$password = "123";
-$db = "core1_marketph";
-
-$conn = new mysqli($host, $user, $password, $db);
-
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-
+$conn = new mysqli("localhost:3307", "root", "", "core1_marketph");
 
 
 // Auto-create support_tickets table if it doesn't exist
@@ -146,20 +139,18 @@ if ($check_orders->num_rows > 0) {
   // Final fix for 'order_number' error: make it nullable if it exists
   $check_order_num = $conn->query("SHOW COLUMNS FROM orders LIKE 'order_number'");
   if ($check_order_num->num_rows > 0) {
-    @$conn->query("ALTER TABLE orders DROP INDEX order_number");
+
     $conn->query("ALTER TABLE orders MODIFY COLUMN order_number VARCHAR(50) NULL");
   }
 
   // Handle 'customer_id' and 'address_id' errors for existing shopify-style tables
   $check_cust_id = $conn->query("SHOW COLUMNS FROM orders LIKE 'customer_id'");
   if ($check_cust_id->num_rows > 0) {
-    @$conn->query("ALTER TABLE orders DROP FOREIGN KEY orders_ibfk_1");
     $conn->query("ALTER TABLE orders MODIFY COLUMN customer_id INT NULL");
   }
 
   $check_addr_id = $conn->query("SHOW COLUMNS FROM orders LIKE 'address_id'");
   if ($check_addr_id->num_rows > 0) {
-    @$conn->query("ALTER TABLE orders DROP FOREIGN KEY orders_ibfk_2");
     $conn->query("ALTER TABLE orders MODIFY COLUMN address_id INT NULL");
   }
 }

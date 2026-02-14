@@ -13,6 +13,12 @@ $products_data = [
         'discount' => '32% OFF',
         'image' => '../../image/electronics/Wireless Bluetooth Earbuds.jpeg',
         'stock' => 1209,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Model' => '../../image/electronics/Wireless Bluetooth Earbuds.jpeg',
+            'Grey Model' => '../../image/electronics/Wireless Bluetooth Earbuds.jpeg',
+            'Blue Model' => '../../image/electronics/Wireless Bluetooth Earbuds.jpeg'
+        ],
         'colors' => ['Black', 'Grey', 'Blue'],
         'sizes' => ['S', 'M', 'L']
     ],
@@ -25,6 +31,12 @@ $products_data = [
         'discount' => '32% OFF',
         'image' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Model' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg',
+            'Pink Model' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg',
+            'White Model' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg'
+        ],
         'colors' => ['Black', 'Pink', 'White'],
         'sizes' => ['Standard']
     ],
@@ -37,6 +49,12 @@ $products_data = [
         'discount' => '30% OFF',
         'image' => '../../image/electronics/Portable Power Bank 20,000mAh.jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Model' => '../../image/electronics/Portable Power Bank 20,000mAh.jpeg',
+            'Pink Model' => '../../image/electronics/Portable Power Bank 20,000mAh.jpeg',
+            'White Model' => '../../image/electronics/Portable Power Bank 20,000mAh.jpeg'
+        ],
         'colors' => ['Black', 'Pink', 'White'],
         'sizes' => ['Standard']
     ],
@@ -49,6 +67,12 @@ $products_data = [
         'discount' => '28% OFF',
         'image' => '../../image/electronics/Bluetooth Speaker (Waterproof).jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Model' => '../../image/electronics/Bluetooth Speaker (Waterproof).jpeg',
+            'Pink Model' => '../../image/electronics/Bluetooth Speaker (Waterproof).jpeg',
+            'White Model' => '../../image/electronics/Bluetooth Speaker (Waterproof).jpeg'
+        ],
         'colors' => ['Black', 'Pink', 'White'],
         'sizes' => ['Standard']
     ],
@@ -61,7 +85,13 @@ $products_data = [
         'discount' => '44% OFF',
         'image' => '../../image/electronics/USB-C Fast Charging Cable.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Cable' => '../../image/electronics/USB-C Fast Charging Cable.jpeg',
+            'White Cable' => '../../image/electronics/USB-C Fast Charging Cable.jpeg',
+            'Grey Cable' => '../../image/electronics/USB-C Fast Charging Cable.jpeg'
+        ],
+        'colors' => ['Black'],
         'sizes' => ['Standard']
     ],
 
@@ -73,6 +103,11 @@ $products_data = [
         'discount' => '29% OFF',
         'image' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black RGB' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg',
+            'White RGB' => '../../image/electronics/Smart Watch (Fitness Tracker).jpeg'
+        ],
         'colors' => ['Black', 'RGB'],
         'sizes' => ['Standard']
     ],
@@ -85,6 +120,11 @@ $products_data = [
         'discount' => '28% OFF',
         'image' => '../../image/electronics/Noise_Cancelling_Headphones.jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Edition' => '../../image/electronics/Noise_Cancelling_Headphones.jpeg',
+            'Silver Edition' => '../../image/electronics/Noise_Cancelling_Headphones.jpeg'
+        ],
         'colors' => ['Black', 'Silver'],
         'sizes' => ['Standard']
     ],
@@ -97,7 +137,12 @@ $products_data = [
         'discount' => '29% OFF',
         'image' => '../../image/electronics/Mini WiFi Router Pocket WiFi.jpeg',
         'stock' => 500,
-        'colors' => ['White', 'Black'],
+        'has_variants' => true,
+        'variant_images' => [
+            'White Model' => '../../image/electronics/Mini WiFi Router Pocket WiFi.jpeg',
+            'Black Model' => '../../image/electronics/Mini WiFi Router Pocket WiFi.jpeg'
+        ],
+        'colors' => ['White'],
         'sizes' => ['Standard']
     ],
 
@@ -109,6 +154,12 @@ $products_data = [
         'discount' => '40% OFF',
         'image' => '../../image/electronics/Smart LED Light Bulb (WiFi Controlled).jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Warm White' => '../../image/electronics/Smart LED Light Bulb (WiFi Controlled).jpeg',
+            'Cool White' => '../../image/electronics/Smart LED Light Bulb (WiFi Controlled).jpeg',
+            'RGB Color' => '../../image/electronics/Smart LED Light Bulb (WiFi Controlled).jpeg'
+        ],
         'colors' => ['RGB'],
         'sizes' => ['Standard']
     ],
@@ -121,6 +172,11 @@ $products_data = [
         'discount' => '33% OFF',
         'image' => '../../image/electronics/Laptop Cooling Pad RGB Fan.jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black RGB' => '../../image/electronics/Laptop Cooling Pad RGB Fan.jpeg',
+            'Blue RGB' => '../../image/electronics/Laptop Cooling Pad RGB Fan.jpeg'
+        ],
         'colors' => ['Black'],
         'sizes' => ['Standard']
     ],
@@ -134,6 +190,11 @@ $products_data = [
         'discount' => '34% OFF',
         'image' => '../../image/electronics/1080p HD Web Camera.jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Full HD 1080p' => '../../image/electronics/1080p HD Web Camera.jpeg',
+            'Standard Package' => '../../image/electronics/1080p HD Web Camera.jpeg'
+        ],
         'colors' => ['Black'],
         'sizes' => ['Standard']
     ],
@@ -146,6 +207,11 @@ $products_data = [
         'discount' => '35% OFF',
         'image' => '../../image/electronics/Smart Plug (App Controlled).jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'White Plug' => '../../image/electronics/Smart Plug (App Controlled).jpeg',
+            'Black Plug' => '../../image/electronics/Smart Plug (App Controlled).jpeg'
+        ],
         'colors' => ['White'],
         'sizes' => ['Standard']
     ],
@@ -158,6 +224,11 @@ $products_data = [
         'discount' => '27% OFF',
         'image' => '../../image/electronics/Portable SSD 500GB.jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Model' => '../../image/electronics/Portable SSD 500GB.jpeg',
+            'Blue Model' => '../../image/electronics/Portable SSD 500GB.jpeg'
+        ],
         'colors' => ['Black', 'Blue'],
         'sizes' => ['Standard']
     ],
@@ -170,6 +241,12 @@ $products_data = [
         'discount' => '37% OFF',
         'image' => '../../image/electronics/Digital Alarm Clock with LED Display.jpeg',
         'stock' => 500,
+        'has_variants' => true,
+        'variant_images' => [
+            'White Design' => '../../image/electronics/Digital Alarm Clock with LED Display.jpeg',
+            'Black Design' => '../../image/electronics/Digital Alarm Clock with LED Display.jpeg',
+            'Wood Design' => '../../image/electronics/Digital Alarm Clock with LED Display.jpeg'
+        ],
         'colors' => ['White', 'Black', 'Wood'],
         'sizes' => ['Standard']
     ],
@@ -181,7 +258,12 @@ $products_data = [
         'discount' => '44% OFF',
         'image' => '../../image/electronics/Car Phone Holder (Magnetic).jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Silver'],
+        'has_variants' => true,
+        'variant_images' => [
+            'Black Holder' => '../../image/electronics/Car Phone Holder (Magnetic).jpeg',
+            'Silver Holder' => '../../image/electronics/Car Phone Holder (Magnetic).jpeg'
+        ],
+        'colors' => ['Black'],
         'sizes' => ['Standard']
     ],
 ];
@@ -197,6 +279,117 @@ $products_data = [
 ?>
 
 <link rel="stylesheet" href="../../css/components/shared-product-view.css?v=<?php echo time(); ?>">
+
+<style>
+    .pv-color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .pv-color-swatch-wrapper {
+        position: relative;
+    }
+
+    .pv-color-swatch {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 3px solid #e5e7eb;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .pv-color-swatch:hover {
+        transform: scale(1.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: #999;
+    }
+
+    .pv-color-swatch.selected {
+        border-color: #0f172a;
+        border-width: 3px;
+        box-shadow: 0 0 0 2px white, 0 0 0 4px #0f172a;
+    }
+
+    .pv-color-name {
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f172a;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.2s, bottom 0.2s;
+        pointer-events: none;
+    }
+
+    .pv-color-swatch:hover .pv-color-name {
+        opacity: 1;
+        bottom: -30px;
+    }
+
+    /* Light color borders for visibility */
+    .pv-color-swatch[style*="#f5f5f5"],
+    .pv-color-swatch[style*="#ffffff"],
+    .pv-color-swatch[style*="#fff"] {
+        border-color: #d1d5db !important;
+    }
+
+    /* Variant Image Styles */
+    .pv-variant-images {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 15px;
+        margin-top: 10px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+
+    .pv-variant-img-wrapper {
+        position: relative;
+    }
+
+    .pv-variant-img {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 80px;
+    }
+
+    .pv-variant-img:hover {
+        border-color: #999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .pv-variant-img.selected {
+        border-color: #0f172a;
+        border-width: 2px;
+        box-shadow: 0 0 0 2px white, 0 0 0 3px #0f172a;
+        background: #f9fafb;
+    }
+</style>
 
 <div class="pv-left">
     <img class="pv-product-img" src="<?php echo $img; ?>" alt="Product">
@@ -237,26 +430,31 @@ $products_data = [
         <?php endif; ?>
     </div>
 
-    <!-- Color Options -->
+    <!-- Variant Options -->
     <div class="pv-option-group">
-        <span class="pv-option-label">Color</span>
-        <div class="pv-options" id="color-options">
-            <?php foreach ($product['colors'] as $index => $color): ?>
-                <button class="pv-option-btn <?php echo $index === 0 ? 'selected' : ''; ?>" data-val="<?php echo $color; ?>">
-                    <?php echo $color; ?>
-                </button>
+        <span class="pv-option-label">Choose Variant</span>
+        <div class="pv-variant-images" id="color-options">
+            <?php foreach ($product['variant_images'] as $variant_label => $variant_img): ?>
+                <div class="pv-variant-img-wrapper">
+                    <button class="pv-variant-img <?php echo array_key_first($product['variant_images']) === $variant_label ? 'selected' : ''; ?>" 
+                            data-val="<?php echo htmlspecialchars($variant_label); ?>" 
+                            onclick="selectVariantImage(this)"
+                            title="<?php echo htmlspecialchars($variant_label); ?>">
+                        <img src="<?php echo str_replace(' ', '%20', $variant_img); ?>" alt="<?php echo htmlspecialchars($variant_label); ?>" style="width: 60px; height: 60px; border-radius: 6px; object-fit: cover;">
+                        <span style="display: block; font-size: 11px; margin-top: 6px; text-align: center; font-weight: 500;"><?php echo htmlspecialchars($variant_label); ?></span>
+                    </button>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>
 
-    <!-- Size Options -->
+    <!-- Size/Quantity -->
     <div class="pv-option-group">
         <span class="pv-option-label">Size</span>
-        <div class="pv-options" id="size-options">
-            <?php foreach ($product['sizes'] as $index => $size): ?>
-                <button class="pv-option-btn <?php echo $index === 0 ? 'selected' : ''; ?>" data-val="<?php echo $size; ?>"><?php echo $size; ?></button>
-            <?php endforeach; ?>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-weight: 500;">Standard</span>
         </div>
+        <input type="hidden" id="size-options" value="Standard">
     </div>
 
     <!-- Quantity -->
@@ -282,18 +480,47 @@ $products_data = [
             class="pv-btn pv-btn-buy">Buy Now</a>
     </div>
 
+    <!-- Rate Product Button -->
+    <div class="pv-rate-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f4f8;">
+        <a href="../../Shop/Rate-Reviews.php?product_name=<?php echo urlencode($name); ?>" 
+           class="pv-btn pv-btn-rate" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fas fa-star"></i> Share Your Review
+        </a>
+        <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px;">Have you used this product? Share your experience!</p>
+    </div>
+
     <script>
         function addToCart() {
-            const colorBtn = document.querySelector('#color-options .pv-option-btn.selected');
+            const colorInput = document.querySelector('#color-options');
+            
+            // Get variant value - check if it's a hidden input (STANDARD) or from button
+            let color;
+            if (colorInput.tagName === 'INPUT') {
+                color = colorInput.value;
+            } else {
+                const colorBtn = document.querySelector('#color-options .pv-color-swatch.selected');
+                const variantBtn = document.querySelector('#color-options .pv-variant-img.selected');
+                color = colorBtn ? colorBtn.getAttribute('data-val') : (variantBtn ? variantBtn.getAttribute('data-val') : 'Default');
+            }
+            
             const sizeBtn = document.querySelector('#size-options .pv-option-btn.selected');
-            const color = colorBtn ? colorBtn.getAttribute('data-val') : 'Default';
-            const size = sizeBtn ? sizeBtn.getAttribute('data-val') : 'Default';
+            const size = sizeBtn ? sizeBtn.getAttribute('data-val') : 'Standard';
             const qty = document.getElementById('qty').value;
             const fullName = `<?php echo addslashes($name); ?> (${color}, ${size})`;
             const price = <?php echo floatval(preg_replace('/[^0-9.]/', '', $price)); ?>;
             const img = '<?php echo $img; ?>';
 
             window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Electronics`;
+        }
+
+        function selectColor(button) {
+            document.querySelectorAll('.pv-color-swatch').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+        }
+
+        function selectVariantImage(button) {
+            document.querySelectorAll('.pv-variant-img').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
         }
 
         document.querySelectorAll('.pv-options').forEach(container => {

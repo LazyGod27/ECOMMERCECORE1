@@ -26,7 +26,7 @@
     </div>
 
     <?php
-    // Connect to DB if not already connected
+
     if (!isset($conn)) {
         $config_path = __DIR__ . '/../../Database/config.php';
         if (file_exists($config_path)) {
@@ -36,8 +36,7 @@
         }
     }
 
-    // Check if user has purchased the item
-    // We expect $name (product name) and user session to be available
+
     $can_rate = false;
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
@@ -181,40 +180,9 @@
     }
     ?>
 
-    <!-- Rate Button -->
-    <div class="rate-btn-container">
-        <a href="#" class="btn-rate-now" onclick="handleRateClick(event)">Rate Product <i
-                class="fas fa-chevron-right"></i></a>
-    </div>
-</div>
-
-<!-- Buy First Modal -->
-<div id="buyFirstModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div class="modal-icon"><i class="fas fa-shopping-cart"></i></div>
-        <h3>Purchase Required</h3>
-        <p>You need to buy this product first before you can leave a rating.</p>
-        <button class="modal-btn" onclick="closeModal()">OK</button>
-    </div>
 </div>
 
 <script>
-    function handleRateClick(e) {
-        e.preventDefault();
-        // PHP sets this variable based on check
-        const canRate = <?php echo $can_rate ? 'true' : 'false'; ?>;
-        const productId = <?php echo $product_id; ?>;
-        // Ideally pass order_id if available, though Rate.php might need it logic refinement fallback
-        const orderId = <?php echo isset($existing_order_id) ? $existing_order_id : 0; ?>;
-
-        if (canRate) {
-            window.location.href = `../../Content/Rate.php?product_id=${productId}&order_id=${orderId}`;
-        } else {
-            showModal();
-        }
-    }
-
     function showModal() {
         document.getElementById("buyFirstModal").classList.add("show");
     }

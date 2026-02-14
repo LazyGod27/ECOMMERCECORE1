@@ -51,6 +51,9 @@
     flex-direction: column;
     background-color: #fff;
     color: #333;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 90vh;
 }
 
 /* Header Area */

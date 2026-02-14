@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/HAY Flowerpot and Saucer.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Decorative flowerpot and saucer crafted from durable materials, ideal for indoor plants.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/George Glass Vase Clear Shape 3.jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'Elegant glass vase with a clear finish, perfect for displaying fresh cut flowers.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Village Thrive Imperfect Rattan Eye Decor.jpeg',
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Handmade rattan decor piece providing rustic charm and organic texture for home accents.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/WAN JAI Rattan Wall Hanging Decor.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'Woven rattan wall hanging that adds warmth and artisanal character to any room.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Wood Chain.jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Wood chain decorative piece with natural finish, ideal for coastal or boho interiors.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Disco Mushroom.jpeg',
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => 'Fun disco mushroom decor that adds playful lighting and ambience to casual spaces.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Ceramic Candle Set.jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Ceramic candle set with elegant scents and a minimalist design for cozy evenings.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Decorative Wall Art Frame.jpeg',
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Decorative wall art framed to enhance visual interest and complete room styling.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Throw Pillow Set (2 pcs).jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'Pair of soft throw pillows with removable covers for easy care and style updates.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/LED Marquee Sign.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'LED marquee sign that offers customizable letters and a warm glow for accent lighting.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Woven Storage Basket.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Woven storage basket built from natural fibers for tidy organization and breathable storage.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Faux Green Potted Plant.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'Realistic faux potted plant for low-maintenance greenery and long-lasting decor.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Macramé Wall Hanging.jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Handcrafted macramé wall hanging adding texture and boho elegance to living spaces.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Wooden Serving Tray.jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Solid wooden serving tray with handles for stylish serving and decorative display.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/CozyLiving Store/Framed Mirror Accent (Medium).jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Medium framed mirror that adds depth and light while serving as a stylish focal point.'
         ]
     ];
     return; // Stop processing

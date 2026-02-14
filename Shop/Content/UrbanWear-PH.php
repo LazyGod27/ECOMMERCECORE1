@@ -33,9 +33,6 @@ if (isset($rendering_header) && $rendering_header) {
     return; // Exit to prevent running product logic when rendering header
 }
 
-
-
-
 // ------------------------------------
 // Option to Define Custom Products List (Overrides Random Loop)
 if (isset($definingProducts) && $definingProducts) {
@@ -45,18 +42,34 @@ if (isset($definingProducts) && $definingProducts) {
             'name' => 'H&M Loose Fit Hoodie',
             'price' => '₱999',
             'raw_price' => 999,
-            'image' => '../image/Shop/UrbanWear PH/H&M Loose Fit Hoodie.jpeg',
+            'image' => '../image/Shop/UrbanWear PH/hoodie.avif', // Path to your image
             'rating' => 4.5,
             'sold' => 433
+            ,'description' => 'Loose-fit hoodie in soft cotton-blend fabric. Features a roomy kangaroo pocket and adjustable drawstrings for casual comfort.'
+            ,'variants' => [
+             'Black' => ['image' => '../image/Shop/UrbanWear PH/hoodie.avif', 'color' => '#111111'],
+            'Grey' => ['image' => '../image/Shop/UrbanWear PH/blue.avif', 'color' => '#6b7280'],
+            'Navy' => ['image' => '../image/Shop/UrbanWear PH/gray.avif', 'color' => '#1e293b'],
+            'brown' => ['image' => '../image/Shop/UrbanWear PH/brown.avif', 'color' => '#8b4513'],
+            'green' => ['image' => '../image/Shop/UrbanWear PH/choco.avif', 'color' => '#228b22'],
+]
         ],
         // Product 2
         [
-            'name' => 'Pilipinas Hoodie',
+            'name' => 'Denim Pants',
             'price' => '₱4,108.06',
             'raw_price' => 4108.06,
-            'image' => '../image/Shop/UrbanWear PH/Pilipinas Hoodie.avif',
+            'image' => '../image/Shop/UrbanWear PH/denim1.avif', // Path to your image
             'rating' => 4.2,
             'sold' => 2400
+            ,'description' => 'Mom Slim-Fit High-Waist Ankle Jeans.'
+            ,'variants' => [
+             'Black' => ['image' => '../image/Shop/UrbanWear PH/denim1.avif', 'color' => '#111111'],
+            'Grey' => ['image' => '../image/Shop/UrbanWear PH/black.avif', 'color' => '#6b7280'],
+            'Navy' => ['image' => '../image/Shop/UrbanWear PH/white.avif', 'color' => '#1e293b'],
+            'brown' => ['image' => '../image/Shop/UrbanWear PH/light.avif', 'color' => '#8b4513'],
+            'green' => ['image' => '../image/Shop/UrbanWear PH/light1.avif', 'color' => '#228b22'],
+]
         ],
         // Product 3
         [
@@ -66,6 +79,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Team SKOOP Denim Jacket.jpeg',
             'rating' => 4.8,
             'sold' => 4700
+            ,'description' => 'Classic denim jacket with reinforced stitching and multiple pockets. Durable, structured fit that layers well over tees and hoodies.'
         ],
         // Product 4
         [
@@ -75,6 +89,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Adidas MU Tracksuit Jacket.jpeg',
             'rating' => 4.1,
             'sold' => 1100
+            ,'description' => 'Sporty tracksuit jacket with breathable fabric and zip front. Designed for warm-ups and casual streetwear with moisture-wicking performance.'
         ],
         // Product 5
         [
@@ -84,6 +99,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Baggy Denim Jeans.jpeg', // Using fallback
             'rating' => 4.5,
             'sold' => 4500
+            ,'description' => 'Relaxed-fit baggy denim made from sturdy cotton. Roomy leg silhouette and durable seams for everyday wear and street style looks.'
         ],
         // Product 6
         [
@@ -93,6 +109,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/GentEssential Korean Cargo Jogger Pants.jpeg',
             'rating' => 4.0,
             'sold' => 5000
+            ,'description' => 'Lightweight cargo joggers with tapered ankle and multiple utility pockets. Comfortable elastic waistband suitable for active, casual wear.'
         ],
         // Product 7
         [
@@ -102,6 +119,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Branded Men\'s Twill Cargo Jogger Pants.jpeg',
             'rating' => 4.3,
             'sold' => 3200
+            ,'description' => 'Twill cargo joggers offering durability and structure with comfortable stretch. Reinforced pockets and a modern tapered fit.'
         ],
         // Product 8
         [
@@ -111,6 +129,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Hot Big Pockets Cargo Pants.jpeg',
             'rating' => 4.6,
             'sold' => 1200
+            ,'description' => 'Utility cargo pants with oversized pockets for a bold functional look. Made from mid-weight fabric for structure and longevity.'
         ],
         // Product 9
         [
@@ -120,6 +139,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Pants.jpeg',
             'rating' => 4.9,
             'sold' => 890
+            ,'description' => 'Versatile mid-weight pants suitable for daily wear. Clean lines and neutral styling make these easy to pair with multiple looks.'
         ],
         // Product 10
         [
@@ -129,6 +149,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Pant.jpeg',
             'rating' => 4.7,
             'sold' => 500
+            ,'description' => 'Techwear-inspired cargo pants with water-resistant finish and ergonomic pocket placement. Ideal for urban exploration and layered outfits.'
         ],
         // Product 11
         [
@@ -138,6 +159,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Men H&M Loose Fit Sweatshirt.jpeg',
             'rating' => 4.4,
             'sold' => 6000
+            ,'description' => 'Soft loose-fit sweatshirt with ribbed cuffs and hem. Brushed interior for warmth and a relaxed silhouette for everyday comfort.'
         ],
         // Product 12
         [
@@ -147,6 +169,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Philippines Baybayin Hoodie.jpeg',
             'rating' => 4.5,
             'sold' => 1500
+            ,'description' => 'Unique hoodie featuring Baybayin-inspired artwork. Lightweight fleece with printed graphics that showcase local culture.'
         ],
         // Product 13
         [
@@ -156,6 +179,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Pilipinas AOP Hoodie.jpeg',
             'rating' => 4.8,
             'sold' => 900
+            ,'description' => 'All-over print (AOP) hoodie with vibrant, fade-resistant colors. Comfortable fit and eye-catching design for statement looks.'
         ],
         // Product 14
         [
@@ -165,6 +189,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/solid street drip.avif',
             'rating' => 4.1,
             'sold' => 2100
+            ,'description' => 'Minimalist streetwear piece with clean construction and premium finishing. Designed for layered urban outfits.'
         ],
         // Product 15
         [
@@ -174,6 +199,12 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/UrbanWear PH/Graphic Street Tee.jpeg', // Fallback for cap
             'rating' => 4.2,
             'sold' => 800
+            ,'description' => 'Printed graphic tee made from preshrunk cotton. Bold front artwork and a comfortable regular fit.'
+            ,'variants' => [
+             'Black' => ['image' => '../image/Shop/UrbanWear PH/H&M Loose Fit Hoodie.jpg', 'color' => '#111111'],
+            'Grey' => ['image' => '../image/Shop/UrbanWear PH/H&M Loose Fit Hoodie-grey.jpg', 'color' => '#6b7280'],
+            'Navy' => ['image' => '../image/Shop/UrbanWear PH/H&M Loose Fit Hoodie-navy.jpg', 'color' => '#1e293b']
+]
         ],
     ];
     return; // Stop processing
@@ -183,12 +214,14 @@ if (isset($definingProducts) && $definingProducts) {
 if (isset($definingProducts) && $definingProducts) {
     $manualProducts = [
         [
-            'name' => 'Urban Revivo Slim‑Fit Long‑Sleeved Shirt',
+            'name' => 'H&M Loose Fit Hoodie',
             'price' => '₱976.50',
             'raw_price' => 976.50,
-            'image' => '../image/Shop/UrbanWear PH/longsleeve.jpeg', // Path to your image
+            'image' => '../image/Shop/UrbanWear PH/bllue.av', // Path to your image
             'rating' => 4.5, // 0 to 5
             'sold' => 433
+            ,'description' => 'Slim-fit long-sleeved shirt in lightweight, breathable fabric. Tailored silhouette suitable for layering or smart-casual wear.'
+            
         ],
         // You can copy the block above to add more unique products!
     ];

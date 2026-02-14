@@ -22,6 +22,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg = "<div class='alert-success'>Item removed from cart.</div>";
         }
     }
+    // Add Selected to Cart (replace checkout with add-to-cart)
+    if (isset($_POST['add_selected_to_cart']) && !empty($_POST['selected_items'])) {
+        $selected_cart_ids = array_map('intval', $_POST['selected_items']);
+        foreach ($selected_cart_ids as $cid) {
+            // fetch the cart row (ensure it's a valid row)
+            $cres = mysqli_query($conn, "SELECT * FROM cart WHERE id='$cid' AND user_id='$user_id' LIMIT 1");
+            if (!$cres || mysqli_num_rows($cres) == 0) continue;
+            $crow = mysqli_fetch_assoc($cres);
+            $pid = intval($crow['product_id']);
+            $pq = intval($crow['quantity']);
+
+            // check if another cart row already exists for this user and product
+            $exist = mysqli_query($conn, "SELECT id, quantity FROM cart WHERE user_id='$user_id' AND product_id='$pid' LIMIT 1");
+            if ($exist && mysqli_num_rows($exist) > 0) {
+                $erow = mysqli_fetch_assoc($exist);
+                // if the existing row is the same row we selected, skip
+                if (intval($erow['id']) === intval($cid)) continue;
+                $newq = intval($erow['quantity']) + $pq;
+                mysqli_query($conn, "UPDATE cart SET quantity='$newq' WHERE id='" . intval($erow['id']) . "'");
+            } else {
+                // insert a new cart row using values from selected row
+                $pname = mysqli_real_escape_string($conn, $crow['product_name']);
+                $pprice = floatval($crow['price']);
+                $pimg = mysqli_real_escape_string($conn, $crow['image']);
+                $pshop = mysqli_real_escape_string($conn, $crow['shop_name']);
+                mysqli_query($conn, "INSERT INTO cart (user_id, product_id, product_name, price, quantity, image, shop_name) VALUES ('$user_id', '$pid', '" . $pname . "', '$pprice', '$pq', '" . $pimg . "', '" . $pshop . "')");
+            }
+        }
+        $msg = "<div class='alert-success'>Selected items added to cart.</div>";
+    }
     // Update Quantity would go here
 }
 
@@ -257,6 +287,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 <?php endforeach; ?>
 
                 <input type="hidden" name="remove_item_id" id="remove_item_id_input">
+                <input type="hidden" name="add_selected_to_cart" id="add_selected_to_cart_input" value="0">
             </form>
 
         <?php else: ?>
@@ -290,11 +321,11 @@ if ($result && mysqli_num_rows($result) > 0) {
                     <div class="footer-total-price" style="font-size: 20px; font-weight: 700; color: #333;">₱<span
                             id="grandTotalDisplay"><?php echo number_format($total_price, 2); ?></span></div>
 
-                    <a href="#" class="btn-proceed-checkout" onclick="proceedToCheckout(); return false;"
-                        style="background: #2A3B7E; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: 600; display: flex; align-items: center;">
-                        <i class="fas fa-lock" style="margin-right:8px; font-size:0.9em;"></i> Proceed to Checkout (<span
+                    <button type="button" class="btn-proceed-checkout" onclick="addSelectedToCart(); return false;"
+                        style="background: #2A3B7E; color: white; padding: 12px 30px; border: none; border-radius: 4px; font-weight: 600; display: flex; align-items: center; cursor: pointer;">
+                        <i class="fas fa-shopping-cart" style="margin-right:8px; font-size:0.9em;"></i> Add Selected to Cart (<span
                             id="checkoutCountDisplay"><?php echo count($cart_items); ?></span>)
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -314,6 +345,17 @@ if ($result && mysqli_num_rows($result) > 0) {
             const checkboxes = document.querySelectorAll('.item-checkbox');
             checkboxes.forEach(cb => cb.checked = source.checked);
             updateSummary();
+        }
+
+        function addSelectedToCart() {
+            // ensure at least one selected
+            const selected = document.querySelectorAll('.item-checkbox:checked');
+            if (!selected || selected.length === 0) {
+                alert('Please select at least one item to add to cart.');
+                return;
+            }
+            document.getElementById('add_selected_to_cart_input').value = '1';
+            document.getElementById('cartForm').submit();
         }
 
         function updateSummary() {

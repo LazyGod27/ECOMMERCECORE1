@@ -13,8 +13,8 @@ $products_data = [
         'discount' => '31% OFF',
         'image' => '../../image/beauty-health/Facial Cleanser (Gentle Formula).jpeg',
         'stock' => 1209,
-        'colors' => ['Black', 'Grey', 'Blue'],
-        'sizes' => ['S', 'M', 'L']
+        'colors' => ['Standard'],
+        'sizes' => ['Standard']
     ],
 
     //Product 2 -> 602
@@ -25,7 +25,7 @@ $products_data = [
         'discount' => '32% OFF',
         'image' => '../../image/beauty-health/Vitamin C Serum.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -37,7 +37,7 @@ $products_data = [
         'discount' => '28% OFF',
         'image' => '../../image/beauty-health/Aloe Vera Soothing Gel.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -49,7 +49,7 @@ $products_data = [
         'discount' => '30% OFF',
         'image' => '../../image/beauty-health/Sunscreen SPF 50+.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -61,7 +61,7 @@ $products_data = [
         'discount' => '33% OFF',
         'image' => '../../image/beauty-health/Moisturizing Face Cream.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -73,7 +73,7 @@ $products_data = [
         'discount' => '32% OFF',
         'image' => '../../image/beauty-health/Charcoal Face Mask.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -85,7 +85,7 @@ $products_data = [
         'discount' => '31% OFF',
         'image' => '../../image/beauty-health/Hair Growth Shampoo.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -97,7 +97,7 @@ $products_data = [
         'discount' => '29% OFF',
         'image' => '../../image/beauty-health/Hair Conditioner (Repair Care).jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -109,7 +109,7 @@ $products_data = [
         'discount' => '36% OFF',
         'image' => '../../image/beauty-health/Makeup Brush Set (10pcs).jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -121,7 +121,7 @@ $products_data = [
         'discount' => '32% OFF',
         'image' => '../../image/beauty-health/Lip Tint - Lip Gloss Set.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -134,7 +134,7 @@ $products_data = [
         'discount' => '31% OFF',
         'image' => '../../image/beauty-health/Body Scrub (Whitening & Exfoliating).jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -146,7 +146,7 @@ $products_data = [
         'discount' => '37% OFF',
         'image' => '../../image/beauty-health/Electric Facial Cleanser Brush.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -158,7 +158,7 @@ $products_data = [
         'discount' => '33% OFF',
         'image' => '../../image/beauty-health/Nail Care Kit (Manicure Set).jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -170,7 +170,7 @@ $products_data = [
         'discount' => '31% OFF',
         'image' => '../../image/beauty-health/Essential Oil Set (Relaxing Blend).jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 
@@ -181,7 +181,7 @@ $products_data = [
         'discount' => '29% OFF',
         'image' => '../../image/beauty-health/Foot Spa Massager Roller.jpeg',
         'stock' => 500,
-        'colors' => ['Black', 'Pink', 'White'],
+        'colors' => ['Standard'],
         'sizes' => ['Standard']
     ],
 ];
@@ -217,6 +217,10 @@ $img = isset($product['image']) ? str_replace(' ', '%20', $product['image']) : '
 ?>
 
 <link rel="stylesheet" href="../../css/components/shared-product-view.css?v=<?php echo time(); ?>">
+
+<style>
+    /* Color swatch styles removed for beauty products */
+</style>
 
 <div class="pv-left">
     <img class="pv-product-img" src="<?php echo $img; ?>" alt="Product">
@@ -257,26 +261,22 @@ $img = isset($product['image']) ? str_replace(' ', '%20', $product['image']) : '
         <?php endif; ?>
     </div>
 
-    <!-- Color Options -->
+    <!-- Variant (Standard) -->
     <div class="pv-option-group">
-        <span class="pv-option-label">Color</span>
-        <div class="pv-options" id="color-options">
-            <?php foreach ($product['colors'] as $index => $color): ?>
-                <button class="pv-option-btn <?php echo $index === 0 ? 'selected' : ''; ?>" data-val="<?php echo $color; ?>">
-                    <?php echo $color; ?>
-                </button>
-            <?php endforeach; ?>
+        <span class="pv-option-label">Variant</span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-weight: 500;">Standard</span>
         </div>
+        <input type="hidden" id="color-options" value="Standard">
     </div>
 
-    <!-- Size Options -->
+    <!-- Size (Standard) -->
     <div class="pv-option-group">
         <span class="pv-option-label">Size</span>
-        <div class="pv-options" id="size-options">
-            <?php foreach ($product['sizes'] as $index => $size): ?>
-                <button class="pv-option-btn <?php echo $index === 0 ? 'selected' : ''; ?>" data-val="<?php echo $size; ?>"><?php echo $size; ?></button>
-            <?php endforeach; ?>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-weight: 500;">Standard</span>
         </div>
+        <input type="hidden" id="size-options" value="Standard">
     </div>
 
     <!-- Quantity -->
@@ -302,27 +302,25 @@ $img = isset($product['image']) ? str_replace(' ', '%20', $product['image']) : '
             class="pv-btn pv-btn-buy">Buy Now</a>
     </div>
 
+    <!-- Rate Product Button -->
+    <div class="pv-rate-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f4f8;">
+        <a href="../../Shop/Rate-Reviews.php?product_name=<?php echo urlencode($name); ?>" 
+           class="pv-btn pv-btn-rate" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fas fa-star"></i> Share Your Review
+        </a>
+        <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px;">Have you used this product? Share your experience!</p>
+    </div>
+
     <script>
         function addToCart() {
-            const colorBtn = document.querySelector('#color-options .pv-option-btn.selected');
-            const sizeBtn = document.querySelector('#size-options .pv-option-btn.selected');
-            const color = colorBtn ? colorBtn.getAttribute('data-val') : 'Default';
-            const size = sizeBtn ? sizeBtn.getAttribute('data-val') : 'Default';
+            const color = document.querySelector('#color-options')?.value || 'Standard';
+            const size = document.querySelector('#size-options')?.value || 'Standard';
             const qty = document.getElementById('qty').value;
             const fullName = `<?php echo addslashes($name); ?> (${color}, ${size})`;
             const price = <?php echo floatval(preg_replace('/[^0-9.]/', '', $price)); ?>;
             const img = '<?php echo $img; ?>';
 
-            window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Beauty%20%26%20Health`;
+            window.location.href = `../../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(fullName)}&price=${price}&image=${img}&quantity=${qty}&store=IMarket%20Beauty`;
         }
-
-        document.querySelectorAll('.pv-options').forEach(container => {
-            container.querySelectorAll('.pv-option-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    container.querySelectorAll('.pv-option-btn').forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-        });
     </script>
 </div>

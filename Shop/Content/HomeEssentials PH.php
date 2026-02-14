@@ -45,6 +45,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Quikfab 5-Tier Steel Storage Rack.jpeg',
             'rating' => 4.8,
             'sold' => 1020
+            ,'description' => 'Sturdy 5-tier steel rack for home storage with easy assembly and high load capacity.'
         ],
         // Product 2
         [
@@ -54,6 +55,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Megabox 5-Layer Drawer (Beige).jpeg',
             'rating' => 4.5,
             'sold' => 3400
+            ,'description' => 'Versatile 5-layer plastic drawer unit for organized storage and space-saving convenience.'
         ],
         // Product 3
         [
@@ -63,6 +65,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Our Home Copenhagen Sectional Sofa.jpeg',
             'rating' => 4.7,
             'sold' => 850
+            ,'description' => 'Comfortable sectional sofa with modular pieces and durable upholstery for family living rooms.'
         ],
         // Product 4
         [
@@ -72,6 +75,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/IKEA RÖDFLIK Desk Lamp.jpeg',
             'rating' => 4.9,
             'sold' => 540
+            ,'description' => 'Minimal desk lamp with adjustable neck and warm LED light for reading or workspace tasks.'
         ],
         // Product 5
         [
@@ -81,6 +85,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Nordic Wood Legs Coffee Table.jpeg',
             'rating' => 4.3,
             'sold' => 2100
+            ,'description' => 'Nordic-inspired coffee table with wooden legs and a smooth tabletop for a clean aesthetic.'
         ],
         // Product 6
         [
@@ -90,6 +95,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/13-Piece Non-Stick Cookware Set.jpeg',
             'rating' => 4.6,
             'sold' => 3000
+            ,'description' => '13-piece non-stick cookware set with even heat distribution and easy cleaning surfaces.'
         ],
         // Product 7
         [
@@ -99,6 +105,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/HODEKT Electric Water Kettle (2.3L).jpeg',
             'rating' => 4.8,
             'sold' => 1500
+            ,'description' => 'Fast-boiling electric kettle with safety auto-shutoff and 2.3L capacity.'
         ],
         // Product 8
         [
@@ -108,6 +115,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Home Essentials Silver Metal Coffee Press.jpeg', // Using stylized image
             'rating' => 4.2,
             'sold' => 1100
+            ,'description' => 'Stainless metal coffee press delivering rich, full-flavored brews with easy cleanup.'
         ],
         // Product 9
         [
@@ -117,6 +125,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Orocan 45L Ice Box (Insulated).jpeg',
             'rating' => 4.5,
             'sold' => 980
+            ,'description' => 'Insulated 45L ice box to keep food and drinks cold for outdoor gatherings and trips.'
         ],
         // Product 10
         [
@@ -126,6 +135,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Westinghouse Electronic Bathroom Scale.jpeg',
             'rating' => 4.4,
             'sold' => 1300
+            ,'description' => 'Accurate digital bathroom scale with sleek design and easy-to-read display.'
         ],
         // Product 11
         [
@@ -135,6 +145,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Wall-Mounted Vegetable & Spice Organizer.jpeg',
             'rating' => 4.7,
             'sold' => 670
+            ,'description' => 'Wall-mounted organizer for spices and veggies that saves counter space and keeps things tidy.'
         ],
         // Product 12
         [
@@ -144,6 +155,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Eko 12L Stella Step Bin.jpeg',
             'rating' => 4.3,
             'sold' => 2500
+            ,'description' => 'Durable step bin with hands-free pedal operation and a compact 12L capacity.'
         ],
         // Product 13
         [
@@ -153,6 +165,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Scrub Daddy (The Original Sponge).jpeg',
             'rating' => 4.1,
             'sold' => 4200
+            ,'description' => 'Original Scrub Daddy sponge — versatile, long-lasting and gentle on cookware.'
         ],
         // Product 14
         [
@@ -162,6 +175,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/ACE Mop Bucket & Wringer (19L).jpeg',
             'rating' => 4.9,
             'sold' => 3100
+            ,'description' => 'Heavy-duty mop bucket with wringer for efficient mopping and quick water removal.'
         ],
         // Product 15
         [
@@ -171,6 +185,7 @@ if (isset($definingProducts) && $definingProducts) {
             'image' => '../image/Shop/HomeEssentials PH/Hava Asia Stainless Steel Towel Shelf.jpeg',
             'rating' => 4.0,
             'sold' => 1800
+            ,'description' => 'Stainless steel towel shelf offering corrosion resistance and sleek bathroom storage.'
         ]
     ];
     return; // Stop processing
