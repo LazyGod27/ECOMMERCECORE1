@@ -1,9 +1,10 @@
 {
     "order_id": 8,
     "reference": "ORD-000008",
-    "tracking": "TRK-F3714332",
-    "customer": "SUNG JIN WO",
-    "product": "solid street drip",
-    "amount": 1616.88,
-    "date": "2026-02-12 05:05:03"
+    "tracking": "TRK-1AB6C980",
+    "customer": "filbertace27",
+    "products": "Aqua Flask",
+    "total_amount": 629,
+    "payment_method": "cod",
+    "date": "2026-02-19 15:41:13"
 }

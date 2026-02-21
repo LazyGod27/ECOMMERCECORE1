@@ -525,6 +525,41 @@ $products = [
         ]
     ]
 ];
+
+// Append dynamic products from `products` table (including Core 3 synced items)
+include_once '../../Database/config.php';
+
+if (isset($conn) && !$conn->connect_error) {
+    $sql = "
+        SELECT id, name, price, image_url, description, category, core3_category
+        FROM products
+        WHERE status = 'Active'
+          AND (
+              category = 'Home & Living'
+              OR core3_category = 'Home & Living'
+          )
+        ORDER BY id DESC
+        LIMIT 20
+    ";
+
+    if ($result = $conn->query($sql)) {
+        while ($row = $result->fetch_assoc()) {
+            $products[] = [
+                'name' => $row['name'],
+                'price' => '₱' . number_format((float)$row['price'], 2),
+                'image' => !empty($row['image_url']) ? $row['image_url'] : '../../image/home-living/Decorative%20Throw%20Pillow%20Set.jpeg',
+                'link' => '#',
+                'discount' => '-10%',
+                'variants' => [],
+                'description' => !empty($row['description'])
+                    ? $row['description']
+                    : 'Approved marketplace product from Core 3 (Home & Living).',
+                'reviews' => []
+            ];
+        }
+        $result->free();
+    }
+}
 ?>
 
 <div class="product-grid">

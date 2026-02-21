@@ -70,6 +70,7 @@ if (isset($_SESSION['user_id'])) {
                         class="fas fa-home"></i>
                     Home</a>
                 <a href="<?php echo $path_prefix; ?>Shop/index.php" class="nav-item"><i class="fas fa-store"></i> Mall</a>
+                <a href="<?php echo $path_prefix; ?>Sellers/index.php" class="nav-item"><i class="fas fa-store-alt"></i> Sellers</a>
                 <a href="<?php echo $path_prefix; ?>Categories/flash-deals/index.php" class="nav-item"><i class="fas fa-bolt"></i> Flash Deals</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="dropdown-toggle"><i class="fas fa-list"></i> Categories <i

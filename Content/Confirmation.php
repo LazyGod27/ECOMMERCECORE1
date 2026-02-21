@@ -79,10 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $order_id = mysqli_insert_id($conn);
                 $items_ordered[] = [
                     'order_id' => $order_id,
+                    'product_id' => $pid,
                     'product_name' => $pname_item,
                     'quantity' => $qty_item,
                     'price' => $price_item,
                     'image' => $img_item,
+                    'image_url' => $img_item,
                     'item_total' => $item_total
                 ];
                 
@@ -131,12 +133,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             $items_ordered[] = [
                 'order_id' => $order_id,
+                'product_id' => $pid,
                 'product_name' => $pname,
                 'quantity' => $qty,
                 'price' => $price,
                 'image' => $img,
+                'image_url' => $img,
                 'item_total' => $total
             ];
+        }
+    }
+    
+    // =====================================================
+    // SEND ORDER TO CORE 2 SELLER SIDE API
+    // =====================================================
+    if ($order_id && !empty($items_ordered)) {
+        include_once '../Database/send_order_to_core2.php';
+        
+        // Prepare order data for Core 2
+        $core2OrderData = [
+            'order_id' => $order_id,
+            'order_reference' => $ref_id,
+            'tracking_number' => $master_tracking_num ?? $tracking_num,
+            'items' => array_map(function($item) {
+                return [
+                    'product_id' => $item['product_id'] ?? 0,
+                    'product_name' => $item['product_name'] ?? '',
+                    'quantity' => $item['quantity'] ?? 1,
+                    'price' => $item['price'] ?? 0,
+                    'image_url' => $item['image_url'] ?? $item['image'] ?? ''
+                ];
+            }, $items_ordered),
+            'customer' => [
+                'full_name' => $fname,
+                'phone_number' => $phone,
+                'address' => $addr,
+                'city' => $city,
+                'postal_code' => $zip
+            ],
+            'payment_method' => $method,
+            'total_amount' => $total
+        ];
+        
+        // Send to Core 2 (non-blocking - don't fail order if Core 2 is down)
+        try {
+            $core2Result = sendOrderToCore2($conn, $core2OrderData);
+            if (!$core2Result['success']) {
+                error_log("Failed to send order {$order_id} to Core 2: " . $core2Result['message']);
+                // Continue anyway - order is saved locally
+            }
+        } catch (Exception $e) {
+            error_log("Exception sending order {$order_id} to Core 2: " . $e->getMessage());
+            // Continue anyway - order is saved locally
         }
     }
     

@@ -26,6 +26,7 @@ if (!isset($path_prefix)) {
             <h4>About ImarketPH</h4>
             <ul>
                 <li><a href="<?php echo $path_prefix; ?>About/About_Us.php">About Us</a></li>
+                <li><a href="<?php echo $path_prefix; ?>Sellers/index.php">Our Sellers</a></li>
                 <li><a href="<?php echo $path_prefix; ?>About/Careers.php">Careers</a></li>
                 <li><a href="<?php echo $path_prefix; ?>About/Terms%20%26%20Conditions.php">Terms & Conditions</a></li>
                 <li><a href="<?php echo $path_prefix; ?>About/Privacy%20Policy.php">Privacy Policy</a></li>

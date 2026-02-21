@@ -1,9 +1,10 @@
 {
     "order_id": 14,
     "reference": "ORD-000014",
-    "tracking": "TRK-F60C9003",
-    "customer": "SUNG JIN WO",
-    "product": "Multiple Items",
-    "amount": 50,
-    "date": "2026-02-13 08:39:31"
+    "tracking": "TRK-C12C0F43",
+    "customer": "filbertace27",
+    "products": "2 items",
+    "total_amount": 1285,
+    "payment_method": "cod",
+    "date": "2026-02-19 16:02:31"
 }

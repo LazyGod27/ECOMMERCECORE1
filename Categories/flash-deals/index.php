@@ -1,8 +1,8 @@
 <?php
 // DAPAT ITO ANG LINE 1, NO SPACES BEFORE THIS
 
-include_once($_SERVER['DOCUMENT_ROOT'] . '/ecommerce_core1/Components/security.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . '/ecommerce_core1/Database/config.php');
+include_once(__DIR__ . '/../../Components/security.php');
+include_once(__DIR__ . '/../../Database/config.php');
 
 // Dito lang magsisimula ang HTML mo
 ?>

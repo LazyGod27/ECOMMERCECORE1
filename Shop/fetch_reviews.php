@@ -3,7 +3,7 @@ include("../Database/config.php");
 $product_name = $_GET['product_name'] ?? '';
 $product_id = abs(crc32($product_name)) % 2147483647;
 
-// Self-healing: Ensure sentiment columns exist
+// Table is auto-created in config.php; self-healing for sentiment columns
 $res = mysqli_query($conn, "SHOW COLUMNS FROM reviews LIKE 'sentiment'");
 if (mysqli_num_rows($res) == 0) {
     mysqli_query($conn, "ALTER TABLE reviews ADD COLUMN sentiment VARCHAR(20) DEFAULT 'Neutral'");

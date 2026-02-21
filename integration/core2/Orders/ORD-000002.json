@@ -1,0 +1,10 @@
+{
+    "order_id": 2,
+    "reference": "ORD-000002",
+    "tracking": "TRK-C025A200",
+    "customer": "filbertace27",
+    "products": "brief",
+    "total_amount": 75,
+    "payment_method": "cod",
+    "date": "2026-02-17 16:19:09"
+}

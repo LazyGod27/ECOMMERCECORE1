@@ -611,6 +611,29 @@
                         $allProducts[] = $p;
                     }
                 }
+                // Include Core 3 approved products in search results
+                if (!empty($searchQuery)) {
+                    include_once __DIR__ . '/../Database/core3_products.php';
+                    $core3Search = fetchCore3ApprovedProducts();
+                    foreach ($core3Search as $c3) {
+                        if (stripos($c3['name'], $searchQuery) !== false || stripos($c3['description'] ?? '', $searchQuery) !== false || stripos($c3['category'] ?? '', $searchQuery) !== false) {
+                            $allProducts[] = [
+                                'name' => $c3['name'],
+                                'price' => '₱' . number_format($c3['price'], 2),
+                                'raw_price' => $c3['price'],
+                                'original_price' => '',
+                                'discount' => '',
+                                'image' => $c3['image'],
+                                'rating' => 4.5,
+                                'sold' => 'New',
+                                'description' => $c3['description'] ?? '',
+                                'shop_name' => $c3['seller_name'] ?? 'Marketplace Seller',
+                                'shop_initials' => 'C3',
+                                'shop_bg' => '1d4ed8',
+                            ];
+                        }
+                    }
+                }
 
                 // 3. Sorting
                 $sort = $_GET['sort'] ?? 'best';
@@ -1027,7 +1050,8 @@
                         <?php else: ?>
                             <div class="results-grid">
                                 <?php foreach ($allProducts as $ap):
-                                    $soldDisp = ($ap['sold'] > 1000) ? number_format($ap['sold'] / 1000, 1) . 'k' : $ap['sold'];
+                                    $soldVal = $ap['sold'] ?? 0;
+                                    $soldDisp = (is_numeric($soldVal) && $soldVal > 1000) ? number_format($soldVal / 1000, 1) . 'k' : $soldVal;
                                     ?>
                                     <div class="result-card" data-name="<?php echo htmlspecialchars($ap['name']); ?>"
                                         data-price="<?php echo $ap['price']; ?>" data-raw-price="<?php echo $ap['raw_price']; ?>"
@@ -1287,7 +1311,7 @@
                                 </div>
                                 
                                 <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden; position: relative; background: #f8fafc;">
-                                    <img src="<?php echo str_replace(' ', '%20', $bs['image']); ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                                    <img src="<?php echo str_replace(' ', '%20', $bs['image']); ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onerror="this.onerror=null; this.src='../image/logo.png';">
                                 </div>
                                 
                                 <div class="result-info" style="padding: 20px;">
@@ -1310,6 +1334,92 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Core 3 Marketplace Products Section -->
+                <div class="content-card" style="margin-top: 40px; background: linear-gradient(135deg, #fef3c7 0%, #e0f2fe 100%); padding: 40px; border-radius: 24px; box-shadow: 0 8px 32px rgba(30, 64, 175, 0.12); border: 2px solid #bfdbfe;">
+                    <div class="section-header" style="text-align: center; margin-bottom: 32px;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
+                            <i class="fas fa-globe-asia" style="color: #2563eb; font-size: 20px;"></i>
+                            <span style="font-weight: 800; color: #1d4ed8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">Live Marketplace</span>
+                            <i class="fas fa-store" style="color: #2563eb; font-size: 20px;"></i>
+                        </div>
+                        <h2 style="font-size: 2.0rem; color: #0f172a; margin-bottom: 10px; font-weight: 800;">Approved Products from <span style="color: #1d4ed8;">Core 3</span></h2>
+                        <p style="color: #64748b; font-size: 1rem;">Real items uploaded by sellers in Core 2 and approved by the Core 3 admin system</p>
+                    </div>
+
+                    <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        <?php
+                        include_once '../Database/core3_products.php';
+                        $core3Products = fetchCore3ApprovedProducts();
+
+                        if (!empty($core3Products)):
+                            // Limit number of products to avoid overloading the page
+                            $limitCore3 = 8;
+                            $countCore3 = 0;
+                            foreach ($core3Products as $c3) :
+                                if ($countCore3 >= $limitCore3) break;
+                                $countCore3++;
+
+                                $priceDisplay = '₱' . number_format($c3['price'], 2);
+                                $shortDesc = !empty($c3['description']) ? substr($c3['description'], 0, 80) . '...' : 'Approved marketplace product from our Core 3 system.';
+                                $storeLabel = !empty($c3['seller_name']) ? $c3['seller_name'] : 'Marketplace Seller';
+                        ?>
+                            <div class="product-card"
+                                style="border: 1px solid #bfdbfe; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; box-shadow: 0 4px 6px rgba(30, 64, 175, 0.08);"
+                                onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(30, 64, 175, 0.18)'; this.style.borderColor='#60a5fa';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(30, 64, 175, 0.08)'; this.style.borderColor='#bfdbfe';"
+                                data-name="<?php echo htmlspecialchars($c3['name']); ?>"
+                                data-price="<?php echo $priceDisplay; ?>"
+                                data-raw-price="<?php echo $c3['price']; ?>"
+                                data-image="<?php echo htmlspecialchars($c3['image']); ?>"
+                                data-rating="4.5"
+                                data-sold="New"
+                                data-description="<?php echo htmlspecialchars($c3['description'] ?? ''); ?>"
+                                data-store="<?php echo htmlspecialchars($storeLabel); ?>"
+                                onclick="openProductModal(this)">
+
+                                <!-- Live badge -->
+                                <div style="position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #ef4444, #f97316); color: white; padding: 6px 12px; border-radius: 999px; font-size: 10px; font-weight: 800; box-shadow: 0 4px 12px rgba(248, 113, 113, 0.4); display: flex; align-items: center; gap: 5px; z-index: 10;">
+                                    <span style="width: 8px; height: 8px; border-radius: 999px; background: #fbbf24; box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.4);"></span>
+                                    LIVE
+                                </div>
+
+                                <div class="result-img-wrapper" style="aspect-ratio: 1; overflow: hidden; position: relative; background: #eff6ff;">
+                                    <img src="<?php echo htmlspecialchars($c3['image']); ?>" class="result-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onerror="this.onerror=null; this.src='../image/logo.png';">
+                                </div>
+
+                                <div class="result-info" style="padding: 18px;">
+                                    <div style="font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-shield-alt" style="font-size: 10px;"></i> Approved by Core 3
+                                    </div>
+                                    <div class="result-title" style="font-weight: 600; font-size: 15px; color: #0f172a; margin-bottom: 8px; height: 2.8em; overflow: hidden; line-height: 1.4;"><?php echo htmlspecialchars($c3['name']); ?></div>
+                                    <div class="result-description" style="font-size: 12px; color: #64748b; margin-bottom: 10px; height: 2.4em; overflow: hidden; line-height: 1.2;"><?php echo htmlspecialchars($shortDesc); ?></div>
+
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <div class="result-price" style="color: #0f172a; font-weight: 800; font-size: 18px;"><?php echo $priceDisplay; ?></div>
+                                        <div style="font-size: 11px; color: #1d4ed8; font-weight: 600; background: #dbeafe; padding: 4px 10px; border-radius: 999px; display: flex; align-items: center; gap: 5px;">
+                                            <i class="fas fa-store"></i> <?php echo htmlspecialchars($storeLabel); ?>
+                                        </div>
+                                    </div>
+
+                                    <button style="width: 100%; padding: 10px; background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 14px;"
+                                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(37, 99, 235, 0.4)';"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                                        onclick="event.stopPropagation(); openProductModal(this.closest('.product-card'))">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        <?php
+                            endforeach;
+                        else:
+                        ?>
+                            <p style="grid-column: 1 / -1; text-align: center; color: #64748b; font-size: 0.95rem;">
+                                No live Core 3 products are available right now. Please check again later.
+                            </p>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -1427,7 +1537,7 @@
             <span class="modal-close" onclick="closeProductModal()">&times;</span>
             
             <div class="pv-left">
-                <img id="modalImg" src="" alt="Product" class="pv-product-img">
+                <img id="modalImg" src="" alt="Product" class="pv-product-img" onerror="this.onerror=null; this.src='../image/logo.png';">
             </div>
             
             <div class="pv-right">

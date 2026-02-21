@@ -1,9 +1,10 @@
 {
     "order_id": 12,
     "reference": "ORD-000012",
-    "tracking": "TRK-CE89B96B",
-    "customer": "SUNG JIN WO",
-    "product": "Shoulder Bag Men",
-    "amount": 149220,
-    "date": "2026-02-13 08:22:30"
+    "tracking": "TRK-4A620484",
+    "customer": "filbertace27",
+    "products": "brief",
+    "total_amount": 75,
+    "payment_method": "cod",
+    "date": "2026-02-19 16:01:15"
 }

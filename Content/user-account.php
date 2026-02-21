@@ -79,10 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         if ($addr_id > 0) {
             $stmt = $conn->prepare("UPDATE user_addresses SET fullname=?, phone=?, address=?, city=?, zip=?, is_default=? WHERE id=? AND user_id=?");
-            $stmt->bind_param("sssssiis", $fullname, $phone, $address, $city, $zip, $is_default, $addr_id, $user_id);
+            $stmt->bind_param("sssssiii", $fullname, $phone, $address, $city, $zip, $is_default, $addr_id, $user_id);
         } else {
             $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, fullname, phone, address, city, zip, is_default) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("isssss", $user_id, $fullname, $phone, $address, $city, $zip, $is_default);
+            $stmt->bind_param("isssssi", $user_id, $fullname, $phone, $address, $city, $zip, $is_default);
         }
         
         if ($stmt->execute()) {
@@ -1297,9 +1297,8 @@ if ($view == 'orders' || $view == 'tracking') {
                 </li>
             </ul>
 
-            <!-- SELLER CENTRE BUTTON (Integration Point) -->
-            <!-- Assuming Seller/Login.php or similar exists, or just a placeholder for Team 2 -->
-            <a href="../Seller/index.php" class="seller-btn">
+            <!-- SELLER CENTRE BUTTON - Links to iMarket Seller Center -->
+            <a href="https://sellercenter.imarketph.com/" target="_blank" rel="noopener noreferrer" class="seller-btn">
                 <i class="fas fa-store"></i> Seller Centre
             </a>
         </aside>
