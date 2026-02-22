@@ -49,6 +49,7 @@ $extraCols = [
     'external_core3_id' => "VARCHAR(50) DEFAULT NULL",
     'is_core3'          => "TINYINT(1) NOT NULL DEFAULT 0",
     'core3_category'    => "VARCHAR(100) DEFAULT NULL",
+    'shop_name'        => "VARCHAR(255) DEFAULT NULL",
 ];
 
 foreach ($extraCols as $col => $def) {
@@ -101,8 +102,8 @@ $categoryMap = [
 
 // 5) Prepare upsert statement using external_core3_id unique key
 $insertSql = "
-INSERT INTO products (name, price, image_url, description, status, category, external_core3_id, is_core3, core3_category)
-VALUES (?, ?, ?, ?, 'Active', ?, ?, 1, ?)
+INSERT INTO products (name, price, image_url, description, status, category, external_core3_id, is_core3, core3_category, shop_name)
+VALUES (?, ?, ?, ?, 'Active', ?, ?, 1, ?, ?)
 ON DUPLICATE KEY UPDATE
   name = VALUES(name),
   price = VALUES(price),
@@ -111,6 +112,7 @@ ON DUPLICATE KEY UPDATE
   status = 'Active',
   category = VALUES(category),
   core3_category = VALUES(core3_category),
+  shop_name = VALUES(shop_name),
   updated_at = NOW()
 ";
 
@@ -128,6 +130,7 @@ foreach ($core3Products as $p) {
     $image       = $p['image'] ?? null;
     $description = $p['description'] ?? null;
     $core3Cat    = $p['category'] ?? null;
+    $sellerName  = $p['seller_name'] ?? null; // Get seller_name from Core 3 product
 
     // Map Core 3 category to a generic display category (optional)
     $mappedCat = null;
@@ -143,14 +146,15 @@ foreach ($core3Products as $p) {
     }
 
     $stmt->bind_param(
-        'sdsssss',
+        'sdssssss',
         $name,
         $price,
         $image,
         $description,
         $mappedCat,
         $externalId,
-        $core3Cat
+        $core3Cat,
+        $sellerName
     );
 
     if ($stmt->execute()) {

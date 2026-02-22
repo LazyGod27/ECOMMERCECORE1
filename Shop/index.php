@@ -1281,6 +1281,10 @@
 
                     <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px;">
                         <?php 
+                        // Ensure database connection is available
+                        if (!isset($conn)) {
+                            require_once __DIR__ . '/../Database/config.php';
+                        }
                         // Fetch best-selling products from database
                         include '../Categories/best_selling/get_best_sellers.php';
                         $bestSellers = getBestSellingProducts($conn, 4);

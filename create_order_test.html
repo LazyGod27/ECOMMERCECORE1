@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Order Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { 
+            border-left: 4px solid green;
+            background: #d4edda;
+        }
+        .error { 
+            border-left: 4px solid red;
+            background: #f8d7da;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .debug {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .note {
+            background: #e7f3ff;
+            border: 1px solid #2196F3;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create Test Order for Core 2 API</h1>
+    
+    <div class="note">
+        ℹ️ <strong>How this works:</strong><br>
+        This form sends data to <strong>process_order.php</strong> which then forwards it to Core 2 API using your helper function.<br>
+        This avoids CORS issues and properly formats the data for Core 2.
+    </div>
+
+    <div class="info">
+        ℹ️ <strong>Testing with:</strong><br>
+        Seller: <strong>Balnce</strong><br>
+        Product: <strong>LABUBU</strong><br>
+        Payment Methods: <strong>cod, online, gcash, paymaya, card</strong>
+    </div>
+
+    <form id="orderForm">
+        <h3>Customer Information</h3>
+        
+        <div class="form-group">
+            <label>First Name:</label>
+            <input type="text" id="firstName" name="firstName" value="John" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Last Name:</label>
+            <input type="text" id="lastName" name="lastName" value="Doe" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" name="email" value="john.doe@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Phone:</label>
+            <input type="tel" id="phone" name="phone" value="09123456789" required>
+        </div>
+
+        <h3>Order Details</h3>
+        
+        <div class="form-group">
+            <label>Seller/Shop Name:</label>
+            <input type="text" id="seller" name="seller" value="Balnce" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Product Name:</label>
+            <input type="text" id="productName" name="productName" value="LABUBU" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Product Price (₱):</label>
+            <input type="number" id="price" name="price" value="899.00" min="0" step="0.01" required>
+            <small style="color: #666;">Price is required by Core 2 API</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod" required>
+                <option value="cod">Cash on Delivery (COD)</option>
+                <option value="online">Online Payment</option>
+                <option value="gcash">GCash</option>
+                <option value="paymaya">PayMaya</option>
+                <option value="card">Card Payment</option>
+            </select>
+        </div>
+
+        <h3>Shipping Information</h3>
+        
+        <div class="form-group">
+            <label>Shipping Address:</label>
+            <input type="text" id="shippingAddress" name="shippingAddress" value="123 Main Street, Barangay 1" required>
+        </div>
+        
+        <div class="form-group">
+            <label>City:</label>
+            <input type="text" id="shippingCity" name="shippingCity" value="Manila" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Postal Code:</label>
+            <input type="text" id="shippingPostal" name="shippingPostal" value="1000" required>
+        </div>
+
+        <button type="submit">Create Order via Core 2 API</button>
+    </form>
+
+    <div id="debugInfo" class="debug" style="display:none;">
+        <strong>Debug Information:</strong><br>
+        <div id="debugContent"></div>
+    </div>
+
+    <div id="result" style="display:none;"></div>
+
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            createOrder();
+        });
+
+        function createOrder() {
+            const resultDiv = document.getElementById('result');
+            const debugDiv = document.getElementById('debugInfo');
+            const debugContent = document.getElementById('debugContent');
+            
+            resultDiv.style.display = 'block';
+            debugDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Creating order...\n\nPlease wait...';
+            resultDiv.className = 'result';
+
+            const orderData = {
+                customer: {
+                    first_name: document.getElementById('firstName').value,
+                    last_name: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value
+                },
+                seller: document.getElementById('seller').value,
+                product: {
+                    name: document.getElementById('productName').value,
+                    price: parseFloat(document.getElementById('price').value) || 0
+                },
+                quantity: parseInt(document.getElementById('quantity').value),
+                payment_method: document.getElementById('paymentMethod').value,
+                shipping_address: document.getElementById('shippingAddress').value,
+                shipping_city: document.getElementById('shippingCity').value,
+                shipping_postal_code: document.getElementById('shippingPostal').value
+            };
+
+            debugContent.innerHTML = 'Sending to process_order.php:\n\n' + 
+                JSON.stringify(orderData, null, 2).replace(/\n/g, '<br>');
+
+            console.log('Sending order data:', orderData);
+
+            fetch('process_order.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from process_order.php:', data);
+                
+                if (data.success) {
+                    let responseText = '✅ SUCCESS! Order sent to Core 2 API!\n\n';
+                    responseText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                    responseText += 'Message: ' + data.message + '\n';
+                    responseText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+                    
+                    if (data.responses && data.responses.length > 0) {
+                        data.responses.forEach((resp, index) => {
+                            responseText += `Item ${index + 1} Response:\n`;
+                            responseText += `  HTTP Code: ${resp.http_code}\n`;
+                            if (resp.decoded_response && resp.decoded_response.success) {
+                                responseText += `  Core 2 Order ID: ${resp.decoded_response.data?.order_id || 'N/A'}\n`;
+                            }
+                            responseText += '\n';
+                        });
+                    }
+                    
+                    responseText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                    responseText += 'Full Response:\n';
+                    responseText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                    responseText += JSON.stringify(data, null, 2);
+                    
+                    resultDiv.innerHTML = responseText;
+                    resultDiv.className = 'result success';
+                    
+                    alert('✅ Order processed successfully! Check the response for details.');
+                } else {
+                    let errorText = '❌ FAILED to send order to Core 2 API\n\n';
+                    errorText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                    errorText += 'Error: ' + data.message + '\n';
+                    errorText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+                    
+                    if (data.responses) {
+                        errorText += 'Individual Item Responses:\n';
+                        data.responses.forEach((resp, index) => {
+                            errorText += `\nItem ${index + 1}:\n`;
+                            errorText += `  HTTP Code: ${resp.http_code}\n`;
+                            if (resp.curl_error) {
+                                errorText += `  cURL Error: ${resp.curl_error}\n`;
+                            }
+                            if (resp.decoded_response) {
+                                errorText += `  API Response: ${JSON.stringify(resp.decoded_response)}\n`;
+                            }
+                        });
+                    }
+                    
+                    errorText += '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                    errorText += 'Full Response:\n';
+                    errorText += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+                    errorText += JSON.stringify(data, null, 2);
+                    
+                    resultDiv.innerHTML = errorText;
+                    resultDiv.className = 'result error';
+                    
+                    alert('❌ Failed to process order: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                resultDiv.innerHTML = '❌ NETWORK ERROR\n\n' + 
+                    error.message + '\n\n' +
+                    'Make sure process_order.php is accessible.\n' +
+                    'Check browser console (F12) for more details.';
+                resultDiv.className = 'result error';
+            });
+        }
+    </script>
+</body>
+</html>

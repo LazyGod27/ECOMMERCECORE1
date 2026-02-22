@@ -196,10 +196,44 @@ $products_data = [
     unset($p);
 
     // Get ID correctly
-    $p_id = isset($product_id) ? $product_id : 101;
+    $p_id = isset($product_id) ? intval($product_id) : (isset($_GET['id']) ? intval($_GET['id']) : 101);
 
-    // Refresh current product after data fix
-    $product = isset($products_data[$p_id]) ? $products_data[$p_id] : $products_data[101];
+    // Refresh current product after data fix - only use default if product doesn't exist
+    if (isset($products_data[$p_id])) {
+        $product = $products_data[$p_id];
+    } else {
+        // Product not found - try to fetch from database or show error
+        if (!isset($conn)) {
+            require_once __DIR__ . '/../../Database/config.php';
+        }
+        
+        // Try to fetch product from database
+        $db_product = null;
+        if (isset($conn) && $p_id > 0) {
+            $prod_query = "SELECT name, price, image_url, description FROM products WHERE id = " . intval($p_id) . " AND status = 'Active' LIMIT 1";
+            $prod_result = mysqli_query($conn, $prod_query);
+            if ($prod_result && mysqli_num_rows($prod_result) > 0) {
+                $db_product = mysqli_fetch_assoc($prod_result);
+            }
+        }
+        
+        if ($db_product) {
+            // Use database product
+            $product = [
+                'name' => $db_product['name'],
+                'price_range' => '₱' . number_format($db_product['price'], 2),
+                'original_price' => '₱' . number_format($db_product['price'] * 1.2, 2),
+                'discount' => '20% OFF',
+                'image' => $db_product['image_url'] ?? '../../image/Best-seller/default.jpg',
+                'stock' => 100,
+                'colors' => ['Default'],
+                'sizes' => ['Standard']
+            ];
+        } else {
+            // Fallback to default product 101 only if database fetch also failed
+            $product = $products_data[101];
+        }
+    }
     $price = $product['price_range'];
     $name = isset($product['name']) ? $product['name'] : 'Product';
     $img = isset($product['image']) ? str_replace(' ', '%20', $product['image']) : ''; 

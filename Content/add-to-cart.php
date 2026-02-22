@@ -26,15 +26,29 @@ if (isset($_GET['add_to_cart']) || isset($_POST['add_to_cart'])) {
 
     if ($p_id > 0) {
         $safe_pid = intval($p_id);
-        $prod_sql = "SELECT name, price, image_url, image, shop_name FROM products WHERE id='$safe_pid' LIMIT 1";
-     $sql = "SELECT name, price, image, shop_name FROM products WHERE id = '$product_id'";
+        // Products table uses image_url, not image. Check if shop_name column exists first
+        $shop_col_check = mysqli_query($conn, "SHOW COLUMNS FROM products LIKE 'shop_name'");
+        $has_shop_name = ($shop_col_check && mysqli_num_rows($shop_col_check) > 0);
+        
+        // Build query based on whether shop_name column exists
+        if ($has_shop_name) {
+            $prod_sql = "SELECT name, price, image_url, 
+                         COALESCE(shop_name, 'IMarket Official Store') as shop_name 
+                         FROM products WHERE id='$safe_pid' LIMIT 1";
+        } else {
+            $prod_sql = "SELECT name, price, image_url FROM products WHERE id='$safe_pid' LIMIT 1";
+        }
+        
+        $prod_res = mysqli_query($conn, $prod_sql);
         if ($prod_res && mysqli_num_rows($prod_res) > 0) {
             $prod = mysqli_fetch_assoc($prod_res);
             // Support both possible column names (legacy compatibility)
             $p_name = isset($prod['name']) ? $prod['name'] : (isset($prod['product_name']) ? $prod['product_name'] : 'Product');
             $p_price = isset($prod['price']) ? floatval($prod['price']) : 0.0;
-            $p_image = isset($prod['image_url']) && !empty($prod['image_url']) ? $prod['image_url'] : (isset($prod['image']) ? $prod['image'] : '');
-            $shop_name = isset($prod['shop_name']) ? $prod['shop_name'] : '';
+            $p_image = isset($prod['image_url']) && !empty($prod['image_url']) ? $prod['image_url'] : '';
+            $shop_name = ($has_shop_name && isset($prod['shop_name']) && !empty($prod['shop_name'])) 
+                        ? $prod['shop_name'] 
+                        : 'IMarket Official Store';
         }
     }
 

@@ -68,6 +68,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $img_item = mysqli_real_escape_string($conn, $item_data['image']);
             $cart_id = isset($item_data['cart_id']) && $item_data['cart_id'] > 0 ? intval($item_data['cart_id']) : null;
             
+            // Fetch shop_name from products table or cart table
+            $shop_name_item = 'IMarket Official Store'; // Default
+            if ($pid > 0) {
+                // Try to get shop_name from products table
+                $shop_check = mysqli_query($conn, "SHOW COLUMNS FROM products LIKE 'shop_name'");
+                if ($shop_check && mysqli_num_rows($shop_check) > 0) {
+                    $shop_query = "SELECT COALESCE(shop_name, 'IMarket Official Store') as shop_name FROM products WHERE id = '$pid' LIMIT 1";
+                    $shop_result = mysqli_query($conn, $shop_query);
+                    if ($shop_result && mysqli_num_rows($shop_result) > 0) {
+                        $shop_row = mysqli_fetch_assoc($shop_result);
+                        $shop_name_item = !empty($shop_row['shop_name']) ? $shop_row['shop_name'] : 'IMarket Official Store';
+                    }
+                }
+            }
+            // If not found in products, try cart table
+            if ($shop_name_item === 'IMarket Official Store' && $cart_id) {
+                $cart_shop_query = "SELECT shop_name FROM cart WHERE id = '$cart_id' AND user_id = '$user_id' LIMIT 1";
+                $cart_shop_result = mysqli_query($conn, $cart_shop_query);
+                if ($cart_shop_result && mysqli_num_rows($cart_shop_result) > 0) {
+                    $cart_shop_row = mysqli_fetch_assoc($cart_shop_result);
+                    $shop_name_item = !empty($cart_shop_row['shop_name']) ? $cart_shop_row['shop_name'] : 'IMarket Official Store';
+                }
+            }
+            
             // Calculate item total
             $item_total = $price_item * $qty_item;
             
@@ -85,7 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     'price' => $price_item,
                     'image' => $img_item,
                     'image_url' => $img_item,
-                    'item_total' => $item_total
+                    'item_total' => $item_total,
+                    'shop_name' => $shop_name_item,
+                    'seller_name' => $shop_name_item
                 ];
                 
                 // Track cart IDs to delete
@@ -123,6 +149,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $pid = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
         $img = mysqli_real_escape_string($conn, $_POST['image_url'] ?? '../image/logo.png');
         
+        // Fetch shop_name from products table
+        $shop_name_single = 'IMarket Official Store'; // Default
+        if ($pid > 0) {
+            $shop_check = mysqli_query($conn, "SHOW COLUMNS FROM products LIKE 'shop_name'");
+            if ($shop_check && mysqli_num_rows($shop_check) > 0) {
+                $shop_query = "SELECT COALESCE(shop_name, 'IMarket Official Store') as shop_name FROM products WHERE id = '$pid' LIMIT 1";
+                $shop_result = mysqli_query($conn, $shop_query);
+                if ($shop_result && mysqli_num_rows($shop_result) > 0) {
+                    $shop_row = mysqli_fetch_assoc($shop_result);
+                    $shop_name_single = !empty($shop_row['shop_name']) ? $shop_row['shop_name'] : 'IMarket Official Store';
+                }
+            }
+        }
+        // Also check POST data for shop/store name
+        if (isset($_POST['store']) && !empty($_POST['store'])) {
+            $shop_name_single = mysqli_real_escape_string($conn, $_POST['store']);
+        }
+        
         // Insert Order
         $sql = "INSERT INTO orders (user_id, tracking_number, product_id, product_name, quantity, price, total_amount, full_name, phone_number, address, city, postal_code, payment_method, status, image_url, created_at) 
                 VALUES ('$user_id', '$tracking_num', '$pid', '$pname', '$qty', '$price', '$total', '$fname', '$phone', '$addr', '$city', '$zip', '$method', 'Pending', '$img', NOW())";
@@ -139,7 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 'price' => $price,
                 'image' => $img,
                 'image_url' => $img,
-                'item_total' => $total
+                'item_total' => $total,
+                'shop_name' => $shop_name_single,
+                'seller_name' => $shop_name_single
             ];
         }
     }
