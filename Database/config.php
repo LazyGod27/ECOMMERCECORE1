@@ -6,6 +6,10 @@ $db = "core1_marketph";   // Pangalan ng database na ginawa mo sa phpMyAdmin
 
 $conn = new mysqli("localhost", "root", "", "core1_marketph");
 
+// Core 2 API: Default seller when Core 1 products have generic shop (must exist in Core 2)
+if (!defined('CORE2_DEFAULT_SELLER')) {
+    define('CORE2_DEFAULT_SELLER', 'Balnce');
+}
 
 // Auto-create users table if it doesn't exist
 $sql_create_users = "CREATE TABLE IF NOT EXISTS `users` (

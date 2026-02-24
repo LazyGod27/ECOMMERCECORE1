@@ -552,7 +552,8 @@
                                     <div class="product-card" data-name="<?php echo htmlspecialchars($product['name']); ?>"
                                         data-price="<?php echo $product['price']; ?>"
                                         data-raw-price="<?php echo $product['raw_price']; ?>"
-                                        data-image="<?php echo $product['image']; ?>"
+                                        data-image="<?php echo htmlspecialchars($product['image'] ?? ''); ?>"
+                                        data-images="<?php echo htmlspecialchars(json_encode(array_merge([$product['image'] ?? ''], array_map(function($v){ return is_array($v) ? ($v['image'] ?? '') : ''; }, $product['variants'] ?? [])))); ?>"
                                         data-variants='<?php echo htmlspecialchars(json_encode($product['variants'] ?? [])); ?>'
                                         data-rating="<?php echo $product['rating']; ?>" data-sold="<?php echo $soldDisp; ?>"
                                         data-store="<?php echo htmlspecialchars($selectedStore); ?>"
@@ -611,11 +612,11 @@
                         $allProducts[] = $p;
                     }
                 }
-                // Include Core 3 approved products in search results
+                // Include Core 2 products in search results
                 if (!empty($searchQuery)) {
-                    include_once __DIR__ . '/../Database/core3_products.php';
-                    $core3Search = fetchCore3ApprovedProducts();
-                    foreach ($core3Search as $c3) {
+                    include_once __DIR__ . '/../Database/core2_products.php';
+                    $core2Search = fetchCore2Products(['approved_only' => true]);
+                    foreach ($core2Search as $c3) {
                         if (stripos($c3['name'], $searchQuery) !== false || stripos($c3['description'] ?? '', $searchQuery) !== false || stripos($c3['category'] ?? '', $searchQuery) !== false) {
                             $allProducts[] = [
                                 'name' => $c3['name'],
@@ -1057,7 +1058,8 @@
                                         data-price="<?php echo $ap['price']; ?>" data-raw-price="<?php echo $ap['raw_price']; ?>"
                                         data-original-price="<?php echo $ap['original_price'] ?? ''; ?>"
                                         data-discount="<?php echo $ap['discount'] ?? ''; ?>"
-                                        data-image="<?php echo $ap['image']; ?>" data-rating="<?php echo $ap['rating']; ?>"
+                                        data-image="<?php echo htmlspecialchars($ap['image'] ?? ''); ?>" data-rating="<?php echo $ap['rating']; ?>"
+                                        data-images="<?php echo htmlspecialchars(json_encode(array_merge([$ap['image'] ?? ''], array_map(function($v){ return is_array($v) ? ($v['image'] ?? '') : ''; }, $ap['variants'] ?? [])))); ?>"
                                         data-variants='<?php echo htmlspecialchars(json_encode($ap['variants'] ?? [])); ?>'
                                         data-sold="<?php echo $soldDisp; ?>"
                                         data-description="<?php echo htmlspecialchars($ap['description'] ?? ''); ?>"
@@ -1349,14 +1351,14 @@
                             <span style="font-weight: 800; color: #1d4ed8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;">Live Marketplace</span>
                             <i class="fas fa-store" style="color: #2563eb; font-size: 20px;"></i>
                         </div>
-                        <h2 style="font-size: 2.0rem; color: #0f172a; margin-bottom: 10px; font-weight: 800;">Approved Products from <span style="color: #1d4ed8;">Core 3</span></h2>
-                        <p style="color: #64748b; font-size: 1rem;">Real items uploaded by sellers in Core 2 and approved by the Core 3 admin system</p>
+                        <h2 style="font-size: 2.0rem; color: #0f172a; margin-bottom: 10px; font-weight: 800;">Products from <span style="color: #1d4ed8;">Seller Center</span></h2>
+                        <p style="color: #64748b; font-size: 1rem;">Items from sellers in Core 2 Seller Center (approved products)</p>
                     </div>
 
                     <div class="product-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
                         <?php
-                        include_once '../Database/core3_products.php';
-                        $core3Products = fetchCore3ApprovedProducts();
+                        include_once '../Database/core2_products.php';
+                        $core3Products = fetchCore2Products(['approved_only' => true]);
 
                         if (!empty($core3Products)):
                             // Limit number of products to avoid overloading the page
@@ -1377,7 +1379,8 @@
                                 data-name="<?php echo htmlspecialchars($c3['name']); ?>"
                                 data-price="<?php echo $priceDisplay; ?>"
                                 data-raw-price="<?php echo $c3['price']; ?>"
-                                data-image="<?php echo htmlspecialchars($c3['image']); ?>"
+                                data-image="<?php echo htmlspecialchars($c3['image'] ?? ''); ?>"
+                                data-images="<?php echo htmlspecialchars(json_encode($c3['images'] ?? [$c3['image'] ?? ''])); ?>"
                                 data-rating="4.5"
                                 data-sold="New"
                                 data-description="<?php echo htmlspecialchars($c3['description'] ?? ''); ?>"
@@ -1396,7 +1399,7 @@
 
                                 <div class="result-info" style="padding: 18px;">
                                     <div style="font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                        <i class="fas fa-shield-alt" style="font-size: 10px;"></i> Approved by Core 3
+                                        <i class="fas fa-store" style="font-size: 10px;"></i> Seller Center
                                     </div>
                                     <div class="result-title" style="font-weight: 600; font-size: 15px; color: #0f172a; margin-bottom: 8px; height: 2.8em; overflow: hidden; line-height: 1.4;"><?php echo htmlspecialchars($c3['name']); ?></div>
                                     <div class="result-description" style="font-size: 12px; color: #64748b; margin-bottom: 10px; height: 2.4em; overflow: hidden; line-height: 1.2;"><?php echo htmlspecialchars($shortDesc); ?></div>
@@ -1466,7 +1469,8 @@
                                 data-raw-price="<?php echo $ap['raw_price']; ?>"
                                 data-original-price="<?php echo $ap['original_price'] ?? ''; ?>"
                                 data-discount="<?php echo $ap['discount'] ?? ''; ?>"
-                                data-image="<?php echo $ap['image']; ?>" 
+                                data-image="<?php echo htmlspecialchars($ap['image'] ?? ''); ?>" 
+                                data-images="<?php echo htmlspecialchars(json_encode(array_merge([$ap['image'] ?? ''], array_map(function($v){ return is_array($v) ? ($v['image'] ?? '') : ''; }, $ap['variants'] ?? [])))); ?>"
                                 data-rating="<?php echo $ap['rating'] ?? 4.5; ?>" 
                                 data-sold="<?php echo $soldDisp; ?>"
                                 data-description="<?php echo htmlspecialchars($ap['description'] ?? ''); ?>"
@@ -1541,7 +1545,10 @@
             <span class="modal-close" onclick="closeProductModal()">&times;</span>
             
             <div class="pv-left">
-                <img id="modalImg" src="" alt="Product" class="pv-product-img" onerror="this.onerror=null; this.src='../image/logo.png';">
+                <div class="pv-img-container" style="position:relative; width:100%; min-height:400px; display:flex; flex-direction:column; align-items:center; background:#f8fafc; border-radius:12px; padding:20px;">
+                    <img id="modalImg" src="" alt="Product" class="pv-product-img" style="max-height:450px; object-fit:contain;" onerror="this.onerror=null; this.src='../image/logo.png';">
+                    <div id="modalImgThumbs" class="pv-img-thumbs" style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; justify-content:center; max-width:100%;"></div>
+                </div>
             </div>
             
             <div class="pv-right">
@@ -1833,13 +1840,21 @@
             btn.classList.add('selected');
         }
 
+        function resolveImageUrl(url) {
+            if (!url || typeof url !== 'string') return '../image/logo.png';
+            url = url.trim();
+            if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/')) return url;
+            if (url.startsWith('../') || url.startsWith('./')) return url;
+            return '../' + url.replace(/^\/*/, '');
+        }
         function openProductModal(element) {
             const name = element.getAttribute('data-name');
             const price = element.getAttribute('data-price');
             const rawPrice = element.getAttribute('data-raw-price');
             const originalPrice = element.getAttribute('data-original-price');
             const discount = element.getAttribute('data-discount');
-            const image = element.getAttribute('data-image');
+            let image = element.getAttribute('data-image') || '';
+            image = resolveImageUrl(image);
             const rating = element.getAttribute('data-rating');
             const sold = element.getAttribute('data-sold');
             const store = element.getAttribute('data-store');
@@ -1889,6 +1904,43 @@
                 discountEl.style.display = 'none';
             }
             document.getElementById('modalImg').src = image;
+            // Populate image thumbnails (Core 2 products have data-images)
+            const thumbsContainer = document.getElementById('modalImgThumbs');
+            if (thumbsContainer) {
+                thumbsContainer.innerHTML = '';
+                let imagesArr = [];
+                try {
+                    const dataImages = element.getAttribute('data-images');
+                    if (dataImages) imagesArr = JSON.parse(dataImages);
+                } catch(e) {}
+                if (imagesArr.length === 0 && image && image !== '../image/logo.png') imagesArr = [image];
+                if (imagesArr.length > 1) {
+                    imagesArr.forEach((imgUrl, i) => {
+                        const resolved = resolveImageUrl(imgUrl);
+                        const thumb = document.createElement('button');
+                        thumb.type = 'button';
+                        thumb.className = 'pv-thumb-btn' + (i === 0 ? ' selected' : '');
+                        thumb.style.cssText = 'width:56px; height:56px; border:2px solid ' + (i === 0 ? '#2A3B7E' : '#e2e8f0') + '; border-radius:8px; overflow:hidden; padding:0; cursor:pointer; background:#fff; flex-shrink:0; transition:all 0.2s;';
+                        const img = document.createElement('img');
+                        img.src = resolved;
+                        img.alt = '';
+                        img.style.cssText = 'width:100%; height:100%; object-fit:cover;';
+                        img.onerror = function() { this.src = '../image/logo.png'; };
+                        thumb.appendChild(img);
+                        thumb.onclick = function() {
+                            document.getElementById('modalImg').src = resolved;
+                            currentProduct.selectedImage = resolved;
+                            thumbsContainer.querySelectorAll('.pv-thumb-btn').forEach(b => { b.style.borderColor = '#e2e8f0'; });
+                            thumb.style.borderColor = '#2A3B7E';
+                            updateModalLinks();
+                        };
+                        thumbsContainer.appendChild(thumb);
+                    });
+                    thumbsContainer.style.display = 'flex';
+                } else {
+                    thumbsContainer.style.display = 'none';
+                }
+            }
             // Populate modal color variants (if any) and select default
             populateModalVariantsFromElement(element);
             
@@ -1968,10 +2020,10 @@
             const qty = document.getElementById('modalQty').value;
             // Construct URL for Add to Cart
             const selectedImage = currentProduct.selectedImage || currentProduct.image || '';
-            const baseAdd = `../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&store=${encodeURIComponent(currentProduct.store)}&image=${encodeURIComponent(selectedImage)}&quantity=${qty}`;
+            const baseAdd = `../Content/add-to-cart.php?add_to_cart=1&product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&store=${encodeURIComponent(currentProduct.store || '')}&image=${encodeURIComponent(selectedImage)}&quantity=${qty}`;
 
             // Construct URL for Buy Now (Direct Checkout)
-            const buyNowUrl = `../Content/Payment.php?product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&quantity=${qty}&image=${encodeURIComponent(selectedImage)}`;
+            const buyNowUrl = `../Content/Payment.php?product_name=${encodeURIComponent(currentProduct.name)}&price=${currentProduct.rawPrice}&quantity=${qty}&image=${encodeURIComponent(selectedImage)}&store=${encodeURIComponent(currentProduct.store || '')}`;
 
             document.getElementById('modalAddToCartBtn').href = baseAdd;
             document.getElementById('modalBuyNowBtn').href = buyNowUrl;

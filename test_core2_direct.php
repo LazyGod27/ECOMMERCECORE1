@@ -5,11 +5,11 @@ require_once 'order_helper.php';
 $testOrder = [
     'order_id' => 'TEST_' . time(),
     'customer' => [
-        'full_name' => 'John Doe',
-        'email' => 'john@example.com',
+        'full_name' => 'Filbert Edrosa',
+        'email' => 'filbert.edrosa@gmail.com',
         'phone_number' => '09123456789',
         'address' => '123 Test St',
-        'city' => 'Manila',
+        'city' => 'Quezon City',
         'postal_code' => '1000'
     ],
     'items' => [

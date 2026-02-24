@@ -208,7 +208,10 @@
 
         <!-- LEFT SIDE: Product Image -->
         <div class="pv-left">
-            <img id="pm-img" src="" alt="Product Image" class="pv-product-img" onerror="this.src='../image/no-image.png'">
+            <div class="pv-img-container">
+                <img id="pm-img" src="" alt="Product Image" class="pv-product-img" onerror="this.src='../image/no-image.png'">
+            </div>
+            <div id="pm-thumbs" class="pv-img-thumbs" style="margin-top: 12px;"></div>
         </div>
 
         <!-- RIGHT SIDE: Product Details -->
@@ -273,7 +276,7 @@
 
             <!-- Options Section -->
             <div class="pv-options">
-                <div class="pv-option-group">
+                <div class="pv-option-group" id="pm-color-group">
                     <label for="pm-color" class="pv-option-label">Color / Variant</label>
                     <div class="pv-options" id="pm-color-options">
                         <button class="pv-option-btn selected" onclick="selectOption(this)">Standard</button>
@@ -355,6 +358,40 @@
         
         // Hydrate data if passed
         if (productData) {
+            // Handle gallery images (main + thumbnails)
+            const thumbs = document.getElementById('pm-thumbs');
+            if (thumbs) {
+                thumbs.innerHTML = '';
+                let images = [];
+                if (Array.isArray(productData.images)) {
+                    images = productData.images.filter(Boolean);
+                } else if (productData.image) {
+                    images = [productData.image];
+                }
+                if (images.length > 1) {
+                    images.forEach((url, i) => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.style.cssText = 'width:56px;height:56px;border:2px solid ' + (i === 0 ? '#2A3B7E' : '#e2e8f0') + ';border-radius:8px;overflow:hidden;padding:0;cursor:pointer;background:#fff;flex-shrink:0;transition:all 0.2s;';
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.alt = '';
+                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+                        img.onerror = function(){ this.src = '../image/no-image.png'; };
+                        btn.appendChild(img);
+                        btn.onclick = function() {
+                            document.getElementById('pm-img').src = url;
+                            thumbs.querySelectorAll('button').forEach(b => b.style.borderColor = '#e2e8f0');
+                            btn.style.borderColor = '#2A3B7E';
+                        };
+                        thumbs.appendChild(btn);
+                    });
+                    thumbs.style.display = 'flex';
+                } else {
+                    thumbs.style.display = 'none';
+                }
+            }
+
             // Image
             if (productData.image) {
                 document.getElementById('pm-img').src = productData.image;
@@ -409,6 +446,13 @@
                 originalPrice.style.display = 'inline';
             }
             
+            // Hide color/variant group if no variant/option data
+            const colorGroup = document.getElementById('pm-color-group');
+            if (colorGroup) {
+                const hasVariants = productData.variants && Object.keys(productData.variants || {}).length > 0;
+                colorGroup.style.display = hasVariants ? 'block' : 'none';
+            }
+
             // Build Cart Link
             const rawPrice = productData.raw_price || parseFloat(productData.price.replace(/[^0-9.]/g, '')) || 0;
             const quantity = document.getElementById('pm-quantity').value;
@@ -418,7 +462,7 @@
             
             // Build Buy Now Link
             document.getElementById('pm-buy-link').href = 
-                `../Content/Payment.php?product_name=${encodeURIComponent(productData.name)}&price=${rawPrice}&image=${encodeURIComponent(productData.image)}&quantity=${quantity}`;
+                `../Content/Payment.php?product_name=${encodeURIComponent(productData.name)}&price=${rawPrice}&image=${encodeURIComponent(productData.image)}&quantity=${quantity}&store=${encodeURIComponent(productData.store || '')}`;
         }
         
         // Scroll to top of modal

@@ -1,13 +1,13 @@
 <?php
 /**
  * Individual Seller Storefront
- * Displays products from Core 3 that belong to this seller (matched by seller_name = shop_name)
+ * Displays products from Core 2 that belong to this seller (matched by seller_name = shop_name)
  */
 $path_prefix = '../';
 include $path_prefix . 'Database/config.php';
 include $path_prefix . 'Components/security.php';
 require_once __DIR__ . '/fetch_sellers.php';
-require_once $path_prefix . 'Database/core3_products.php';
+require_once $path_prefix . 'Database/core2_products.php';
 
 $seller_id = $_GET['id'] ?? '';
 $seller_name = $_GET['name'] ?? '';
@@ -32,8 +32,8 @@ if (!$seller && !empty($seller_name)) {
     }
 }
 
-// Fetch Core 3 products and filter by this seller's shop_name
-$allCore3Products = fetchCore3ApprovedProducts();
+// Fetch Core 2 products and filter by this seller's shop_name
+$allCore3Products = fetchCore2Products(['approved_only' => true]);
 $products = [];
 if ($seller) {
     $shopName = $seller['shop_name'];
@@ -132,20 +132,63 @@ if ($seller) {
             <?php else: ?>
                 <div class="products-grid">
                     <?php foreach ($products as $p): ?>
-                        <a href="<?php echo $path_prefix; ?>Shop/index.php?search=<?php echo urlencode($p['name']); ?>" class="product-card">
+                        <?php
+                            $rawPrice = isset($p['price']) ? (float)$p['price'] : 0;
+                            $imagesJson = htmlspecialchars(json_encode($p['images'] ?? [$p['image'] ?? '']), ENT_QUOTES, 'UTF-8');
+                        ?>
+                        <div class="product-card"
+                             data-name="<?php echo htmlspecialchars($p['name']); ?>"
+                             data-price="₱<?php echo number_format($rawPrice, 2); ?>"
+                             data-raw-price="<?php echo $rawPrice; ?>"
+                             data-image="<?php echo htmlspecialchars($p['image']); ?>"
+                             data-images="<?php echo $imagesJson; ?>"
+                             data-store="<?php echo htmlspecialchars($seller['shop_name']); ?>"
+                             data-category="<?php echo htmlspecialchars($p['category'] ?? ''); ?>"
+                             data-description="<?php echo htmlspecialchars($p['description'] ?? ''); ?>"
+                             onclick="openSellerProductModal(this)">
                             <div class="product-img">
                                 <img src="<?php echo htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['name']); ?>" onerror="this.onerror=null; this.src='<?php echo $path_prefix; ?>image/logo.png';">
                             </div>
                             <div class="product-body">
                                 <div class="title"><?php echo htmlspecialchars($p['name']); ?></div>
-                                <div class="price">₱<?php echo number_format($p['price'], 2); ?></div>
+                                <div class="price">₱<?php echo number_format($rawPrice, 2); ?></div>
                             </div>
-                        </a>
+                        </div>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         <?php endif; ?>
     </div>
+
+    <?php include '../Components/product-modal.php'; ?>
+    <script>
+        function openSellerProductModal(card) {
+            const rawPrice = parseFloat(card.getAttribute('data-raw-price')) || 0;
+            let images = [];
+            try {
+                const imgsAttr = card.getAttribute('data-images');
+                if (imgsAttr) {
+                    const parsed = JSON.parse(imgsAttr);
+                    if (Array.isArray(parsed)) {
+                        images = parsed.filter(Boolean);
+                    }
+                }
+            } catch (e) {}
+
+            const productData = {
+                name: card.getAttribute('data-name') || '',
+                price: '₱' + rawPrice.toFixed(2),
+                raw_price: rawPrice,
+                image: card.getAttribute('data-image') || '',
+                images: images,
+                store: card.getAttribute('data-store') || '',
+                category: card.getAttribute('data-category') || 'General',
+                description: card.getAttribute('data-description') || ''
+            };
+
+            openProductModal(productData);
+        }
+    </script>
 
     <?php include '../Components/footer.php'; ?>
 </body>

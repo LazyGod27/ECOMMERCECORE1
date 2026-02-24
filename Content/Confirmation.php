@@ -23,30 +23,53 @@ if (mysqli_num_rows($pid_check) == 0) {
     mysqli_query($conn, "ALTER TABLE orders ADD COLUMN product_id INT DEFAULT 0 AFTER tracking_number");
 }
 
-$user_id = $_SESSION['user_id'];
-$ref_id = "ORD-" . rand(100000, 999999);
+$user_id      = $_SESSION['user_id'];
+$ref_id       = "ORD-" . rand(100000, 999999);
 $tracking_num = "TRK-" . strtoupper(bin2hex(random_bytes(4)));
 
 // Variables for display
-$pname = '';
-$total = 0;
-$order_id = null;
-$method = '';
-$fname = '';
-$img = '';
-$items_ordered = [];
+$pname          = '';
+$total          = 0;
+$order_id       = null;
+$method         = '';
+$fname          = '';
+$img            = '';
+$items_ordered  = [];
+$master_tracking_num = null;
+
+// ── Fetch user email EARLY — needed for both Core 2 and confirmation email ──
+$user_email = '';
+$user_stmt  = $conn->prepare("SELECT email FROM users WHERE id = ?");
+$user_stmt->bind_param("i", $user_id);
+$user_stmt->execute();
+$user_row   = $user_stmt->get_result()->fetch_assoc();
+$user_email = $user_row['email'] ?? '';
+$user_stmt->close();
 
 // 2. Handle POST from Payment.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'complete_purchase') {
     $total = floatval($_POST['total_amount']);
     $method = mysqli_real_escape_string($conn, $_POST['payment_method']);
     
-    $fname = mysqli_real_escape_string($conn, $_POST['full_name']);
-    $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
-    $addr = mysqli_real_escape_string($conn, $_POST['address']);
-    $city = mysqli_real_escape_string($conn, $_POST['city']);
-    $zip = mysqli_real_escape_string($conn, $_POST['postal_code']);
-    
+    $fname = mysqli_real_escape_string($conn, $_POST['full_name'] ?? '');
+    $phone = mysqli_real_escape_string($conn, $_POST['phone_number'] ?? '');
+    $addr  = mysqli_real_escape_string($conn, $_POST['address'] ?? '');
+    $city  = mysqli_real_escape_string($conn, $_POST['city'] ?? '');
+    $zip   = mysqli_real_escape_string($conn, $_POST['postal_code'] ?? '');
+
+    // Fallback: if address empty, get from users table
+    if (empty($fname) || empty($addr) || empty($phone)) {
+        $u_res = mysqli_query($conn, "SELECT fullname, phone, address, city, zip FROM users WHERE id = '$user_id' LIMIT 1");
+        $u = $u_res ? mysqli_fetch_assoc($u_res) : null;
+        if ($u) {
+            if (empty($fname)) $fname = mysqli_real_escape_string($conn, $u['fullname'] ?? '');
+            if (empty($phone)) $phone = mysqli_real_escape_string($conn, $u['phone'] ?? '');
+            if (empty($addr))  $addr  = mysqli_real_escape_string($conn, $u['address'] ?? '');
+            if (empty($city))  $city  = mysqli_real_escape_string($conn, $u['city'] ?? '');
+            if (empty($zip))   $zip   = mysqli_real_escape_string($conn, $u['zip'] ?? '');
+        }
+    }
+
     $is_cart_checkout = isset($_POST['is_cart_checkout']) && $_POST['is_cart_checkout'] == '1';
     
     // =====================================================
@@ -193,61 +216,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     // =====================================================
     // SEND ORDER TO CORE 2 SELLER SIDE API
     // =====================================================
+    $core2_debug_enabled = !empty($_POST['core2_debug']);
+    $core2Result = null;
+
     if ($order_id && !empty($items_ordered)) {
         include_once '../Database/send_order_to_core2.php';
         
-        // Prepare order data for Core 2
         $core2OrderData = [
-            'order_id' => $order_id,
+            'order_id'        => $order_id,
             'order_reference' => $ref_id,
             'tracking_number' => $master_tracking_num ?? $tracking_num,
-            'items' => array_map(function($item) {
+            'items'           => array_map(function($item) {
                 return [
-                    'product_id' => $item['product_id'] ?? 0,
                     'product_name' => $item['product_name'] ?? '',
-                    'quantity' => $item['quantity'] ?? 1,
-                    'price' => $item['price'] ?? 0,
-                    'image_url' => $item['image_url'] ?? $item['image'] ?? ''
+                    'quantity'     => $item['quantity']     ?? 1,
+                    'seller_name'  => $item['seller_name']  ?? $item['shop_name'] ?? 'Unknown Seller',
                 ];
             }, $items_ordered),
             'customer' => [
-                'full_name' => $fname,
+                'full_name'    => $fname,
+                'email'        => $user_email,   // ← fetched at top of file
                 'phone_number' => $phone,
-                'address' => $addr,
-                'city' => $city,
-                'postal_code' => $zip
+                'address'      => $addr,
+                'city'         => $city,
+                'postal_code'  => $zip,
             ],
             'payment_method' => $method,
-            'total_amount' => $total
+            'total_amount'   => $total,
+            'debug'          => $core2_debug_enabled,
         ];
         
         // Send to Core 2 (non-blocking - don't fail order if Core 2 is down)
         try {
             $core2Result = sendOrderToCore2($conn, $core2OrderData);
             if (!$core2Result['success']) {
-                error_log("Failed to send order {$order_id} to Core 2: " . $core2Result['message']);
-                // Continue anyway - order is saved locally
+                error_log("Core2 FAILED order {$order_id}: " . $core2Result['message']);
+                if (!empty($core2Result['responses'][0]['raw_response'])) {
+                    error_log("Core2 raw response: " . $core2Result['responses'][0]['raw_response']);
+                }
+                if (!empty($core2Result['responses'][0]['payload_sent'])) {
+                    error_log("Core2 payload sent: " . json_encode($core2Result['responses'][0]['payload_sent']));
+                }
             }
         } catch (Exception $e) {
             error_log("Exception sending order {$order_id} to Core 2: " . $e->getMessage());
-            // Continue anyway - order is saved locally
         }
     }
     
     // =====================================================
     // SEND ORDER CONFIRMATION EMAIL
     // =====================================================
-    if ($order_id && !empty($items_ordered)) {
-        // Get user email from database
-        $user_stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
-        $user_stmt->bind_param("i", $user_id);
-        $user_stmt->execute();
-        $user_result = $user_stmt->get_result();
-        $user_row = $user_result->fetch_assoc();
-        $user_email = $user_row['email'] ?? '';
-        $user_stmt->close();
-        
-        if (!empty($user_email)) {
+    if ($order_id && !empty($items_ordered) && !empty($user_email)) {
             // Create email content
             $items_html = '';
             foreach ($items_ordered as $item) {
@@ -369,36 +388,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             </body>
             </html>";
             
-            // Send email using PHPMailer
-            try {
-                $mail = new PHPMailer(true);
-                
-                // Server settings
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'longkinog@gmail.com';
-                $mail->Password = 'ssau zscp bbzr vrkh';
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-                
-                // Recipients
-                $mail->setFrom('support@imarket.com', 'iMarket Support');
-                $mail->addAddress($user_email);
-                $mail->addReplyTo('support@imarket.com', 'iMarket Support');
-                
-                // Content
-                $mail->isHTML(true);
-                $mail->Subject = 'Order Confirmation - ' . $ref_id . ' | iMarket';
-                $mail->Body = $email_body;
-                
-                // Send the email
-                $mail->send();
-                
-            } catch (Exception $e) {
-                // Log error but don't block the order completion
-                error_log("Email sending failed: " . $mail->ErrorInfo);
-            }
+        try {
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'longkinog@gmail.com';
+            $mail->Password   = 'ssau zscp bbzr vrkh';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+
+            $mail->setFrom('support@imarket.com', 'iMarket Support');
+            $mail->addAddress($user_email);
+            $mail->addReplyTo('support@imarket.com', 'iMarket Support');
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Order Confirmation - ' . $ref_id . ' | iMarket';
+            $mail->Body    = $email_body;
+
+            $mail->send();
+        } catch (Exception $e) {
+            error_log("Email sending failed: " . $mail->ErrorInfo);
         }
     }
     
@@ -407,22 +417,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     // =====================================================
     if ($order_id) {
         $order_data = [
-            'order_id' => $order_id,
-            'reference' => $ref_id,
-            'tracking' => $master_tracking_num ?? $tracking_num,
-            'customer' => $fname,
-            'products' => count($items_ordered) > 1 ? count($items_ordered) . ' items' : $pname,
-            'total_amount' => $total,
+            'order_id'       => $order_id,
+            'reference'      => $ref_id,
+            'tracking'       => $master_tracking_num ?? $tracking_num,
+            'customer'       => $fname,
+            'products'       => count($items_ordered) > 1
+                                ? count($items_ordered) . ' items'
+                                : $pname,
+            'total_amount'   => $total,
             'payment_method' => $method,
-            'date' => date('Y-m-d H:i:s')
+            'date'           => date('Y-m-d H:i:s'),
         ];
-        
-        // --- CORE 1: CREATE FILE FOR ADMIN ---
+
+        // CORE 1: Create file for Admin
         $admin_order_dir = "../Admin/Orders/";
         if (!is_dir($admin_order_dir)) mkdir($admin_order_dir, 0777, true);
         file_put_contents($admin_order_dir . $ref_id . ".json", json_encode($order_data, JSON_PRETTY_PRINT));
 
-        // --- CORE 2 INTEGRATION ---
+        // CORE 2 Integration
         $core2_integration_dir = "../../CORE2/Admin/Orders/";
         if (is_dir("../../CORE2")) {
             if (!is_dir($core2_integration_dir)) mkdir($core2_integration_dir, 0777, true);
@@ -1059,6 +1071,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         <p class="terms-text">
             📧 A confirmation email has been sent to your inbox. Haven't received it? Check your spam folder or <a href="#">contact support</a>. Thank you for shopping with us!
         </p>
+
+        <?php if (!empty($core2_debug_enabled) && is_array($core2Result)): ?>
+            <div style="margin-top: 30px; padding: 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; font-family: monospace; font-size: 12px; max-height: 320px; overflow: auto;">
+                <div style="font-weight: 700; color: #1e293b; margin-bottom: 8px;">Core 2 Debug Payload &amp; Response</div>
+                <pre style="white-space: pre-wrap; word-wrap: break-word; margin: 0;"><?php echo htmlspecialchars(json_encode($core2Result, JSON_PRETTY_PRINT)); ?></pre>
+            </div>
+        <?php endif; ?>
     </main>
 
     <script>

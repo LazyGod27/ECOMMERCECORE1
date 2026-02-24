@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 include '../Database/config.php';
 
@@ -22,14 +22,16 @@ $user_id = $_SESSION['user_id'];
 // HANDLE BOTH CART CHECKOUT AND SINGLE PRODUCT CHECKOUT
 // =====================================================
 
-$cart_items = [];
+$cart_items   = [];
 $product_name = isset($_GET['product_name']) ? $_GET['product_name'] : 'Multiple Items';
-$item_price = isset($_GET['price']) ? floatval($_GET['price']) : 0;
-$quantity = isset($_GET['quantity']) ? intval($_GET['quantity']) : 1;
-$image = isset($_GET['image']) ? $_GET['image'] : '../image/logo.png';
-$product_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : 0;
+$item_price   = isset($_GET['price']) ? floatval($_GET['price']) : 0;
+$quantity     = isset($_GET['quantity']) ? intval($_GET['quantity']) : 1;
+$image        = isset($_GET['image']) ? $_GET['image'] : '../image/logo.png';
+$product_id   = isset($_GET['product_id']) ? intval($_GET['product_id']) : 0;
+$store        = isset($_GET['store']) ? $_GET['store'] : '';
+$core2_debug  = isset($_GET['core2_debug']) ? 1 : 0;
 
-// Normalize path
+// Normalize path from modal if it uses ../../
 if (strpos($image, '../../') === 0) {
     $image = str_replace('../../', '../', $image);
 }
@@ -67,7 +69,7 @@ if ($is_cart_checkout) {
     // Single product checkout (Buy Now)
     $subtotal = $item_price * $quantity;
     
-    // Create a single item array for consistency
+    // Create a single item array for consistency (include store from Buy Now link for Core 2)
     $cart_items[] = [
         'id' => null,
         'product_id' => $product_id,
@@ -75,7 +77,7 @@ if ($is_cart_checkout) {
         'price' => $item_price,
         'quantity' => $quantity,
         'image' => $image,
-        'shop_name' => ''
+        'shop_name' => $store
     ];
 }
 
@@ -752,7 +754,13 @@ if ($check_addr->num_rows > 0) {
                     <?php else: ?>
                         <!-- Single Product Preview -->
                         <div style="display: flex; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9;">
-                            <img src="<?php echo htmlspecialchars($image); ?>" alt="Product" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <?php 
+                            $imgSrc = $image;
+                            if (empty($imgSrc) || (!preg_match('#^https?://#i', $imgSrc) && !preg_match('#^/#', $imgSrc))) {
+                                $imgSrc = '../image/logo.png';
+                            }
+                            ?>
+                            <img src="<?php echo htmlspecialchars($imgSrc); ?>" alt="Product" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #e2e8f0;" onerror="this.onerror=null; this.src='../image/logo.png';">
                             <div style="flex: 1;">
                                 <h4 style="font-size: 0.95rem; font-weight: 600; color: #1e293b; margin: 0 0 5px 0;"><?php echo htmlspecialchars($product_name); ?></h4>
                                 <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Quantity: <?php echo $quantity; ?></p>
@@ -786,6 +794,7 @@ if ($check_addr->num_rows > 0) {
                         <input type="hidden" name="address" value="<?php echo isset($full_addr_details['address']) ? htmlspecialchars($full_addr_details['address']) : ''; ?>">
                         <input type="hidden" name="city" value="<?php echo isset($full_addr_details['city']) ? htmlspecialchars($full_addr_details['city']) : ''; ?>">
                         <input type="hidden" name="postal_code" value="<?php echo isset($full_addr_details['zip']) ? htmlspecialchars($full_addr_details['zip']) : ''; ?>">
+                        <input type="hidden" name="core2_debug" value="<?php echo $core2_debug ? '1' : '0'; ?>">
                         
                         <!-- Add cart items as hidden fields -->
                         <?php foreach ($cart_items as $idx => $item): ?>
@@ -793,7 +802,8 @@ if ($check_addr->num_rows > 0) {
                             <input type="hidden" name="items[<?php echo $idx; ?>][product_name]" value="<?php echo htmlspecialchars($item['product_name']); ?>">
                             <input type="hidden" name="items[<?php echo $idx; ?>][price]" value="<?php echo floatval($item['price']); ?>">
                             <input type="hidden" name="items[<?php echo $idx; ?>][quantity]" value="<?php echo intval($item['quantity']); ?>">
-                            <input type="hidden" name="items[<?php echo $idx; ?>][image]" value="<?php echo htmlspecialchars($item['image']); ?>">
+                            <input type="hidden" name="items[<?php echo $idx; ?>][image]" value="<?php echo htmlspecialchars($item['image'] ?? ''); ?>">
+                            <input type="hidden" name="items[<?php echo $idx; ?>][shop_name]" value="<?php echo htmlspecialchars($item['shop_name'] ?? ''); ?>">
                             <input type="hidden" name="items[<?php echo $idx; ?>][cart_id]" value="<?php echo isset($item['id']) ? intval($item['id']) : 0; ?>">
                         <?php endforeach; ?>
                     </form>
