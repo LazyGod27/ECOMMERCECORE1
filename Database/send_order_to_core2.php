@@ -53,6 +53,7 @@ function sendOrderToCore2($conn, $orderData, $core2ApiUrl = null) {
 
     $responses = [];
     $debug     = !empty($orderData['debug']);
+    $core2ProductsIndex = null; // lazy-built map: product_name_lower => seller_name
 
     // Default seller when Core 1 uses generic names that don't exist in Core 2
     $defaultSeller = defined('CORE2_DEFAULT_SELLER') ? CORE2_DEFAULT_SELLER : 'Balnce';
@@ -63,9 +64,33 @@ function sendOrderToCore2($conn, $orderData, $core2ApiUrl = null) {
         $quantity    = max(1, (int)($item['quantity'] ?? 1));
         $sellerName  = trim($item['seller_name'] ?? $item['shop_name'] ?? '');
 
-        // Use default seller if Core 1 has generic/unknown seller (must exist in Core 2)
+        // If seller is missing/generic, try to infer the correct Core 2 seller from product name.
+        // This prevents mismatches like ordering JUNJIEs products under Balnce.
         if ($sellerName === '' || in_array($sellerName, $genericSellers, true)) {
-            $sellerName = $defaultSeller;
+            if ($core2ProductsIndex === null) {
+                $core2ProductsIndex = [];
+                $core2Helper = __DIR__ . '/core2_products.php';
+                if (file_exists($core2Helper)) {
+                    include_once $core2Helper;
+                    if (function_exists('fetchCore2Products')) {
+                        $all = fetchCore2Products(['approved_only' => false, 'include_pending' => true, 'timeout' => 10]);
+                        foreach ($all as $p) {
+                            $nm = strtolower(trim((string)($p['name'] ?? '')));
+                            $sn = trim((string)($p['seller_name'] ?? ''));
+                            if ($nm !== '' && $sn !== '' && !isset($core2ProductsIndex[$nm])) {
+                                $core2ProductsIndex[$nm] = $sn;
+                            }
+                        }
+                    }
+                }
+            }
+
+            $lookupKey = strtolower(trim((string)$productName));
+            if ($lookupKey !== '' && is_array($core2ProductsIndex) && isset($core2ProductsIndex[$lookupKey])) {
+                $sellerName = $core2ProductsIndex[$lookupKey];
+            } else {
+                $sellerName = $defaultSeller;
+            }
         }
 
         // ── Build payload exactly like the working test_core2_direct.php ─────────

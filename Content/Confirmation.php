@@ -91,9 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $img_item = mysqli_real_escape_string($conn, $item_data['image']);
             $cart_id = isset($item_data['cart_id']) && $item_data['cart_id'] > 0 ? intval($item_data['cart_id']) : null;
             
-            // Fetch shop_name from products table or cart table
-            $shop_name_item = 'IMarket Official Store'; // Default
-            if ($pid > 0) {
+            // Prefer shop_name coming from Payment.php (cart rows or Buy Now `store` param)
+            $shop_name_item = isset($item_data['shop_name']) && trim($item_data['shop_name']) !== ''
+                ? mysqli_real_escape_string($conn, trim($item_data['shop_name']))
+                : 'IMarket Official Store'; // Default
+
+            // Fallback: if still generic/default, try to fetch shop_name from products table or cart table
+            if ($shop_name_item === 'IMarket Official Store' && $pid > 0) {
                 // Try to get shop_name from products table
                 $shop_check = mysqli_query($conn, "SHOW COLUMNS FROM products LIKE 'shop_name'");
                 if ($shop_check && mysqli_num_rows($shop_check) > 0) {

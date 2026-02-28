@@ -1577,7 +1577,7 @@
 
                 <!-- Options -->
                 <div class="pv-options-container">
-                    <div class="pv-option-group">
+                    <div class="pv-option-group" id="modalColorGroup">
                         <span class="pv-option-label">Color</span>
                         <div class="pv-options" id="modal-color-options">
                             <div class="pv-option-btn selected" onclick="selectOption(this)">Black</div>
@@ -1585,7 +1585,7 @@
                             <div class="pv-option-btn" onclick="selectOption(this)">Blue</div>
                         </div>
                     </div>
-                    <div class="pv-option-group">
+                    <div class="pv-option-group" id="modalSizeGroup">
                         <span class="pv-option-label">Size</span>
                         <div class="pv-options" id="modal-size-options">
                             <div class="pv-option-btn selected" onclick="selectOption(this)">M</div>
@@ -1942,7 +1942,12 @@
                 }
             }
             // Populate modal color variants (if any) and select default
-            populateModalVariantsFromElement(element);
+            const hasModalVariants = populateModalVariantsFromElement(element);
+            const colorGroup = document.getElementById('modalColorGroup');
+            if (colorGroup) colorGroup.style.display = hasModalVariants ? 'block' : 'none';
+            // Sizes are not provided by Core 2 / search results right now, so hide unless explicitly present
+            const sizeGroup = document.getElementById('modalSizeGroup');
+            if (sizeGroup) sizeGroup.style.display = 'none';
             
             // Add description to modal
             let descriptionEl = document.getElementById('modalDescription');
@@ -2132,17 +2137,19 @@
             const variantsAttr = el.getAttribute('data-variants') || '';
             let variants = {};
             try { variants = JSON.parse(variantsAttr); } catch(e){ variants = {}; }
-            const name = el.getAttribute('data-name') || 'Product';
-            const baseImg = el.getAttribute('data-image') || '';
-            if (!variants || Object.keys(variants).length === 0) variants = generatePlaceholderVariants(name, baseImg);
 
             // Clear existing variant options and replace with image thumbnails
             const container = document.getElementById('modal-color-options');
             container.innerHTML = '';
-            container.style.display = 'flex';
+            const hasVariants = !!(variants && Object.keys(variants).length > 0);
+            container.style.display = hasVariants ? 'flex' : 'none';
             container.style.gap = '8px';
             container.style.flexWrap = 'wrap';
             container.style.alignItems = 'center';
+
+            if (!hasVariants) {
+                return false;
+            }
             
             let firstImage = '';
             let firstKey = '';
@@ -2189,6 +2196,7 @@
                 const firstBtn = container.querySelector('.variant-swatch');
                 if (firstBtn) firstBtn.classList.add('selected');
             }
+            return true;
         }
 
 

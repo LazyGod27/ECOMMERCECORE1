@@ -14,10 +14,10 @@ $testOrder = [
     ],
     'items' => [
         [
-            'product_name' => 'LABUBU',
-            'price' => 899.00,
+            'product_name' => 'LAPTOP',
+            'price' => 6500.00,
             'quantity' => 1,
-            'seller_name' => 'Balnce'
+            'seller_name' => 'JUNJIEs'
         ]
     ],
     'payment_method' => 'cod'
